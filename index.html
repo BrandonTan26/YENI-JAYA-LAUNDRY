@@ -96,41 +96,27 @@
         .quick-pricelist-item .item-price { color: var(--primary); font-weight: 700; font-size: 0.8rem; }
         .highlight-input { background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(20,184,166,0.05)) !important; border-color: var(--primary) !important; font-weight: 700; color: var(--primary) !important; }
         
-        /* Logo Upload Styles */
-        .logo-upload-area {
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: var(--bg);
-        }
-        .logo-upload-area:hover {
-            border-color: var(--primary);
-            background: rgba(99,102,241,0.02);
-        }
-        .logo-preview {
-            max-width: 200px;
-            max-height: 200px;
-            margin: 16px auto;
-            display: block;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-        }
-        .logo-placeholder {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 16px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2rem;
-        }
+        .logo-upload-area { border: 2px dashed var(--border); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); }
+        .logo-upload-area:hover { border-color: var(--primary); background: rgba(99,102,241,0.02); }
+        .logo-preview { max-width: 200px; max-height: 200px; margin: 16px auto; display: block; border-radius: 12px; box-shadow: var(--shadow); }
+        .logo-placeholder { width: 100px; height: 100px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; }
         
+        .quick-money-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+        .quick-money-btn { padding: 10px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; color: var(--text); }
+        .quick-money-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .quick-money-btn:active { transform: scale(0.95); }
+        
+        .kembalian-display { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(20,184,166,0.1)); border: 2px solid var(--success); border-radius: 12px; padding: 12px; margin-top: 8px; text-align: center; }
+        .kembalian-display.negative { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(220,38,38,0.1)); border-color: var(--danger); }
+        .kembalian-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
+        .kembalian-value { font-size: 1.3rem; font-weight: 700; color: var(--success); }
+        .kembalian-display.negative .kembalian-value { color: var(--danger); }
+        
+        .sync-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+        .sync-status.connected { background: rgba(16,185,129,0.1); color: var(--success); }
+        .sync-status.disconnected { background: rgba(239,68,68,0.1); color: var(--danger); }
+        .sync-status.syncing { background: rgba(245,158,11,0.1); color: var(--warning); }
+
         #print-area { display: none; }
         @media print {
             body * { visibility: hidden; }
@@ -142,9 +128,7 @@
             .print-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
             .print-bold { font-weight: bold; }
         }
-        @media (max-width: 1024px) {
-            .pos-layout { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 1024px) { .pos-layout { grid-template-columns: 1fr; } }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -153,6 +137,7 @@
             .content-area { padding: 16px; }
             .top-navbar { padding: 0 16px; }
             #mobile-menu-btn { display: inline-flex !important; }
+            .quick-money-grid { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
 </head>
@@ -185,19 +170,18 @@
                 <h3 id="page-title">Dashboard</h3>
             </div>
             <div class="nav-right">
+                <span class="sync-status disconnected" id="sync-status"><i class="fas fa-circle"></i> Offline</span>
                 <div class="clock-display" id="realtime-clock">--:--:--</div>
                 <button class="btn btn-outline btn-sm" onclick="App.ui.toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
             </div>
         </header>
 
         <div class="content-area">
-            <!-- DASHBOARD -->
             <div id="view-dashboard" class="view-section active">
                 <div class="kpi-grid" id="dashboard-kpis"></div>
                 <div class="card"><h4 style="margin-bottom:16px">Grafik Omzet 7 Hari</h4><canvas id="chart-omzet" height="100"></canvas></div>
             </div>
 
-            <!-- KASIR POS -->
             <div id="view-kasir" class="view-section">
                 <div class="pos-layout">
                     <div style="overflow-y:auto">
@@ -253,8 +237,31 @@
                             <div class="total-row"><span>Diskon</span><input type="number" id="pos-diskon" class="form-control" style="width:120px;padding:6px 10px" value="0" onchange="App.pos.calculateTotal()"></div>
                             <div class="total-row"><span>Biaya Tambahan</span><input type="number" id="pos-biaya-tambahan" class="form-control" style="width:120px;padding:6px 10px" value="0" onchange="App.pos.calculateTotal()"></div>
                             <div class="total-row grand"><span>Grand Total</span><span id="pos-grand-total">Rp 0</span></div>
+                            
+                            <!-- INPUT UANG BAYAR (Hanya muncul jika Cash) -->
+                            <div id="cash-payment-section" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+                                <label style="font-size:0.85rem;color:var(--text-muted);font-weight:600">💵 Uang yang Dibayar</label>
+                                <input type="number" id="pos-uang-bayar" class="form-control" placeholder="Masukkan jumlah uang" style="font-weight:700;font-size:1.1rem;color:var(--success)" oninput="App.pos.calculateKembalian()">
+                                <div class="quick-money-grid">
+                                    <button type="button" class="quick-money-btn" onclick="App.pos.addUangBayar(50000)">50.000</button>
+                                    <button type="button" class="quick-money-btn" onclick="App.pos.addUangBayar(100000)">100.000</button>
+                                    <button type="button" class="quick-money-btn" onclick="App.pos.addUangBayar(150000)">150.000</button>
+                                    <button type="button" class="quick-money-btn" onclick="App.pos.addUangBayar(200000)">200.000</button>
+                                    <button type="button" class="quick-money-btn" onclick="App.pos.addUangBayar(250000)">250.000</button>
+                                    <button type="button" class="quick-money-btn" onclick="App.pos.addUangBayar(300000)">300.000</button>
+                                </div>
+                                <div class="kembalian-display" id="kembalian-display" style="display:none">
+                                    <div class="kembalian-label">Kembalian</div>
+                                    <div class="kembalian-value" id="kembalian-value">Rp 0</div>
+                                </div>
+                            </div>
+                            
                             <div style="margin-top:16px;display:grid;gap:8px">
-                                <select id="pos-metode-bayar" class="form-control"><option value="Cash">💵 Cash</option><option value="QRIS">📱 QRIS</option><option value="Transfer">🏦 Transfer</option></select>
+                                <select id="pos-metode-bayar" class="form-control" onchange="App.pos.toggleCashSection()">
+                                    <option value="Cash">💵 Cash</option>
+                                    <option value="QRIS">📱 QRIS</option>
+                                    <option value="Transfer">🏦 Transfer</option>
+                                </select>
                                 <button class="btn btn-success" style="width:100%;justify-content:center;padding:14px" onclick="App.pos.processPayment()"><i class="fas fa-check-circle"></i> Bayar & Cetak</button>
                             </div>
                         </div>
@@ -262,7 +269,6 @@
                 </div>
             </div>
 
-            <!-- TRANSAKSI -->
             <div id="view-transaksi" class="view-section">
                 <div class="card">
                     <h4 style="margin-bottom:24px">Riwayat Transaksi</h4>
@@ -271,7 +277,6 @@
                 </div>
             </div>
 
-            <!-- CUSTOMER -->
             <div id="view-customer" class="view-section">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
@@ -283,7 +288,6 @@
                 </div>
             </div>
 
-            <!-- PRICELIST -->
             <div id="view-pricelist" class="view-section">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
@@ -295,7 +299,6 @@
                 </div>
             </div>
 
-            <!-- STATUS LAUNDRY -->
             <div id="view-status" class="view-section">
                 <div class="card">
                     <h4 style="margin-bottom:24px">Tracking Status Laundry</h4>
@@ -303,7 +306,6 @@
                 </div>
             </div>
 
-            <!-- PENGELUARAN -->
             <div id="view-pengeluaran" class="view-section">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
@@ -314,7 +316,6 @@
                 </div>
             </div>
 
-            <!-- VOUCHER -->
             <div id="view-voucher" class="view-section">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
@@ -325,7 +326,6 @@
                 </div>
             </div>
 
-            <!-- LAPORAN -->
             <div id="view-laporan" class="view-section">
                 <div class="card">
                     <h4 style="margin-bottom:24px">Laporan Keuangan</h4>
@@ -339,7 +339,6 @@
                 </div>
             </div>
 
-            <!-- DASHBOARD OWNER -->
             <div id="view-owner" class="view-section">
                 <div class="card" style="margin-bottom:24px">
                     <h4 style="margin-bottom:16px">📊 Dashboard Owner</h4>
@@ -351,14 +350,12 @@
                 </div>
             </div>
 
-            <!-- SETTING -->
             <div id="view-setting" class="view-section">
                 <div class="card" style="max-width:900px">
                     <h4 style="margin-bottom:24px">⚙️ Pengaturan</h4>
                     <form id="setting-form" onsubmit="App.setting.save(event)">
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
                             <div>
-                                <!-- LOGO UPLOAD -->
                                 <div class="input-group">
                                     <label>Logo Laundry</label>
                                     <div class="logo-upload-area" onclick="document.getElementById('setting-logo-input').click()">
@@ -370,16 +367,65 @@
                                         <input type="file" id="setting-logo-input" accept="image/*" style="display:none" onchange="App.setting.handleLogoUpload(event)">
                                     </div>
                                 </div>
-                                
                                 <div class="input-group"><label>Nama Laundry</label><input type="text" name="nama_laundry" class="form-control" required></div>
                                 <div class="input-group"><label>Alamat</label><textarea name="alamat" class="form-control" rows="2"></textarea></div>
                                 <div class="input-group"><label>WhatsApp</label><input type="text" name="whatsapp" class="form-control"></div>
                                 <div class="input-group"><label>Instagram</label><input type="text" name="instagram" class="form-control"></div>
-                            </div>
-                            <div>
                                 <div class="input-group"><label>Footer Struk</label><input type="text" name="footer_struk" class="form-control"></div>
                                 <div class="input-group"><label>Jam Operasional</label><input type="text" name="jam_operasional" class="form-control" placeholder="08:00 - 21:00"></div>
                                 <div class="input-group"><label>Warna Primary</label><input type="color" name="primary_color" class="form-control" style="height:50px;padding:4px"></div>
+                            </div>
+                            <div>
+                                <div class="input-group">
+                                    <label><i class="fas fa-font"></i> Font Struk (Print)</label>
+                                    <select name="print_font" class="form-control">
+                                        <option value="'Courier New', monospace">Courier New (Default)</option>
+                                        <option value="Arial, sans-serif">Arial</option>
+                                        <option value="'Times New Roman', serif">Times New Roman</option>
+                                        <option value="Verdana, sans-serif">Verdana</option>
+                                        <option value="Georgia, serif">Georgia</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label><i class="fas fa-text-height"></i> Ukuran Font Struk</label>
+                                    <select name="print_font_size" class="form-control">
+                                        <option value="9px">9px (Kecil)</option>
+                                        <option value="10px">10px</option>
+                                        <option value="11px">11px (Default)</option>
+                                        <option value="12px">12px</option>
+                                        <option value="13px">13px (Besar)</option>
+                                        <option value="14px">14px (Sangat Besar)</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label><i class="fas fa-bold"></i> Ketebalan Font</label>
+                                    <select name="print_font_weight" class="form-control">
+                                        <option value="normal">Normal</option>
+                                        <option value="500">Medium (500)</option>
+                                        <option value="600">Semi Bold (600)</option>
+                                        <option value="bold">Bold (700)</option>
+                                        <option value="800">Extra Bold (800)</option>
+                                        <option value="900">Black (900)</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label><i class="fas fa-heading"></i> Ukuran Font Header (Nama Laundry)</label>
+                                    <select name="print_header_size" class="form-control">
+                                        <option value="12px">12px</option>
+                                        <option value="14px">14px</option>
+                                        <option value="16px">16px (Default)</option>
+                                        <option value="18px">18px</option>
+                                        <option value="20px">20px</option>
+                                    </select>
+                                </div>
+                                <div style="margin-top:24px;padding-top:24px;border-top:2px solid var(--border)">
+                                    <h5 style="margin-bottom:16px;color:var(--primary)"><i class="fas fa-cloud"></i> Google Sheets Sync</h5>
+                                    <div class="input-group">
+                                        <label>URL Google Apps Script Web App</label>
+                                        <input type="url" name="gas_url" class="form-control" placeholder="https://script.google.com/macros/s/.../exec" value="https://script.google.com/macros/s/AKfycbwA-wPQl7LiPNANKY8ZGVcia6e_l8gcvdjZa-n0grp44LPrnGXv5YLm8-QSky45W7rjHw/exec">
+                                        <small style="color:var(--text-muted);font-size:0.75rem;margin-top:4px;display:block">💡 URL sudah terisi otomatis</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
@@ -408,7 +454,8 @@
     <div class="print-row"><span>Subtotal</span><span id="print-subtotal"></span></div>
     <div class="print-row"><span>Diskon</span><span id="print-diskon"></span></div>
     <div class="print-row print-bold" style="font-size:13px"><span>TOTAL</span><span id="print-total"></span></div>
-    <div class="print-row"><span>Bayar</span><span id="print-bayar"></span></div>
+    <div class="print-row"><span>Bayar (<span id="print-metode"></span>)</span><span id="print-bayar"></span></div>
+    <div class="print-row"><span>Kembali</span><span id="print-kembali"></span></div>
     <div class="print-divider"></div>
     <div id="print-footer" style="text-align:center;font-size:10px;margin-top:8px">Terima kasih</div>
 </div>
@@ -492,7 +539,21 @@ const DB = {
 };
 
 const State = {
-    settings: DB.get('settings', { nama_laundry: 'YENI JAYA LAUNDRY', alamat: 'Jl. Merdeka No. 123', whatsapp: '628123456789', instagram: '@yenijaya', footer_struk: 'Terima kasih telah menggunakan YENI JAYA LAUNDRY', jam_operasional: '08:00 - 21:00', primary_color: '#6366F1', logo: '' }),
+    settings: DB.get('settings', { 
+        nama_laundry: 'YENI JAYA LAUNDRY', 
+        alamat: 'Jl. Merdeka No. 123', 
+        whatsapp: '628123456789', 
+        instagram: '@yenijaya', 
+        footer_struk: 'Terima kasih telah menggunakan YENI JAYA LAUNDRY', 
+        jam_operasional: '08:00 - 21:00', 
+        primary_color: '#6366F1', 
+        logo: '',
+        print_font: "'Courier New', monospace",
+        print_font_size: '11px',
+        print_font_weight: 'normal',
+        print_header_size: '16px',
+        gas_url: 'https://script.google.com/macros/s/AKfycbwA-wPQl7LiPNANKY8ZGVcia6e_l8gcvdjZa-n0grp44LPrnGXv5YLm8-QSky45W7rjHw/exec'
+    }),
     pricelist: DB.get('pricelist', [
         { id: 1, kategori: 'KILOAN', layanan: 'Cuci Setrika Wangi', estimasi: '6 Jam', satuan: 'Kg', harga: 20000, status: 'Aktif' },
         { id: 2, kategori: 'KILOAN', layanan: 'Cuci Setrika Wangi', estimasi: '1 Hari', satuan: 'Kg', harga: 12000, status: 'Aktif' },
@@ -542,13 +603,47 @@ const State = {
     currentInvoice: 'INV-' + Date.now().toString().slice(-6)
 };
 
+const SheetsAPI = {
+    async sync(action, data) {
+        const url = State.settings.gas_url;
+        if (!url || url.includes('XXX')) {
+            this.updateStatus('disconnected');
+            return { success: false, message: 'URL Google Sheets belum dikonfigurasi' };
+        }
+        try {
+            this.updateStatus('syncing');
+            await fetch(url, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify({ action, data, timestamp: new Date().toISOString() })
+            });
+            this.updateStatus('connected');
+            return { success: true, message: 'Sync berhasil' };
+        } catch (error) {
+            console.error('Sheets sync error:', error);
+            this.updateStatus('disconnected');
+            return { success: false, message: error.message };
+        }
+    },
+    updateStatus(status) {
+        const el = document.getElementById('sync-status');
+        if (!el) return;
+        el.className = 'sync-status ' + status;
+        const labels = { connected: 'Connected', disconnected: 'Offline', syncing: 'Syncing...' };
+        el.innerHTML = `<i class="fas fa-circle"></i> ${labels[status]}`;
+    }
+};
+
 const App = {
     init() {
         this.ui.startClock();
         this.ui.applyTheme();
         this.ui.loadLogo();
+        this.ui.applyPrintStyles();
         this.pos.initDropdowns();
         this.pos.renderQuickPricelist();
+        this.pos.toggleCashSection(); // Inisialisasi tampilan section cash
         this.dashboard.load();
         this.pricelist.render();
         this.customer.render();
@@ -559,6 +654,11 @@ const App = {
         this.owner.load();
         this.setting.loadForm();
         
+        if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) {
+            SheetsAPI.updateStatus('connected');
+        } else {
+            SheetsAPI.updateStatus('disconnected');
+        }
         if (window.innerWidth <= 768) document.getElementById('mobile-menu-btn').style.display = 'inline-flex';
     },
 
@@ -606,11 +706,20 @@ const App = {
         loadLogo() {
             const logo = State.settings.logo;
             const container = document.getElementById('sidebar-logo-container');
-            if (logo) {
-                container.innerHTML = `<img src="${logo}" alt="Logo">`;
-            } else {
-                container.innerHTML = 'YJ';
-            }
+            if (logo) container.innerHTML = `<img src="${logo}" alt="Logo">`;
+            else container.innerHTML = 'YJ';
+        },
+        applyPrintStyles() {
+            const style = document.createElement('style');
+            style.id = 'custom-print-styles';
+            const existing = document.getElementById('custom-print-styles');
+            if (existing) existing.remove();
+            const s = State.settings;
+            style.textContent = `@media print {
+                #print-area { font-family: ${s.print_font || "'Courier New', monospace"}; font-size: ${s.print_font_size || '11px'}; font-weight: ${s.print_font_weight || 'normal'}; }
+                #print-nama { font-size: ${s.print_header_size || '16px'} !important; font-weight: bold !important; }
+            }`;
+            document.head.appendChild(style);
         },
         openModal(id) { document.getElementById(id).classList.add('active'); },
         closeModal(id) { document.getElementById(id).classList.remove('active'); },
@@ -661,9 +770,8 @@ const App = {
             const labels = [], data = [];
             for (let i = 6; i >= 0; i--) {
                 const d = new Date(); d.setDate(d.getDate() - i);
-                const ds = d.toDateString();
                 labels.push(d.toLocaleDateString('id-ID', {weekday:'short'}));
-                data.push(State.transaksi.filter(t => new Date(t.tanggal).toDateString() === ds).reduce((s, t) => s + t.total, 0));
+                data.push(State.transaksi.filter(t => new Date(t.tanggal).toDateString() === d.toDateString()).reduce((s, t) => s + t.total, 0));
             }
             window.chartOmzet = new Chart(ctx, {
                 type: 'line',
@@ -688,7 +796,6 @@ const App = {
         onLayananChange() {
             const layanan = document.getElementById('pos-layanan').value;
             const kat = document.getElementById('pos-kategori').value;
-            
             if (!layanan) {
                 document.getElementById('pos-waktu').innerHTML = '<option value="">Pilih Waktu</option>';
                 document.getElementById('pos-harga-satuan').value = '';
@@ -696,35 +803,22 @@ const App = {
                 document.getElementById('pos-harga-total').value = '';
                 return;
             }
-            
             const filtered = kat ? State.pricelist.filter(p => p.kategori === kat && p.layanan === layanan) : State.pricelist.filter(p => p.layanan === layanan);
             const estimasiList = [...new Set(filtered.map(p => p.estimasi))];
-            
             document.getElementById('pos-waktu').innerHTML = '<option value="">Pilih Waktu</option>' + estimasiList.map(e => `<option value="${e}">${e}</option>`).join('');
-            
-            if (filtered.length > 0) {
-                document.getElementById('pos-satuan').value = filtered[0].satuan;
-            }
-            
+            if (filtered.length > 0) document.getElementById('pos-satuan').value = filtered[0].satuan;
             this.onWaktuChange();
         },
         onWaktuChange() {
             const layanan = document.getElementById('pos-layanan').value;
             const kat = document.getElementById('pos-kategori').value;
             const waktu = document.getElementById('pos-waktu').value;
-            
             if (!layanan || !waktu) {
                 document.getElementById('pos-harga-satuan').value = '';
                 document.getElementById('pos-harga-total').value = '';
                 return;
             }
-            
-            const item = State.pricelist.find(p => 
-                p.layanan === layanan && 
-                p.estimasi === waktu && 
-                (!kat || p.kategori === kat)
-            );
-            
+            const item = State.pricelist.find(p => p.layanan === layanan && p.estimasi === waktu && (!kat || p.kategori === kat));
             if (item) {
                 document.getElementById('pos-harga-satuan').value = App.ui.formatRupiah(item.harga);
                 this.calculateSubtotal();
@@ -734,10 +828,8 @@ const App = {
             const berat = App.ui.parseDecimal(document.getElementById('pos-berat').value);
             const hargaText = document.getElementById('pos-harga-satuan').value;
             const harga = parseInt(hargaText.replace(/[^\d]/g, '')) || 0;
-            
             if (harga > 0 && berat > 0) {
-                const total = berat * harga;
-                document.getElementById('pos-harga-total').value = App.ui.formatRupiah(total);
+                document.getElementById('pos-harga-total').value = App.ui.formatRupiah(berat * harga);
             } else {
                 document.getElementById('pos-harga-total').value = '';
             }
@@ -745,23 +837,15 @@ const App = {
         addToCart() {
             const layanan = document.getElementById('pos-layanan').value;
             const waktu = document.getElementById('pos-waktu').value;
-            
             if (!layanan) return Swal.fire({ icon:'warning', title:'Pilih layanan' });
             if (!waktu) return Swal.fire({ icon:'warning', title:'Pilih waktu pengerjaan' });
-            
             const berat = App.ui.parseDecimal(document.getElementById('pos-berat').value);
             if (berat <= 0) return Swal.fire({ icon:'warning', title:'Masukkan berat/jumlah' });
             
             const hargaText = document.getElementById('pos-harga-satuan').value;
             const harga = parseInt(hargaText.replace(/[^\d]/g, '')) || 0;
-            const subtotal = berat * harga;
             
-            State.cart.push({
-                id: Date.now(),
-                nama: layanan,
-                berat, waktu,
-                hargaSatuan: harga, subtotal
-            });
+            State.cart.push({ id: Date.now(), nama: layanan, berat, waktu, hargaSatuan: harga, subtotal: berat * harga });
             this.renderCart();
             
             document.getElementById('pos-berat').value = '';
@@ -799,6 +883,127 @@ const App = {
             const tambahan = parseInt(document.getElementById('pos-biaya-tambahan').value) || 0;
             document.getElementById('pos-subtotal').textContent = App.ui.formatRupiah(subtotal);
             document.getElementById('pos-grand-total').textContent = App.ui.formatRupiah(subtotal - diskon + tambahan);
+            this.calculateKembalian();
+        },
+        toggleCashSection() {
+            const method = document.getElementById('pos-metode-bayar').value;
+            const cashSection = document.getElementById('cash-payment-section');
+            if (method === 'Cash') {
+                cashSection.style.display = 'block';
+            } else {
+                cashSection.style.display = 'none';
+                document.getElementById('pos-uang-bayar').value = '';
+                document.getElementById('kembalian-display').style.display = 'none';
+            }
+        },
+        addUangBayar(amount) {
+            const input = document.getElementById('pos-uang-bayar');
+            let current = parseInt(input.value) || 0;
+            input.value = current + amount;
+            this.calculateKembalian();
+        },
+        calculateKembalian() {
+            const subtotal = State.cart.reduce((s, i) => s + i.subtotal, 0);
+            const diskon = parseInt(document.getElementById('pos-diskon').value) || 0;
+            const tambahan = parseInt(document.getElementById('pos-biaya-tambahan').value) || 0;
+            const grandTotal = subtotal - diskon + tambahan;
+            const uangBayar = parseInt(document.getElementById('pos-uang-bayar').value) || 0;
+            const kembalian = uangBayar - grandTotal;
+            
+            const display = document.getElementById('kembalian-display');
+            const value = document.getElementById('kembalian-value');
+            
+            if (uangBayar > 0 && State.cart.length > 0) {
+                display.style.display = 'block';
+                if (kembalian >= 0) {
+                    display.classList.remove('negative');
+                    value.textContent = App.ui.formatRupiah(kembalian);
+                } else {
+                    display.classList.add('negative');
+                    value.textContent = '- ' + App.ui.formatRupiah(Math.abs(kembalian));
+                }
+            } else {
+                display.style.display = 'none';
+            }
+        },
+        async processPayment() {
+            if (State.cart.length === 0) return Swal.fire({ icon:'error', title:'Keranjang kosong' });
+            
+            const customerName = document.getElementById('pos-customer-name').value || 'Umum';
+            const subtotal = State.cart.reduce((s, i) => s + i.subtotal, 0);
+            const diskon = parseInt(document.getElementById('pos-diskon').value) || 0;
+            const tambahan = parseInt(document.getElementById('pos-biaya-tambahan').value) || 0;
+            const total = subtotal - diskon + tambahan;
+            const method = document.getElementById('pos-metode-bayar').value;
+            
+            let uangBayar = total;
+            let kembalian = 0;
+            
+            if (method === 'Cash') {
+                uangBayar = parseInt(document.getElementById('pos-uang-bayar').value) || 0;
+                kembalian = uangBayar - total;
+                if (uangBayar === 0) return Swal.fire({ icon:'warning', title:'Masukkan uang', text:'Silakan isi nominal uang tunai' });
+                if (kembalian < 0) return Swal.fire({ icon:'warning', title:'Uang tidak cukup', text:'Uang yang dibayar kurang dari total' });
+            }
+            
+            const trx = {
+                invoice: State.currentInvoice,
+                tanggal: new Date().toISOString(),
+                customer: customerName,
+                hp: document.getElementById('pos-customer-phone').value || '-',
+                alamat: document.getElementById('pos-customer-address').value || '-',
+                items: [...State.cart],
+                subtotal, diskon, biaya_tambahan: tambahan, total,
+                uang_bayar: uangBayar,
+                kembalian: kembalian,
+                metode: method,
+                status_bayar: 'Lunas',
+                status_laundry: 'Masuk'
+            };
+            State.transaksi.unshift(trx);
+            DB.set('transaksi', State.transaksi);
+            
+            if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) {
+                await SheetsAPI.sync('save_transaksi', trx);
+            }
+            
+            this.printReceipt(trx);
+            
+            State.cart = [];
+            this.renderCart();
+            ['pos-customer-name','pos-customer-phone','pos-customer-address','pos-uang-bayar'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('pos-diskon').value = 0;
+            document.getElementById('pos-biaya-tambahan').value = 0;
+            document.getElementById('kembalian-display').style.display = 'none';
+            State.currentInvoice = 'INV-' + Date.now().toString().slice(-6);
+            document.getElementById('pos-invoice').textContent = State.currentInvoice;
+            
+            Swal.fire({ icon:'success', title:'Transaksi Berhasil!', timer:1500 });
+            this.dashboard.load();
+        },
+        printReceipt(trx) {
+            const logo = State.settings.logo;
+            const logoImg = document.getElementById('print-logo-img');
+            if (logo) { logoImg.src = logo; logoImg.style.display = 'block'; } 
+            else { logoImg.style.display = 'none'; }
+            
+            document.getElementById('print-nama').textContent = State.settings.nama_laundry;
+            document.getElementById('print-alamat').textContent = State.settings.alamat;
+            document.getElementById('print-wa').textContent = 'WA: ' + State.settings.whatsapp;
+            document.getElementById('print-invoice').textContent = trx.invoice;
+            document.getElementById('print-tanggal').textContent = App.ui.formatDate(trx.tanggal);
+            document.getElementById('print-customer').textContent = trx.customer;
+            document.getElementById('print-items').innerHTML = trx.items.map(i => `
+                <div class="print-row"><div>${i.nama}<br><small>${i.berat}×${i.hargaSatuan}×${i.waktu}</small></div><div>${i.subtotal}</div></div>
+            `).join('');
+            document.getElementById('print-subtotal').textContent = trx.subtotal;
+            document.getElementById('print-diskon').textContent = trx.diskon;
+            document.getElementById('print-total').textContent = trx.total;
+            document.getElementById('print-metode').textContent = trx.metode;
+            document.getElementById('print-bayar').textContent = trx.uang_bayar;
+            document.getElementById('print-kembali').textContent = trx.kembalian;
+            document.getElementById('print-footer').textContent = State.settings.footer_struk;
+            setTimeout(() => window.print(), 400);
         },
         renderQuickPricelist(filter = '') {
             const grid = document.getElementById('quick-pricelist-grid');
@@ -823,68 +1028,6 @@ const App = {
             document.getElementById('pos-waktu').value = item.estimasi;
             this.onWaktuChange();
             Swal.fire({ icon:'info', title:'Layanan dipilih', text:'Isi berat/jumlah', timer:1200, showConfirmButton:false });
-        },
-        processPayment() {
-            if (State.cart.length === 0) return Swal.fire({ icon:'error', title:'Keranjang kosong' });
-            const customerName = document.getElementById('pos-customer-name').value || 'Umum';
-            const subtotal = State.cart.reduce((s, i) => s + i.subtotal, 0);
-            const diskon = parseInt(document.getElementById('pos-diskon').value) || 0;
-            const tambahan = parseInt(document.getElementById('pos-biaya-tambahan').value) || 0;
-            const total = subtotal - diskon + tambahan;
-            
-            const trx = {
-                invoice: State.currentInvoice,
-                tanggal: new Date().toISOString(),
-                customer: customerName,
-                hp: document.getElementById('pos-customer-phone').value || '-',
-                alamat: document.getElementById('pos-customer-address').value || '-',
-                items: [...State.cart],
-                subtotal, diskon, biaya_tambahan: tambahan, total,
-                metode: document.getElementById('pos-metode-bayar').value,
-                status_bayar: 'Lunas',
-                status_laundry: 'Masuk'
-            };
-            State.transaksi.unshift(trx);
-            DB.set('transaksi', State.transaksi);
-            
-            this.printReceipt(trx);
-            
-            State.cart = [];
-            this.renderCart();
-            ['pos-customer-name','pos-customer-phone','pos-customer-address'].forEach(id => document.getElementById(id).value = '');
-            document.getElementById('pos-diskon').value = 0;
-            document.getElementById('pos-biaya-tambahan').value = 0;
-            State.currentInvoice = 'INV-' + Date.now().toString().slice(-6);
-            document.getElementById('pos-invoice').textContent = State.currentInvoice;
-            
-            Swal.fire({ icon:'success', title:'Transaksi Berhasil!', timer:1500 });
-            this.dashboard.load();
-        },
-        printReceipt(trx) {
-            const logo = State.settings.logo;
-            const logoImg = document.getElementById('print-logo-img');
-            if (logo) {
-                logoImg.src = logo;
-                logoImg.style.display = 'block';
-            } else {
-                logoImg.style.display = 'none';
-            }
-            
-            document.getElementById('print-nama').textContent = State.settings.nama_laundry;
-            document.getElementById('print-alamat').textContent = State.settings.alamat;
-            document.getElementById('print-wa').textContent = 'WA: ' + State.settings.whatsapp;
-            document.getElementById('print-invoice').textContent = trx.invoice;
-            document.getElementById('print-tanggal').textContent = App.ui.formatDate(trx.tanggal);
-            document.getElementById('print-customer').textContent = trx.customer;
-            document.getElementById('print-items').innerHTML = trx.items.map(i => `
-                <div class="print-row"><div>${i.nama}<br><small>${i.berat}×${i.hargaSatuan}×${i.waktu}</small></div><div>${i.subtotal}</div></div>
-            `).join('');
-            document.getElementById('print-subtotal').textContent = trx.subtotal;
-            document.getElementById('print-diskon').textContent = trx.diskon;
-            document.getElementById('print-total').textContent = trx.total;
-            document.getElementById('print-bayar').textContent = trx.total + ' (' + trx.metode + ')';
-            document.getElementById('print-footer').textContent = State.settings.footer_struk;
-            setTimeout(() => window.print(), 400);
         }
     },
 
@@ -969,15 +1112,10 @@ const App = {
             document.getElementById('customer-alamat').value = c.alamat || '';
             App.ui.openModal('modal-customer');
         },
-        save(e) {
+        async save(e) {
             e.preventDefault();
             const id = document.getElementById('customer-edit-id').value;
-            const data = {
-                nama: document.getElementById('customer-nama').value,
-                hp: document.getElementById('customer-hp').value,
-                alamat: document.getElementById('customer-alamat').value,
-                poin: 0
-            };
+            const data = { nama: document.getElementById('customer-nama').value, hp: document.getElementById('customer-hp').value, alamat: document.getElementById('customer-alamat').value, poin: 0 };
             if (id) {
                 const idx = State.customers.findIndex(c => c.id == id);
                 data.id = parseInt(id); data.poin = State.customers[idx].poin || 0;
@@ -989,6 +1127,7 @@ const App = {
             DB.set('customers', State.customers);
             App.ui.closeModal('modal-customer');
             this.render();
+            if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) await SheetsAPI.sync('save_customer', data);
             Swal.fire({ icon:'success', timer:1000 });
         },
         hapus(id) {
@@ -1041,17 +1180,10 @@ const App = {
             document.getElementById('pricelist-harga').value = p.harga;
             App.ui.openModal('modal-pricelist');
         },
-        save(e) {
+        async save(e) {
             e.preventDefault();
             const id = document.getElementById('pricelist-edit-id').value;
-            const data = {
-                kategori: document.getElementById('pricelist-kategori').value,
-                layanan: document.getElementById('pricelist-layanan').value,
-                estimasi: document.getElementById('pricelist-estimasi').value,
-                satuan: document.getElementById('pricelist-satuan').value,
-                harga: parseInt(document.getElementById('pricelist-harga').value),
-                status: 'Aktif'
-            };
+            const data = { kategori: document.getElementById('pricelist-kategori').value, layanan: document.getElementById('pricelist-layanan').value, estimasi: document.getElementById('pricelist-estimasi').value, satuan: document.getElementById('pricelist-satuan').value, harga: parseInt(document.getElementById('pricelist-harga').value), status: 'Aktif' };
             if (id) {
                 const idx = State.pricelist.findIndex(p => p.id == id);
                 data.id = parseInt(id);
@@ -1065,6 +1197,7 @@ const App = {
             this.render();
             App.pos.initDropdowns();
             App.pos.renderQuickPricelist();
+            if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) await SheetsAPI.sync('save_pricelist', data);
             Swal.fire({ icon:'success', timer:1000 });
         },
         hapus(id) {
@@ -1138,14 +1271,10 @@ const App = {
             document.getElementById('pengeluaran-nominal').value = p.nominal;
             App.ui.openModal('modal-pengeluaran');
         },
-        save(e) {
+        async save(e) {
             e.preventDefault();
             const id = document.getElementById('pengeluaran-edit-id').value;
-            const data = {
-                kategori: document.getElementById('pengeluaran-kategori').value,
-                keterangan: document.getElementById('pengeluaran-keterangan').value,
-                nominal: parseInt(document.getElementById('pengeluaran-nominal').value)
-            };
+            const data = { kategori: document.getElementById('pengeluaran-kategori').value, keterangan: document.getElementById('pengeluaran-keterangan').value, nominal: parseInt(document.getElementById('pengeluaran-nominal').value) };
             if (id) {
                 const idx = State.pengeluaran.findIndex(p => p.id == id);
                 data.id = parseInt(id); data.tanggal = State.pengeluaran[idx].tanggal;
@@ -1157,6 +1286,7 @@ const App = {
             DB.set('pengeluaran', State.pengeluaran);
             App.ui.closeModal('modal-pengeluaran');
             this.render();
+            if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) await SheetsAPI.sync('save_pengeluaran', data);
             Swal.fire({ icon:'success', timer:1000 });
         },
         hapus(id) {
@@ -1200,15 +1330,10 @@ const App = {
             document.getElementById('voucher-nilai').value = v.nilai;
             App.ui.openModal('modal-voucher');
         },
-        save(e) {
+        async save(e) {
             e.preventDefault();
             const id = document.getElementById('voucher-edit-id').value;
-            const data = {
-                kode: document.getElementById('voucher-kode').value.toUpperCase(),
-                tipe: document.getElementById('voucher-tipe').value,
-                nilai: parseInt(document.getElementById('voucher-nilai').value),
-                status: 'Aktif'
-            };
+            const data = { kode: document.getElementById('voucher-kode').value.toUpperCase(), tipe: document.getElementById('voucher-tipe').value, nilai: parseInt(document.getElementById('voucher-nilai').value), status: 'Aktif' };
             if (id) {
                 const idx = State.voucher.findIndex(v => v.id == id);
                 data.id = parseInt(id);
@@ -1220,6 +1345,7 @@ const App = {
             DB.set('voucher', State.voucher);
             App.ui.closeModal('modal-voucher');
             this.render();
+            if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) await SheetsAPI.sync('save_voucher', data);
             Swal.fire({ icon:'success', timer:1000 });
         },
         hapus(id) {
@@ -1323,27 +1449,18 @@ const App = {
             const logo = State.settings.logo;
             const container = document.getElementById('logo-preview-container');
             if (logo) {
-                container.innerHTML = `
-                    <img src="${logo}" class="logo-preview" alt="Logo Preview">
-                    <p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px">Klik untuk ganti logo</p>
-                `;
+                container.innerHTML = `<img src="${logo}" class="logo-preview" alt="Logo Preview"><p style="color:var(--text-muted);font-size:0.85rem;margin-top:8px">Klik untuk ganti logo</p>`;
             } else {
-                container.innerHTML = `
-                    <div class="logo-placeholder"><i class="fas fa-image"></i></div>
-                    <p style="color:var(--text-muted);font-size:0.9rem">Klik untuk upload logo</p>
-                    <p style="color:var(--text-muted);font-size:0.75rem">PNG, JPG, max 2MB</p>
-                `;
+                container.innerHTML = `<div class="logo-placeholder"><i class="fas fa-image"></i></div><p style="color:var(--text-muted);font-size:0.9rem">Klik untuk upload logo</p><p style="color:var(--text-muted);font-size:0.75rem">PNG, JPG, max 2MB</p>`;
             }
         },
         handleLogoUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-            
             if (file.size > 2 * 1024 * 1024) {
                 Swal.fire({ icon:'error', title:'File terlalu besar', text:'Maksimal 2MB' });
                 return;
             }
-            
             const reader = new FileReader();
             reader.onload = (e) => {
                 State.settings.logo = e.target.result;
@@ -1365,7 +1482,14 @@ const App = {
             document.getElementById('sidebar-title').textContent = data.nama_laundry || 'YENI JAYA';
             if (data.primary_color) document.documentElement.style.setProperty('--primary', data.primary_color);
             App.ui.loadLogo();
-            Swal.fire({ icon:'success', title:'Tersimpan', text:'Logo dan pengaturan berhasil disimpan permanen', timer:2000 });
+            App.ui.applyPrintStyles();
+            
+            if (data.gas_url && !data.gas_url.includes('XXX')) {
+                SheetsAPI.updateStatus('connected');
+            } else {
+                SheetsAPI.updateStatus('disconnected');
+            }
+            Swal.fire({ icon:'success', title:'Tersimpan', text:'Pengaturan berhasil disimpan permanen', timer:2000 });
         }
     }
 };
