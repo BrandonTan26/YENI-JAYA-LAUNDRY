@@ -146,7 +146,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo" id="sidebar-logo-container">YJ</div>
-            <div class="sidebar-title" id="sidebar-title">YENI JAYA LAUNDRY</div>
+            <div class="sidebar-title" id="sidebar-title">YENI JAYA</div>
         </div>
         <nav class="sidebar-menu">
             <a class="menu-item active" onclick="App.router('dashboard')"><i class="fas fa-home"></i> Dashboard</a>
@@ -186,9 +186,9 @@
                 <div class="pos-layout">
                     <div style="overflow-y:auto">
                         <div class="card" style="margin-bottom:16px">
-                            <h4 style="margin-bottom:16px;color:var(--primary)"><i class="fas fa-user"></i> Data Pelanggan</h4>
+                            <h4 style="margin-bottom:16px;color:var(--primary)"><i class="fas fa-user"></i> Data Pelanggan <span style="color:var(--danger)">*</span></h4>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                                <div><label style="font-size:0.85rem;color:var(--text-muted)">Nama</label><input type="text" id="pos-customer-name" class="form-control" placeholder="Nama pelanggan"></div>
+                                <div><label style="font-size:0.85rem;color:var(--text-muted)">Nama Pelanggan (Wajib)</label><input type="text" id="pos-customer-name" class="form-control" placeholder="Contoh: Budi" required></div>
                                 <div><label style="font-size:0.85rem;color:var(--text-muted)">No. HP</label><input type="text" id="pos-customer-phone" class="form-control" placeholder="08xxx"></div>
                             </div>
                             <div style="margin-top:12px"><label style="font-size:0.85rem;color:var(--text-muted)">Alamat (jika diantar)</label><input type="text" id="pos-customer-address" class="form-control" placeholder="Kosongkan jika ambil sendiri"></div>
@@ -238,7 +238,6 @@
                             <div class="total-row"><span>Biaya Tambahan</span><input type="number" id="pos-biaya-tambahan" class="form-control" style="width:120px;padding:6px 10px" value="0" onchange="App.pos.calculateTotal()"></div>
                             <div class="total-row grand"><span>Grand Total</span><span id="pos-grand-total">Rp 0</span></div>
                             
-                            <!-- INPUT UANG BAYAR (Hanya muncul jika Cash) -->
                             <div id="cash-payment-section" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
                                 <label style="font-size:0.85rem;color:var(--text-muted);font-weight:600">💵 Uang yang Dibayar</label>
                                 <input type="number" id="pos-uang-bayar" class="form-control" placeholder="Masukkan jumlah uang" style="font-weight:700;font-size:1.1rem;color:var(--success)" oninput="App.pos.calculateKembalian()">
@@ -643,7 +642,7 @@ const App = {
         this.ui.applyPrintStyles();
         this.pos.initDropdowns();
         this.pos.renderQuickPricelist();
-        this.pos.toggleCashSection(); // Inisialisasi tampilan section cash
+        this.pos.toggleCashSection();
         this.dashboard.load();
         this.pricelist.render();
         this.customer.render();
@@ -926,10 +925,23 @@ const App = {
                 display.style.display = 'none';
             }
         },
+        
+        // ==========================================
+        // REVISI DI SINI: Validasi Wajib Isi Nama
+        // ==========================================
         async processPayment() {
             if (State.cart.length === 0) return Swal.fire({ icon:'error', title:'Keranjang kosong' });
             
-            const customerName = document.getElementById('pos-customer-name').value || 'Umum';
+            // Cek apakah nama pelanggan sudah diisi
+            const customerName = document.getElementById('pos-customer-name').value.trim();
+            if (!customerName) {
+                return Swal.fire({ 
+                    icon: 'warning', 
+                    title: 'Nama Pelanggan Kosong', 
+                    text: 'Wajib isi nama pelanggan terlebih dahulu sebelum lanjut bayar!' 
+                });
+            }
+            
             const subtotal = State.cart.reduce((s, i) => s + i.subtotal, 0);
             const diskon = parseInt(document.getElementById('pos-diskon').value) || 0;
             const tambahan = parseInt(document.getElementById('pos-biaya-tambahan').value) || 0;
@@ -981,6 +993,7 @@ const App = {
             Swal.fire({ icon:'success', title:'Transaksi Berhasil!', timer:1500 });
             this.dashboard.load();
         },
+
         printReceipt(trx) {
             const logo = State.settings.logo;
             const logoImg = document.getElementById('print-logo-img');
@@ -993,18 +1006,25 @@ const App = {
             document.getElementById('print-invoice').textContent = trx.invoice;
             document.getElementById('print-tanggal').textContent = App.ui.formatDate(trx.tanggal);
             document.getElementById('print-customer').textContent = trx.customer;
+            
             document.getElementById('print-items').innerHTML = trx.items.map(i => `
-                <div class="print-row"><div>${i.nama}<br><small>${i.berat}×${i.hargaSatuan}×${i.waktu}</small></div><div>${i.subtotal}</div></div>
+                <div class="print-row">
+                    <div>${i.nama}<br><small>${i.berat} × ${App.ui.formatRupiah(i.hargaSatuan)} × ${i.waktu}</small></div>
+                    <div>${App.ui.formatRupiah(i.subtotal)}</div>
+                </div>
             `).join('');
-            document.getElementById('print-subtotal').textContent = trx.subtotal;
-            document.getElementById('print-diskon').textContent = trx.diskon;
-            document.getElementById('print-total').textContent = trx.total;
+            
+            document.getElementById('print-subtotal').textContent = App.ui.formatRupiah(trx.subtotal);
+            document.getElementById('print-diskon').textContent = App.ui.formatRupiah(trx.diskon);
+            document.getElementById('print-total').textContent = App.ui.formatRupiah(trx.total);
             document.getElementById('print-metode').textContent = trx.metode;
-            document.getElementById('print-bayar').textContent = trx.uang_bayar;
-            document.getElementById('print-kembali').textContent = trx.kembalian;
+            document.getElementById('print-bayar').textContent = App.ui.formatRupiah(trx.uang_bayar);
+            document.getElementById('print-kembali').textContent = App.ui.formatRupiah(trx.kembalian);
             document.getElementById('print-footer').textContent = State.settings.footer_struk;
+            
             setTimeout(() => window.print(), 400);
         },
+
         renderQuickPricelist(filter = '') {
             const grid = document.getElementById('quick-pricelist-grid');
             const filtered = filter ? State.pricelist.filter(p => p.layanan.toLowerCase().includes(filter.toLowerCase()) || p.kategori.toLowerCase().includes(filter.toLowerCase())) : State.pricelist;
@@ -1479,7 +1499,7 @@ const App = {
             }
             State.settings = data;
             DB.set('settings', data);
-            document.getElementById('sidebar-title').textContent = data.nama_laundry || 'YENI JAYA LAUNDRY';
+            document.getElementById('sidebar-title').textContent = data.nama_laundry || 'YENI JAYA';
             if (data.primary_color) document.documentElement.style.setProperty('--primary', data.primary_color);
             App.ui.loadLogo();
             App.ui.applyPrintStyles();
