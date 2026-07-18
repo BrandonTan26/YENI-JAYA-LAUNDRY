@@ -146,7 +146,7 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo" id="sidebar-logo-container">YJ</div>
-            <div class="sidebar-title" id="sidebar-title">YENI JAYA</div>
+            <div class="sidebar-title" id="sidebar-title">YENI JAYA LAUNDRY</div>
         </div>
         <nav class="sidebar-menu">
             <a class="menu-item active" onclick="App.router('dashboard')"><i class="fas fa-home"></i> Dashboard</a>
@@ -1479,7 +1479,7 @@ const App = {
             }
             State.settings = data;
             DB.set('settings', data);
-            document.getElementById('sidebar-title').textContent = data.nama_laundry || 'YENI JAYA';
+            document.getElementById('sidebar-title').textContent = data.nama_laundry || 'YENI JAYA LAUNDRY';
             if (data.primary_color) document.documentElement.style.setProperty('--primary', data.primary_color);
             App.ui.loadLogo();
             App.ui.applyPrintStyles();
