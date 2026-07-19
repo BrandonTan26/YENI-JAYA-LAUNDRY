@@ -116,6 +116,11 @@
         .selesai-info.overdue { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(245,158,11,0.1)); border-color: var(--danger); color: var(--danger); }
         .btn-bayar { background: linear-gradient(135deg, var(--success), #059669); color: white; padding: 8px 16px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
         .btn-bayar:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+        .top-kategori-item { display: flex; align-items: center; padding: 12px; background: var(--bg); border-radius: 10px; margin-bottom: 8px; gap: 12px; }
+        .top-kategori-rank { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+        .top-kategori-rank.gold { background: #F1C40F; }
+        .top-kategori-rank.silver { background: #95A5A6; }
+        .top-kategori-rank.bronze { background: #E67E22; }
         #print-area { display: none; }
         @media print {
             body * { visibility: hidden; }
@@ -261,10 +266,10 @@
                             <div style="margin-top:16px;display:grid;gap:8px">
                                 <label style="font-size:0.85rem;color:var(--text-muted);font-weight:600">Status Pembayaran</label>
                                 <select id="pos-metode-bayar" class="form-control" onchange="App.pos.toggleCashSection()">
-                                    <option value="Belum Lunas" selected> Belum Lunas (Bayar Nanti / Draft)</option>
-                                    <option value="Cash">💵 Cash (Langsung Lunas)</option>
-                                    <option value="QRIS">📱 QRIS (Langsung Lunas)</option>
-                                    <option value="Transfer">🏦 Transfer (Langsung Lunas)</option>
+                                    <option value="Belum Lunas" selected>⏳ Belum Lunas (Bayar Nanti / Draft)</option>
+                                    <option value="Cash">💵 Cash</option>
+                                    <option value="QRIS"> QRIS</option>
+                                    <option value="Transfer">🏦 Transfer</option>
                                 </select>
                                 <button class="btn btn-success" style="width:100%;justify-content:center;padding:14px" onclick="App.pos.processPayment()"><i class="fas fa-check-circle"></i> Simpan & Cetak Draft</button>
                             </div>
@@ -284,7 +289,7 @@
             <div id="view-invoiceLunas" class="view-section">
                 <div class="card">
                     <h4 style="margin-bottom:16px"><i class="fas fa-file-invoice-dollar" style="color:var(--success)"></i> Invoice Sudah Lunas</h4>
-                    <input type="text" id="lunas-search" class="form-control" placeholder=" Cari nama pelanggan atau no HP..." style="margin-bottom:16px" oninput="App.invoiceLunas.render()">
+                    <input type="text" id="lunas-search" class="form-control" placeholder="🔍 Cari nama pelanggan atau no HP..." style="margin-bottom:16px" oninput="App.invoiceLunas.render()">
                     <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Tanggal Masuk</th><th>Est. Selesai</th><th>Customer</th><th>No. HP</th><th>Item</th><th>Total</th><th>Metode</th><th>Tanggal Bayar</th><th>Aksi</th></tr></thead><tbody id="lunas-tbody"></tbody></table></div>
                 </div>
             </div>
@@ -314,7 +319,7 @@
             <div id="view-status" class="view-section">
                 <div class="card">
                     <h4 style="margin-bottom:16px">Tracking Status Laundry</h4>
-                    <input type="text" id="status-search" class="form-control" placeholder=" Cari Nama Pelanggan atau No. HP..." style="margin-bottom:16px" oninput="App.status.render()">
+                    <input type="text" id="status-search" class="form-control" placeholder="🔍 Cari Nama Pelanggan atau No. HP..." style="margin-bottom:16px" oninput="App.status.render()">
                     <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Customer</th><th>No. HP</th><th>Tanggal Masuk</th><th>Estimasi Selesai</th><th>Item</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="status-tbody"></tbody></table></div>
                 </div>
             </div>
@@ -360,13 +365,13 @@
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
                     <div class="card"><h4 style="margin-bottom:16px">🏆 Top Customer</h4><div id="top-customer-list"></div></div>
                     <div class="card"><h4 style="margin-bottom:16px">⭐ Top Layanan</h4><div id="top-layanan-list"></div></div>
-                    <div class="card"><h4 style="margin-bottom:16px">📦 Top Kategori</h4><div id="top-kategori-list"></div></div>
+                    <div class="card"><h4 style="margin-bottom:16px"> Top Kategori</h4><div id="top-kategori-list"></div></div>
                 </div>
             </div>
 
             <div id="view-setting" class="view-section">
                 <div class="card" style="max-width:900px">
-                    <h4 style="margin-bottom:24px">️ Pengaturan</h4>
+                    <h4 style="margin-bottom:24px">⚙️ Pengaturan</h4>
                     <form id="setting-form" onsubmit="App.setting.save(event)">
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
                             <div>
@@ -585,8 +590,7 @@ const State = {
 };
 
 // ============================================================
-// HELPER: Parse estimasi waktu dari string (dari Google Sheets)
-// Format: "2 Hari", "1 Hari", "6 Jam", "1 Minggu", "Normal"
+// HELPER: Parse estimasi waktu dari string
 // ============================================================
 const EstimasiHelper = {
     parse(estimasi) {
@@ -644,46 +648,54 @@ const DataHelper = {
         return undefined;
     },
     
+    // ⚠️ NORMALISASI TRANSAKSI - dengan AUTO-FIX status lama yang salah
     normalizeTransaksi(t) {
         if (!t) return null;
         let tanggal = this.get(t, 'Tanggal', 'tanggal', 'TANGGAL', 'tgl', 'Tgl', 'created_at');
-        if (tanggal && typeof tanggal === 'string') {
-            if (!isNaN(Date.parse(tanggal))) {
-                tanggal = new Date(tanggal).toISOString();
-            }
+        if (tanggal && typeof tanggal === 'string' && !isNaN(Date.parse(tanggal))) {
+            tanggal = new Date(tanggal).toISOString();
         }
         let hp = this.get(t, 'No hp', 'no_hp', 'No HP', 'hp', 'HP', 'phone', 'Phone', 'no_telp', 'No Telp', 'nomor_hp', 'Nomor HP');
         if (!hp || hp === '-' || hp === 'undefined' || hp === 'null') hp = '-';
         let total = parseFloat(this.get(t, 'Total Rp', 'total_rp', 'Total', 'total', 'TOTAL') || 0) || 0;
-        if (total === 0) {
-            total = parseFloat(this.get(t, 'Total', 'total') || 0) || 0;
-        }
+        if (total === 0) total = parseFloat(this.get(t, 'Total', 'total') || 0) || 0;
         let metode = this.get(t, 'Payment', 'payment', 'Metode', 'metode', 'METODE', 'metode_bayar', 'Metode Bayar') || 'Cash';
         if (metode === '0' || metode === 0) metode = 'Cash';
+        
+        // ⚠️ AMBIL status_bayar dan tanggal_lunas dari data
         let statusBayar = this.get(t, 'Status Bayar', 'status_bayar', 'Status', 'status', 'Keterangan', 'keterangan');
-        if (!statusBayar) {
-            const uangFisik = parseFloat(this.get(t, 'Uang Fisik', 'uang_fisik', 'Uang Bayar', 'uang_bayar') || 0) || 0;
-            if (uangFisik > 0 && total > 0) {
+        let tanggalLunas = this.get(t, 'Tanggal Lunas', 'tanggal_lunas', 'tgl_lunas', 'tanggalLunas');
+        
+        // ⚠️ AUTO-FIX: Jika tidak ada tanggal_lunas yang valid, FORCE jadi Belum Lunas
+        // Ini memperbaiki data lama yang salah dari versi sebelumnya
+        let tanggalLunasValid = null;
+        if (tanggalLunas && typeof tanggalLunas === 'string' && !isNaN(Date.parse(tanggalLunas))) {
+            tanggalLunasValid = new Date(tanggalLunas).toISOString();
+        }
+        
+        // Logika penentuan status yang KETAT:
+        // Hanya jadi "Lunas" jika ada tanggal_lunas yang VALID
+        // Jika tidak ada tanggal_lunas → SELALU "Belum Lunas"
+        if (!tanggalLunasValid) {
+            statusBayar = 'Belum Lunas';
+        } else {
+            // Ada tanggal_lunas valid, tapi cek juga apakah status-nya memang Lunas
+            const statusStr = String(statusBayar || '').toLowerCase();
+            if (statusStr.includes('lunas')) {
                 statusBayar = 'Lunas';
             } else {
-                statusBayar = 'Belum Lunas';
+                // Ada tanggal_lunas tapi status bukan lunas → tetap lunas karena ada bukti bayar
+                statusBayar = 'Lunas';
             }
         }
-        if (String(statusBayar).toLowerCase().includes('lunas') || String(statusBayar).toLowerCase() === 'cash') {
-            statusBayar = 'Lunas';
-        } else if (String(statusBayar).toLowerCase().includes('belum')) {
-            statusBayar = 'Belum Lunas';
-        }
-        let tanggalLunas = this.get(t, 'Tanggal Lunas', 'tanggal_lunas', 'tgl_lunas');
-        if (tanggalLunas && typeof tanggalLunas === 'string' && !isNaN(Date.parse(tanggalLunas))) {
-            tanggalLunas = new Date(tanggalLunas).toISOString();
-        }
+        
         let estimasiSelesai = this.get(t, 'Estimasi Selesai', 'estimasi_selesai', 'est_selesai', 'Estimasi', 'estimasi');
         if (estimasiSelesai && typeof estimasiSelesai === 'string' && !isNaN(Date.parse(estimasiSelesai))) {
             estimasiSelesai = new Date(estimasiSelesai).toISOString();
         }
         let statusLaundry = this.get(t, 'Status Laundry', 'status_laundry', 'Status', 'status');
         if (!statusLaundry) statusLaundry = 'Masuk';
+        
         return {
             invoice: this.get(t, 'Invoice', 'invoice', 'INVOICE', 'no_invoice') || 'N/A',
             tanggal: tanggal || new Date().toISOString(),
@@ -701,7 +713,7 @@ const DataHelper = {
             status_bayar: statusBayar,
             status_laundry: statusLaundry,
             estimasi_selesai: estimasiSelesai,
-            tanggal_lunas: tanggalLunas
+            tanggal_lunas: tanggalLunasValid // ⚠️ Hanya terisi jika benar-benar valid
         };
     },
     
@@ -996,8 +1008,8 @@ const App = {
             const trxToday = State.transaksi.filter(t => {
                 try { return new Date(t.tanggal).toDateString() === today; } catch { return false; }
             });
-            const omzetLunas = trxToday.filter(t => t.status_bayar === 'Lunas').reduce((s, t) => s + (t.total || 0), 0);
-            const omzetBelumLunas = trxToday.filter(t => t.status_bayar === 'Belum Lunas').reduce((s, t) => s + (t.total || 0), 0);
+            const omzetLunas = trxToday.filter(t => t.status_bayar === 'Lunas' && t.tanggal_lunas).reduce((s, t) => s + (t.total || 0), 0);
+            const omzetBelumLunas = trxToday.filter(t => t.status_bayar !== 'Lunas' || !t.tanggal_lunas).reduce((s, t) => s + (t.total || 0), 0);
             const orderHari = trxToday.length;
             const diproses = State.transaksi.filter(t => t.status_laundry !== 'Sudah Diambil').length;
             const selesai = State.transaksi.filter(t => t.status_laundry === 'Sudah Diambil').length;
@@ -1030,8 +1042,8 @@ const App = {
                 const dailyTrx = State.transaksi.filter(t => {
                     try { return new Date(t.tanggal).toDateString() === d.toDateString(); } catch { return false; }
                 });
-                dataLunas.push(dailyTrx.filter(t => t.status_bayar === 'Lunas').reduce((s, t) => s + (t.total || 0), 0));
-                dataBelumLunas.push(dailyTrx.filter(t => t.status_bayar === 'Belum Lunas').reduce((s, t) => s + (t.total || 0), 0));
+                dataLunas.push(dailyTrx.filter(t => t.status_bayar === 'Lunas' && t.tanggal_lunas).reduce((s, t) => s + (t.total || 0), 0));
+                dataBelumLunas.push(dailyTrx.filter(t => t.status_bayar !== 'Lunas' || !t.tanggal_lunas).reduce((s, t) => s + (t.total || 0), 0));
             }
             window.chartOmzet = new Chart(ctx, {
                 type: 'bar',
@@ -1254,7 +1266,7 @@ const App = {
                 uang_bayar: uangBayar,
                 kembalian: kembalian,
                 metode: method,
-                status_bayar: statusBayar, // ⚠️ SELALU 'Belum Lunas' dari POS
+                status_bayar: statusBayar, // ️ SELALU 'Belum Lunas' dari POS
                 status_laundry: 'Masuk',
                 estimasi_selesai: tanggalSelesaiTerakhir,
                 tanggal_lunas: null // ⚠️ Belum lunas, null dulu
@@ -1374,24 +1386,30 @@ const App = {
                 tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:40px">Belum ada transaksi</td></tr>'; 
                 return; 
             }
-            tbody.innerHTML = items.map(t => `
-                <tr>
-                    <td><span class="badge badge-primary">${t.invoice}</span></td>
-                    <td>${App.ui.formatDate(t.tanggal)}</td>
-                    <td>
-                        <div style="font-weight:600">${t.customer}</div>
-                    </td>
-                    <td>${t.hp || '-'}</td>
-                    <td>${t.items ? t.items.length : 0} item</td>
-                    <td style="font-weight:600;color:var(--primary)">${App.ui.formatRupiah(t.total)}</td>
-                    <td>${t.metode}</td>
-                    <td><span class="badge ${t.status_bayar === 'Lunas' ? 'badge-success' : 'badge-warning'}">${t.status_bayar}</span></td>
-                    <td>
-                        <button class="btn btn-sm btn-info" onclick="App.transaksi.reprint('${t.invoice}')"><i class="fas fa-print"></i></button>
-                        <button class="btn btn-sm btn-danger" onclick="App.transaksi.hapus('${t.invoice}')"><i class="fas fa-trash"></i></button>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = items.map(t => {
+                // ⚠️ Tampilkan status yang BENAR: hanya Lunas jika ada tanggal_lunas
+                const isLunas = t.status_bayar === 'Lunas' && t.tanggal_lunas;
+                const statusText = isLunas ? 'Lunas' : 'Belum Lunas';
+                const statusClass = isLunas ? 'badge-success' : 'badge-warning';
+                return `
+                    <tr>
+                        <td><span class="badge badge-primary">${t.invoice}</span></td>
+                        <td>${App.ui.formatDate(t.tanggal)}</td>
+                        <td>
+                            <div style="font-weight:600">${t.customer}</div>
+                        </td>
+                        <td>${t.hp || '-'}</td>
+                        <td>${t.items ? t.items.length : 0} item</td>
+                        <td style="font-weight:600;color:var(--primary)">${App.ui.formatRupiah(t.total)}</td>
+                        <td>${t.metode}</td>
+                        <td><span class="badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-info" onclick="App.transaksi.reprint('${t.invoice}')"><i class="fas fa-print"></i></button>
+                            <button class="btn btn-sm btn-danger" onclick="App.transaksi.hapus('${t.invoice}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         },
         search(q) {
             const filtered = State.transaksi.filter(t => {
@@ -1404,7 +1422,10 @@ const App = {
         },
         reprint(invoice) {
             const trx = State.transaksi.find(t => t.invoice === invoice);
-            if (trx) App.pos.printReceipt(trx, trx.status_bayar === 'Lunas' ? 'lunas' : 'draft');
+            if (trx) {
+                const isLunas = trx.status_bayar === 'Lunas' && trx.tanggal_lunas;
+                App.pos.printReceipt(trx, isLunas ? 'lunas' : 'draft');
+            }
         },
         hapus(invoice) {
             App.ui.confirm('Hapus transaksi?', 'Data tidak dapat dikembalikan', () => {
@@ -1422,7 +1443,10 @@ const App = {
         render() {
             const tbody = document.getElementById('lunas-tbody');
             const searchQ = (document.getElementById('lunas-search')?.value || '').toLowerCase();
-            let lunasData = State.transaksi.filter(t => t.status_bayar === 'Lunas');
+            
+            // ⚠️ FILTER KETAT: Hanya yang BENAR-BENAR Lunas (punya tanggal_lunas valid)
+            let lunasData = State.transaksi.filter(t => t.status_bayar === 'Lunas' && t.tanggal_lunas);
+            
             if (searchQ) {
                 lunasData = lunasData.filter(t => {
                     const nama = (t.customer || '').toLowerCase();
@@ -1431,11 +1455,14 @@ const App = {
                     return nama.includes(searchQ) || hp.includes(searchQ) || inv.includes(searchQ);
                 });
             }
-            lunasData.sort((a, b) => new Date(b.tanggal_lunas || b.tanggal) - new Date(a.tanggal_lunas || a.tanggal));
+            
+            lunasData.sort((a, b) => new Date(b.tanggal_lunas) - new Date(a.tanggal_lunas));
+            
             if (lunasData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:40px">Tidak ada invoice lunas' + (searchQ ? ' dengan kata kunci tersebut' : '') + '</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:40px">Belum ada invoice lunas. Lunasi di menu Status Laundry.</td></tr>';
                 return;
             }
+            
             tbody.innerHTML = lunasData.map(t => `
                 <tr>
                     <td><span class="badge badge-success">${t.invoice}</span></td>
@@ -1637,7 +1664,10 @@ const App = {
             const badgeMap = { 'Masuk':'badge-info', 'Dicuci':'badge-warning', 'Dikeringkan':'badge-warning', 'Disetrika':'badge-purple', 'Packing':'badge-primary', 'Siap Diambil':'badge-success', 'Sudah Diambil':'badge-danger' };
             tbody.innerHTML = active.map(t => {
                 const status = t.status_laundry || 'Masuk';
-                const statusBayar = t.status_bayar || 'Belum Lunas';
+                // ⚠️ Status bayar yang benar: hanya Lunas jika ada tanggal_lunas
+                const isLunas = t.status_bayar === 'Lunas' && t.tanggal_lunas;
+                const statusBayarText = isLunas ? 'Lunas' : 'Belum Lunas';
+                const statusBayarColor = isLunas ? 'var(--success)' : 'var(--danger)';
                 const estimasiSelesai = t.estimasi_selesai;
                 const isOverdue = EstimasiHelper.isOverdue(estimasiSelesai);
                 const bisaBayar = status === 'Siap Diambil';
@@ -1659,7 +1689,7 @@ const App = {
                         <td>${t.items ? t.items.length : 0} item</td>
                         <td>
                             <span class="badge ${badgeMap[status] || 'badge-info'}">${status}</span>
-                            ${statusBayar === 'Belum Lunas' ? '<br><small style="color:var(--danger)">Belum Lunas</small>' : '<br><small style="color:var(--success)">Lunas</small>'}
+                            <br><small style="color:${statusBayarColor}">${statusBayarText}</small>
                         </td>
                         <td>
                             ${bisaBayar ? `
@@ -1712,7 +1742,7 @@ const App = {
                         <label style="font-size:0.85rem;color:var(--text-muted);font-weight:600">Metode Pembayaran</label>
                         <select id="swal-metode" class="form-control">
                             <option value="Cash">💵 Cash</option>
-                            <option value="QRIS"> QRIS</option>
+                            <option value="QRIS">📱 QRIS</option>
                             <option value="Transfer">🏦 Transfer</option>
                         </select>
                     </div>
@@ -1789,12 +1819,13 @@ const App = {
                 this.render();
                 return; 
             }
+            // ⚠️ BARU DI SINI status berubah jadi Lunas
             t.status_bayar = 'Lunas';
             t.metode = formValues.metode;
             t.uang_bayar = formValues.bayar;
             t.kembalian = formValues.metode === 'Cash' ? (formValues.bayar - total) : 0;
             t.status_laundry = 'Sudah Diambil';
-            t.tanggal_lunas = new Date().toISOString();
+            t.tanggal_lunas = new Date().toISOString(); // ⚠️ BARU DI SINI tanggal_lunas terisi
             DB.set('transaksi', State.transaksi);
             if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) {
                 await SheetsAPI.sync('save_transaksi', t);
@@ -1813,8 +1844,9 @@ const App = {
                     <p><strong>Bayar:</strong> ${App.ui.formatRupiah(formValues.bayar)}</p>
                     <p><strong>Kembalian:</strong> ${App.ui.formatRupiah(t.kembalian)}</p>
                     <p style="color:var(--success);font-weight:600;margin-top:8px">✓ Status: LUNAS & SUDAH DIAMBIL</p>
+                    <p style="color:var(--info);font-size:0.8rem;margin-top:4px">✓ Otomatis masuk ke menu Invoice Lunas</p>
                 </div>`,
-                timer: 3000
+                timer: 3500
             });
         },
         async update(invoice, status) {
@@ -1978,8 +2010,11 @@ const App = {
                 </div>
                 <div class="card" style="margin-top:24px">
                     <h4 style="margin-bottom:16px">Detail Transaksi</h4>
-                    <table class="data-table"><thead><tr><th>Invoice</th><th>Tanggal</th><th>Customer</th><th>No. HP</th><th>Total</th></tr></thead><tbody>
-                        ${filtered.map(t => `<tr><td>${t.invoice}</td><td>${App.ui.formatDate(t.tanggal)}</td><td>${t.customer}</td><td>${t.hp || '-'}</td><td>${App.ui.formatRupiah(t.total)}</td></tr>`).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px">Tidak ada data</td></tr>'}
+                    <table class="data-table"><thead><tr><th>Invoice</th><th>Tanggal</th><th>Customer</th><th>No. HP</th><th>Total</th><th>Status</th></tr></thead><tbody>
+                        ${filtered.map(t => {
+                            const isLunas = t.status_bayar === 'Lunas' && t.tanggal_lunas;
+                            return `<tr><td>${t.invoice}</td><td>${App.ui.formatDate(t.tanggal)}</td><td>${t.customer}</td><td>${t.hp || '-'}</td><td>${App.ui.formatRupiah(t.total)}</td><td><span class="badge ${isLunas ? 'badge-success' : 'badge-warning'}">${isLunas ? 'Lunas' : 'Belum Lunas'}</span></td></tr>`;
+                        }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:20px">Tidak ada data</td></tr>'}
                     </tbody></table>
                 </div>
             `;
@@ -1991,7 +2026,10 @@ const App = {
             const d1 = new Date(dari), d2 = new Date(sampai); d2.setHours(23,59,59);
             const filtered = State.transaksi.filter(t => { try { const d = new Date(t.tanggal); return d >= d1 && d <= d2; } catch { return false; } });
             let csv = 'Invoice,Tanggal,Customer,No HP,Total,Metode,Status\n';
-            filtered.forEach(t => { csv += `${t.invoice},${App.ui.formatDate(t.tanggal)},${t.customer},${t.hp || '-'},${t.total},${t.metode},${t.status_bayar}\n`; });
+            filtered.forEach(t => { 
+                const isLunas = t.status_bayar === 'Lunas' && t.tanggal_lunas;
+                csv += `${t.invoice},${App.ui.formatDate(t.tanggal)},${t.customer},${t.hp || '-'},${t.total},${t.metode},${isLunas ? 'Lunas' : 'Belum Lunas'}\n`; 
+            });
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = `laporan-${dari}-${sampai}.csv`; a.click();
@@ -2004,15 +2042,20 @@ const App = {
             const now = new Date();
             const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
             const yearStart = new Date(now.getFullYear(), 0, 1);
-            const omzetBulan = State.transaksi.filter(t => { try { return new Date(t.tanggal) >= monthStart; } catch { return false; } }).reduce((s, t) => s + (t.total || 0), 0);
-            const omzetTahun = State.transaksi.filter(t => { try { return new Date(t.tanggal) >= yearStart; } catch { return false; } }).reduce((s, t) => s + (t.total || 0), 0);
+            // ⚠️ Hanya hitung yang BENAR-BENAR Lunas (punya tanggal_lunas)
+            const omzetBulan = State.transaksi.filter(t => { 
+                try { return new Date(t.tanggal) >= monthStart && t.status_bayar === 'Lunas' && t.tanggal_lunas; } catch { return false; } 
+            }).reduce((s, t) => s + (t.total || 0), 0);
+            const omzetTahun = State.transaksi.filter(t => { 
+                try { return new Date(t.tanggal) >= yearStart && t.status_bayar === 'Lunas' && t.tanggal_lunas; } catch { return false; } 
+            }).reduce((s, t) => s + (t.total || 0), 0);
             const totalPengeluaran = State.pengeluaran.reduce((s, p) => s + (p.nominal || 0), 0);
             const laba = omzetTahun - totalPengeluaran;
             document.getElementById('owner-kpis').innerHTML = [
-                { label:'Omzet Bulan Ini', value: App.ui.formatRupiah(omzetBulan), color:'var(--primary)', icon:'fa-calendar' },
-                { label:'Omzet Tahun Ini', value: App.ui.formatRupiah(omzetTahun), color:'var(--secondary)', icon:'fa-chart-line' },
+                { label:'Omzet Lunas Bulan Ini', value: App.ui.formatRupiah(omzetBulan), color:'var(--success)', icon:'fa-calendar-check' },
+                { label:'Omzet Lunas Tahun Ini', value: App.ui.formatRupiah(omzetTahun), color:'var(--primary)', icon:'fa-chart-line' },
                 { label:'Total Pengeluaran', value: App.ui.formatRupiah(totalPengeluaran), color:'var(--danger)', icon:'fa-arrow-down' },
-                { label:'Laba Bersih Tahun', value: App.ui.formatRupiah(laba), color:'var(--success)', icon:'fa-coins' }
+                { label:'Laba Bersih Tahun', value: App.ui.formatRupiah(laba), color:'var(--info)', icon:'fa-coins' }
             ].map(k => `<div class="card kpi-card"><div class="kpi-icon" style="background:${k.color}20;color:${k.color}"><i class="fas ${k.icon}"></i></div><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div></div>`).join('');
             const custMap = {};
             State.transaksi.forEach(t => { custMap[t.customer] = (custMap[t.customer] || 0) + (t.total || 0); });
@@ -2022,9 +2065,7 @@ const App = {
                 return `
                     <div class="top-kategori-item">
                         <div class="top-kategori-rank ${rankClass}">#${i+1}</div>
-                        <div style="flex:1">
-                            <div style="font-weight:600">${n}</div>
-                        </div>
+                        <div style="flex:1"><div style="font-weight:600">${n}</div></div>
                         <div style="font-weight:700;color:var(--primary)">${App.ui.formatRupiah(v)}</div>
                     </div>
                 `;
@@ -2032,18 +2073,14 @@ const App = {
             const layMap = {};
             State.detailTransaksi.forEach(d => {
                 const nama = d.nama;
-                if (nama && nama !== 'Unknown') {
-                    layMap[nama] = (layMap[nama] || 0) + (d.subtotal || 0);
-                }
+                if (nama && nama !== 'Unknown') layMap[nama] = (layMap[nama] || 0) + (d.subtotal || 0);
             });
             if (Object.keys(layMap).length === 0) {
                 State.transaksi.forEach(t => {
                     if (t.items && Array.isArray(t.items)) {
                         t.items.forEach(item => {
                             const nama = item.nama;
-                            if (nama && nama !== 'Unknown') {
-                                layMap[nama] = (layMap[nama] || 0) + (item.subtotal || 0);
-                            }
+                            if (nama && nama !== 'Unknown') layMap[nama] = (layMap[nama] || 0) + (item.subtotal || 0);
                         });
                     }
                 });
@@ -2054,9 +2091,7 @@ const App = {
                 return `
                     <div class="top-kategori-item">
                         <div class="top-kategori-rank ${rankClass}">#${i+1}</div>
-                        <div style="flex:1">
-                            <div style="font-weight:600">${n}</div>
-                        </div>
+                        <div style="flex:1"><div style="font-weight:600">${n}</div></div>
                         <div style="font-weight:700;color:var(--secondary)">${App.ui.formatRupiah(v)}</div>
                     </div>
                 `;
@@ -2064,9 +2099,7 @@ const App = {
             const katMap = {};
             State.detailTransaksi.forEach(d => {
                 const kat = d.kategori || DataHelper.guessKategori(d.nama);
-                if (kat) {
-                    katMap[kat] = (katMap[kat] || 0) + (d.subtotal || 0);
-                }
+                if (kat) katMap[kat] = (katMap[kat] || 0) + (d.subtotal || 0);
             });
             const topKat = Object.entries(katMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
             document.getElementById('top-kategori-list').innerHTML = topKat.length === 0 ? '<p style="color:var(--text-muted)">Belum ada data</p>' : topKat.map(([n, v], i) => {
@@ -2074,9 +2107,7 @@ const App = {
                 return `
                     <div class="top-kategori-item">
                         <div class="top-kategori-rank ${rankClass}">#${i+1}</div>
-                        <div style="flex:1">
-                            <div style="font-weight:600">${n}</div>
-                        </div>
+                        <div style="flex:1"><div style="font-weight:600">${n}</div></div>
                         <div style="font-weight:700;color:var(--purple)">${App.ui.formatRupiah(v)}</div>
                     </div>
                 `;
