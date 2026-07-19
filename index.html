@@ -116,11 +116,6 @@
         .selesai-info.overdue { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(245,158,11,0.1)); border-color: var(--danger); color: var(--danger); }
         .btn-bayar { background: linear-gradient(135deg, var(--success), #059669); color: white; padding: 8px 16px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
         .btn-bayar:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
-        .top-kategori-item { display: flex; align-items: center; padding: 12px; background: var(--bg); border-radius: 10px; margin-bottom: 8px; gap: 12px; }
-        .top-kategori-rank { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
-        .top-kategori-rank.gold { background: #F1C40F; }
-        .top-kategori-rank.silver { background: #95A5A6; }
-        .top-kategori-rank.bronze { background: #E67E22; }
         #print-area { display: none; }
         @media print {
             body * { visibility: hidden; }
@@ -266,7 +261,7 @@
                             <div style="margin-top:16px;display:grid;gap:8px">
                                 <label style="font-size:0.85rem;color:var(--text-muted);font-weight:600">Status Pembayaran</label>
                                 <select id="pos-metode-bayar" class="form-control" onchange="App.pos.toggleCashSection()">
-                                    <option value="Belum Lunas" selected>⏳ Belum Lunas (Bayar Nanti / Draft)</option>
+                                    <option value="Belum Lunas" selected> Belum Lunas (Bayar Nanti / Draft)</option>
                                     <option value="Cash">💵 Cash (Langsung Lunas)</option>
                                     <option value="QRIS">📱 QRIS (Langsung Lunas)</option>
                                     <option value="Transfer">🏦 Transfer (Langsung Lunas)</option>
@@ -289,7 +284,7 @@
             <div id="view-invoiceLunas" class="view-section">
                 <div class="card">
                     <h4 style="margin-bottom:16px"><i class="fas fa-file-invoice-dollar" style="color:var(--success)"></i> Invoice Sudah Lunas</h4>
-                    <input type="text" id="lunas-search" class="form-control" placeholder="🔍 Cari nama pelanggan atau no HP..." style="margin-bottom:16px" oninput="App.invoiceLunas.render()">
+                    <input type="text" id="lunas-search" class="form-control" placeholder=" Cari nama pelanggan atau no HP..." style="margin-bottom:16px" oninput="App.invoiceLunas.render()">
                     <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Tanggal Masuk</th><th>Est. Selesai</th><th>Customer</th><th>No. HP</th><th>Item</th><th>Total</th><th>Metode</th><th>Tanggal Bayar</th><th>Aksi</th></tr></thead><tbody id="lunas-tbody"></tbody></table></div>
                 </div>
             </div>
@@ -319,7 +314,7 @@
             <div id="view-status" class="view-section">
                 <div class="card">
                     <h4 style="margin-bottom:16px">Tracking Status Laundry</h4>
-                    <input type="text" id="status-search" class="form-control" placeholder="🔍 Cari Nama Pelanggan atau No. HP..." style="margin-bottom:16px" oninput="App.status.render()">
+                    <input type="text" id="status-search" class="form-control" placeholder=" Cari Nama Pelanggan atau No. HP..." style="margin-bottom:16px" oninput="App.status.render()">
                     <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Customer</th><th>No. HP</th><th>Tanggal Masuk</th><th>Estimasi Selesai</th><th>Item</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="status-tbody"></tbody></table></div>
                 </div>
             </div>
@@ -359,11 +354,11 @@
 
             <div id="view-owner" class="view-section">
                 <div class="card" style="margin-bottom:24px">
-                    <h4 style="margin-bottom:16px"> Dashboard Owner</h4>
+                    <h4 style="margin-bottom:16px">📊 Dashboard Owner</h4>
                     <div class="kpi-grid" id="owner-kpis"></div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
-                    <div class="card"><h4 style="margin-bottom:16px"> Top Customer</h4><div id="top-customer-list"></div></div>
+                    <div class="card"><h4 style="margin-bottom:16px">🏆 Top Customer</h4><div id="top-customer-list"></div></div>
                     <div class="card"><h4 style="margin-bottom:16px">⭐ Top Layanan</h4><div id="top-layanan-list"></div></div>
                     <div class="card"><h4 style="margin-bottom:16px">📦 Top Kategori</h4><div id="top-kategori-list"></div></div>
                 </div>
@@ -624,11 +619,9 @@ const EstimasiHelper = {
         if (!tanggalSelesai) return false;
         return new Date(tanggalSelesai) < new Date();
     },
-    // Parse catatan dari Google Sheets untuk extract estimasi
     parseCatatan(catatan) {
         if (!catatan) return null;
         const str = String(catatan);
-        // Format: "2026-07-19T10:36:19.681Z" atau "2 Hari" atau kombinasi
         const hariMatch = str.match(/(\d+)\s*Hari/i);
         if (hariMatch) return hariMatch[1] + ' Hari';
         const jamMatch = str.match(/(\d+)\s*Jam/i);
@@ -651,37 +644,24 @@ const DataHelper = {
         return undefined;
     },
     
-    // Normalisasi TRANSAKSI dari Google Sheets
     normalizeTransaksi(t) {
         if (!t) return null;
-        
-        // Parse tanggal - support berbagai format
         let tanggal = this.get(t, 'Tanggal', 'tanggal', 'TANGGAL', 'tgl', 'Tgl', 'created_at');
         if (tanggal && typeof tanggal === 'string') {
-            // Jika format ISO dari Google Sheets
             if (!isNaN(Date.parse(tanggal))) {
                 tanggal = new Date(tanggal).toISOString();
             }
         }
-        
-        // No HP - support berbagai nama field
         let hp = this.get(t, 'No hp', 'no_hp', 'No HP', 'hp', 'HP', 'phone', 'Phone', 'no_telp', 'No Telp', 'nomor_hp', 'Nomor HP');
         if (!hp || hp === '-' || hp === 'undefined' || hp === 'null') hp = '-';
-        
-        // Total - support "Total Rp", "Total", "total"
         let total = parseFloat(this.get(t, 'Total Rp', 'total_rp', 'Total', 'total', 'TOTAL') || 0) || 0;
         if (total === 0) {
             total = parseFloat(this.get(t, 'Total', 'total') || 0) || 0;
         }
-        
-        // Payment method - support "Payment", "Metode", "metode"
         let metode = this.get(t, 'Payment', 'payment', 'Metode', 'metode', 'METODE', 'metode_bayar', 'Metode Bayar') || 'Cash';
         if (metode === '0' || metode === 0) metode = 'Cash';
-        
-        // Status bayar - dari kolom terakhir di TRANSAKSI sheet
         let statusBayar = this.get(t, 'Status Bayar', 'status_bayar', 'Status', 'status', 'Keterangan', 'keterangan');
         if (!statusBayar) {
-            // Jika ada field "Uang Fisik" dan "Kembalian", berarti sudah bayar
             const uangFisik = parseFloat(this.get(t, 'Uang Fisik', 'uang_fisik', 'Uang Bayar', 'uang_bayar') || 0) || 0;
             if (uangFisik > 0 && total > 0) {
                 statusBayar = 'Lunas';
@@ -689,33 +669,28 @@ const DataHelper = {
                 statusBayar = 'Belum Lunas';
             }
         }
-        // Normalisasi status
         if (String(statusBayar).toLowerCase().includes('lunas') || String(statusBayar).toLowerCase() === 'cash') {
             statusBayar = 'Lunas';
         } else if (String(statusBayar).toLowerCase().includes('belum')) {
             statusBayar = 'Belum Lunas';
         }
-        
         let tanggalLunas = this.get(t, 'Tanggal Lunas', 'tanggal_lunas', 'tgl_lunas');
         if (tanggalLunas && typeof tanggalLunas === 'string' && !isNaN(Date.parse(tanggalLunas))) {
             tanggalLunas = new Date(tanggalLunas).toISOString();
         }
-        
         let estimasiSelesai = this.get(t, 'Estimasi Selesai', 'estimasi_selesai', 'est_selesai', 'Estimasi', 'estimasi');
         if (estimasiSelesai && typeof estimasiSelesai === 'string' && !isNaN(Date.parse(estimasiSelesai))) {
             estimasiSelesai = new Date(estimasiSelesai).toISOString();
         }
-        
         let statusLaundry = this.get(t, 'Status Laundry', 'status_laundry', 'Status', 'status');
         if (!statusLaundry) statusLaundry = 'Masuk';
-        
         return {
             invoice: this.get(t, 'Invoice', 'invoice', 'INVOICE', 'no_invoice') || 'N/A',
             tanggal: tanggal || new Date().toISOString(),
             customer: this.get(t, 'Customer', 'customer', 'CUSTOMER', 'nama', 'Nama', 'NAMA') || 'Unknown',
             hp: hp,
             alamat: this.get(t, 'Alamat', 'alamat', 'ALAMAT', 'address') || '-',
-            items: [], // Akan diisi dari DETAIL_TRANSAKSI
+            items: [],
             subtotal: parseFloat(this.get(t, 'Subtotal', 'subtotal') || 0) || total,
             diskon: parseFloat(this.get(t, 'Diskon', 'diskon', 'DISKON') || 0) || 0,
             biaya_tambahan: parseFloat(this.get(t, 'Biaya Tambahan', 'biaya_tambahan') || 0) || 0,
@@ -730,20 +705,15 @@ const DataHelper = {
         };
     },
     
-    // Normalisasi DETAIL_TRANSAKSI dari Google Sheets
     normalizeDetailTransaksi(d) {
         if (!d) return null;
-        
         const invoice = this.get(d, 'Invoice', 'invoice', 'INVOICE') || 'N/A';
         const layanan = this.get(d, 'Layanan', 'layanan', 'LAYANAN', 'nama', 'Nama') || 'Unknown';
         const qty = parseFloat(this.get(d, 'Qty', 'qty', 'QTY', 'Jumlah', 'jumlah', 'Berat', 'berat') || 1) || 1;
         const harga = parseFloat(this.get(d, 'Harga', 'harga', 'HARGA', 'Price', 'price') || 0) || 0;
         const subtotal = parseFloat(this.get(d, 'Subtotal', 'subtotal', 'SUBTOTAL', 'Total', 'total') || 0) || (qty * harga);
         const catatan = this.get(d, 'Catatan', 'catatan', 'CATATAN', 'Keterangan', 'keterangan') || '';
-        
-        // Parse estimasi dari catatan
         const estimasiDariCatatan = EstimasiHelper.parseCatatan(catatan);
-        
         return {
             invoice: invoice,
             id_pricelist: this.get(d, 'ID Pricelist', 'id_pricelist', 'Id Pricelist') || '',
@@ -752,12 +722,11 @@ const DataHelper = {
             waktu: estimasiDariCatatan || '-',
             hargaSatuan: harga,
             subtotal: subtotal,
-            estimasi_selesai: null, // Akan dihitung dari tanggal transaksi + estimasi
+            estimasi_selesai: null,
             kategori: this.get(d, 'Kategori', 'kategori', 'KATEGORI') || this.guessKategori(layanan)
         };
     },
     
-    // Tebak kategori dari nama layanan
     guessKategori(namaLayanan) {
         if (!namaLayanan) return 'LAINNYA';
         const n = namaLayanan.toLowerCase();
@@ -889,7 +858,6 @@ const App = {
     async syncAll() {
         Swal.fire({ title: 'Syncing data...', text: 'Menarik data terbaru dari server', timer: 1500, didOpen: () => Swal.showLoading(), allowOutsideClick: false });
         try {
-            // Fetch dari semua sheet termasuk DETAIL_TRANSAKSI
             const [pRes, cRes, tRes, dtRes, peRes, vRes] = await Promise.all([
                 SheetsAPI.fetch('get_pricelist'), 
                 SheetsAPI.fetch('get_customer'), 
@@ -898,17 +866,13 @@ const App = {
                 SheetsAPI.fetch('get_pengeluaran'), 
                 SheetsAPI.fetch('get_voucher')
             ]);
-            
             if (pRes.success) State.pricelist = (pRes.data || []).map(p => DataHelper.normalizePricelist(p)).filter(Boolean);
             if (cRes.success) State.customers = (cRes.data || []).map(c => DataHelper.normalizeCustomer(c)).filter(Boolean);
             if (tRes.success) State.transaksi = (tRes.data || []).map(t => DataHelper.normalizeTransaksi(t)).filter(Boolean);
             if (dtRes.success) State.detailTransaksi = (dtRes.data || []).map(d => DataHelper.normalizeDetailTransaksi(d)).filter(Boolean);
             if (peRes.success) State.pengeluaran = (peRes.data || []).map(p => DataHelper.normalizePengeluaran(p)).filter(Boolean);
             if (vRes.success) State.voucher = (vRes.data || []).map(v => DataHelper.normalizeVoucher(v)).filter(Boolean);
-            
-            // GABUNGKAN: Attach detail transaksi ke masing-masing transaksi
             this.mergeDetailToTransaksi();
-            
             ['pricelist', 'customers', 'transaksi', 'detailTransaksi', 'pengeluaran', 'voucher'].forEach(k => DB.set(k, State[k]));
             State.lastSync = new Date().toISOString();
             Swal.fire({ icon: 'success', title: 'Sync Berhasil!', text: `Transaksi: ${State.transaksi.length}, Detail: ${State.detailTransaksi.length}`, timer: 2000 });
@@ -917,13 +881,10 @@ const App = {
         }
     },
     
-    // Gabungkan detail transaksi ke transaksi utama
     mergeDetailToTransaksi() {
         State.transaksi.forEach(trx => {
             const details = State.detailTransaksi.filter(d => d.invoice === trx.invoice);
             trx.items = details;
-            
-            // Hitung estimasi_selesai dari detail (ambil yang paling lama)
             if (details.length > 0 && trx.tanggal) {
                 const tanggalMulai = new Date(trx.tanggal);
                 let maxEstimasi = 0;
@@ -935,13 +896,9 @@ const App = {
                     trx.estimasi_selesai = new Date(tanggalMulai.getTime() + maxEstimasi).toISOString();
                 }
             }
-            
-            // Hitung total dari detail jika total 0
             if (!trx.total || trx.total === 0) {
                 trx.total = details.reduce((sum, d) => sum + (d.subtotal || 0), 0);
             }
-            
-            // Ambil No HP dari customer jika kosong
             if (!trx.hp || trx.hp === '-') {
                 const cust = State.customers.find(c => c.nama === trx.customer);
                 if (cust && cust.hp) trx.hp = cust.hp;
@@ -1039,15 +996,12 @@ const App = {
             const trxToday = State.transaksi.filter(t => {
                 try { return new Date(t.tanggal).toDateString() === today; } catch { return false; }
             });
-            
             const omzetLunas = trxToday.filter(t => t.status_bayar === 'Lunas').reduce((s, t) => s + (t.total || 0), 0);
             const omzetBelumLunas = trxToday.filter(t => t.status_bayar === 'Belum Lunas').reduce((s, t) => s + (t.total || 0), 0);
-            
             const orderHari = trxToday.length;
             const diproses = State.transaksi.filter(t => t.status_laundry !== 'Sudah Diambil').length;
             const selesai = State.transaksi.filter(t => t.status_laundry === 'Sudah Diambil').length;
             const totalCustomer = State.customers.length;
-
             const kpis = [
                 { label: 'Omzet Lunas Hari Ini', value: App.ui.formatRupiah(omzetLunas), color: 'var(--success)', icon: 'fa-money-bill-wave' },
                 { label: 'Piutang (Belum Lunas)', value: App.ui.formatRupiah(omzetBelumLunas), color: 'var(--warning)', icon: 'fa-hand-holding-usd' },
@@ -1158,15 +1112,10 @@ const App = {
             if (!waktu) return Swal.fire({ icon:'warning', title:'Pilih waktu pengerjaan' });
             const berat = App.ui.parseDecimal(document.getElementById('pos-berat').value);
             if (berat <= 0) return Swal.fire({ icon:'warning', title:'Masukkan berat/jumlah' });
-            
             const hargaText = document.getElementById('pos-harga-satuan').value;
             const harga = parseInt(hargaText.replace(/[^\d]/g, '')) || 0;
-            
             const tanggalSelesai = EstimasiHelper.hitungTanggalSelesai(waktu).toISOString();
-            
-            // Cari kategori dari pricelist
             const kat = document.getElementById('pos-kategori').value;
-            
             State.cart.push({ 
                 id: Date.now(), 
                 nama: layanan, 
@@ -1178,7 +1127,6 @@ const App = {
                 kategori: kat || 'LAINNYA'
             });
             this.renderCart();
-            
             document.getElementById('pos-berat').value = '';
             document.getElementById('pos-layanan').value = '';
             document.getElementById('pos-waktu').innerHTML = '<option value="">Pilih Waktu</option>';
@@ -1244,10 +1192,8 @@ const App = {
             const grandTotal = subtotal - diskon + tambahan;
             const uangBayar = parseInt(document.getElementById('pos-uang-bayar').value) || 0;
             const kembalian = uangBayar - grandTotal;
-            
             const display = document.getElementById('kembalian-display');
             const value = document.getElementById('kembalian-value');
-            
             if (uangBayar > 0 && State.cart.length > 0) {
                 display.style.display = 'block';
                 if (kembalian >= 0) {
@@ -1265,26 +1211,31 @@ const App = {
             if (State.cart.length === 0) return Swal.fire({ icon:'error', title:'Keranjang kosong' });
             const customerName = document.getElementById('pos-customer-name').value.trim();
             if (!customerName) return Swal.fire({ icon: 'warning', title: 'Nama Pelanggan Kosong', text: 'Wajib isi nama pelanggan terlebih dahulu!' });
-            
             const customerPhone = document.getElementById('pos-customer-phone').value.trim();
             if (!customerPhone) return Swal.fire({ icon: 'warning', title: 'No. HP Kosong', text: 'Wajib isi nomor HP pelanggan!' });
-            
             const subtotal = State.cart.reduce((s, i) => s + i.subtotal, 0);
             const diskon = parseInt(document.getElementById('pos-diskon').value) || 0;
             const tambahan = parseInt(document.getElementById('pos-biaya-tambahan').value) || 0;
             const total = subtotal - diskon + tambahan;
             const method = document.getElementById('pos-metode-bayar').value;
             
-            let uangBayar = total, kembalian = 0, statusBayar = 'Belum Lunas';
+            // ⚠️ PERUBAHAN PENTING: SELALU "Belum Lunas" saat pertama kali simpan dari POS
+            let statusBayar = 'Belum Lunas';
+            let uangBayar = 0;
+            let kembalian = 0;
             
             if (method === 'Cash') {
                 uangBayar = parseInt(document.getElementById('pos-uang-bayar').value) || 0;
+                if (uangBayar === 0) {
+                    return Swal.fire({ icon:'warning', title:'Masukkan uang', text:'Silakan isi nominal uang tunai' });
+                }
                 kembalian = uangBayar - total;
-                if (uangBayar === 0) return Swal.fire({ icon:'warning', title:'Masukkan uang', text:'Silakan isi nominal uang tunai' });
-                if (kembalian < 0) return Swal.fire({ icon:'warning', title:'Uang tidak cukup', text:'Uang yang dibayar kurang dari total' });
-                statusBayar = 'Lunas';
+                if (kembalian < 0) {
+                    return Swal.fire({ icon:'warning', title:'Uang tidak cukup', text:'Uang yang dibayar kurang dari total' });
+                }
             } else if (method === 'QRIS' || method === 'Transfer') {
-                statusBayar = 'Lunas';
+                uangBayar = total;
+                kembalian = 0;
             }
             
             const estimasiSelesaiList = State.cart.map(i => i.estimasi_selesai).filter(Boolean);
@@ -1303,17 +1254,16 @@ const App = {
                 uang_bayar: uangBayar,
                 kembalian: kembalian,
                 metode: method,
-                status_bayar: statusBayar,
+                status_bayar: statusBayar, // ⚠️ SELALU 'Belum Lunas' dari POS
                 status_laundry: 'Masuk',
                 estimasi_selesai: tanggalSelesaiTerakhir,
-                tanggal_lunas: statusBayar === 'Lunas' ? new Date().toISOString() : null
+                tanggal_lunas: null // ⚠️ Belum lunas, null dulu
             };
             
             State.transaksi.unshift(trx);
             DB.set('transaksi', State.transaksi);
             if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) {
                 await SheetsAPI.sync('save_transaksi', trx);
-                // Sync detail transaksi juga
                 for (const item of State.cart) {
                     await SheetsAPI.sync('save_detail_transaksi', {
                         invoice: trx.invoice,
@@ -1327,7 +1277,8 @@ const App = {
                 }
             }
             
-            this.printReceipt(trx, statusBayar === 'Lunas' ? 'lunas' : 'draft');
+            // ⚠️ SELALU cetak sebagai DRAFT dari POS
+            this.printReceipt(trx, 'draft');
             
             State.cart = [];
             this.renderCart();
@@ -1339,7 +1290,13 @@ const App = {
             State.currentInvoice = 'INV-' + Date.now().toString().slice(-6);
             document.getElementById('pos-invoice').textContent = State.currentInvoice;
             
-            Swal.fire({ icon:'success', title: statusBayar === 'Lunas' ? 'Transaksi Lunas Berhasil!' : 'Draft Order Berhasil Disimpan!', timer:1500 });
+            // ⚠️ Pesan sukses selalu "Draft"
+            Swal.fire({ 
+                icon:'success', 
+                title: 'Draft Order Berhasil Disimpan!', 
+                text: 'Status: Belum Lunas. Lunasi nanti di menu Status Laundry.',
+                timer: 2500 
+            });
             this.dashboard.load();
         },
         printReceipt(trx, type = 'draft') {
@@ -1347,11 +1304,9 @@ const App = {
             const logoImg = document.getElementById('print-logo-img');
             if (logo) { logoImg.src = logo; logoImg.style.display = 'block'; } 
             else { logoImg.style.display = 'none'; }
-            
             document.getElementById('print-nama').textContent = State.settings.nama_laundry;
             document.getElementById('print-alamat').textContent = State.settings.alamat;
             document.getElementById('print-wa').textContent = 'WA: ' + State.settings.whatsapp;
-            
             const badge = document.getElementById('print-status-badge');
             if (type === 'lunas') {
                 badge.style.display = 'block';
@@ -1366,20 +1321,16 @@ const App = {
                 badge.style.borderColor = 'black';
                 badge.style.borderStyle = 'dashed';
             }
-
             document.getElementById('print-invoice').textContent = trx.invoice;
             document.getElementById('print-tanggal').textContent = App.ui.formatDate(trx.tanggal);
             document.getElementById('print-selesai').textContent = trx.estimasi_selesai ? EstimasiHelper.formatTanggalPendek(trx.estimasi_selesai) : '-';
             document.getElementById('print-customer').textContent = trx.customer + (trx.hp && trx.hp !== '-' ? ` (${trx.hp})` : '');
-            
-            // Tampilkan nama produk di struk
             document.getElementById('print-items').innerHTML = trx.items.map(i => `
                 <div class="print-row">
                     <div>${i.nama} ${i.waktu ? '(' + i.waktu + ')' : ''}<br><small>${i.berat} × ${App.ui.formatRupiah(i.hargaSatuan)}</small></div>
                     <div>${App.ui.formatRupiah(i.subtotal)}</div>
                 </div>
             `).join('');
-            
             document.getElementById('print-subtotal').textContent = App.ui.formatRupiah(trx.subtotal);
             document.getElementById('print-diskon').textContent = App.ui.formatRupiah(trx.diskon);
             document.getElementById('print-total').textContent = App.ui.formatRupiah(trx.total);
@@ -1387,7 +1338,6 @@ const App = {
             document.getElementById('print-bayar').textContent = App.ui.formatRupiah(trx.uang_bayar);
             document.getElementById('print-kembali').textContent = App.ui.formatRupiah(trx.kembalian);
             document.getElementById('print-footer').textContent = State.settings.footer_struk;
-            
             setTimeout(() => window.print(), 50);
         },
         renderQuickPricelist(filter = '') {
@@ -1424,7 +1374,6 @@ const App = {
                 tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:40px">Belum ada transaksi</td></tr>'; 
                 return; 
             }
-            
             tbody.innerHTML = items.map(t => `
                 <tr>
                     <td><span class="badge badge-primary">${t.invoice}</span></td>
@@ -1473,9 +1422,7 @@ const App = {
         render() {
             const tbody = document.getElementById('lunas-tbody');
             const searchQ = (document.getElementById('lunas-search')?.value || '').toLowerCase();
-            
             let lunasData = State.transaksi.filter(t => t.status_bayar === 'Lunas');
-            
             if (searchQ) {
                 lunasData = lunasData.filter(t => {
                     const nama = (t.customer || '').toLowerCase();
@@ -1484,14 +1431,11 @@ const App = {
                     return nama.includes(searchQ) || hp.includes(searchQ) || inv.includes(searchQ);
                 });
             }
-            
             lunasData.sort((a, b) => new Date(b.tanggal_lunas || b.tanggal) - new Date(a.tanggal_lunas || a.tanggal));
-            
             if (lunasData.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:40px">Tidak ada invoice lunas' + (searchQ ? ' dengan kata kunci tersebut' : '') + '</td></tr>';
                 return;
             }
-            
             tbody.innerHTML = lunasData.map(t => `
                 <tr>
                     <td><span class="badge badge-success">${t.invoice}</span></td>
@@ -1678,9 +1622,7 @@ const App = {
         render() {
             const tbody = document.getElementById('status-tbody');
             const searchQ = (document.getElementById('status-search')?.value || '').toLowerCase();
-            
             let active = State.transaksi.filter(t => t.status_laundry !== 'Sudah Diambil');
-            
             if (searchQ) {
                 active = active.filter(t => {
                     const customerName = (t.customer || '').toLowerCase();
@@ -1688,21 +1630,17 @@ const App = {
                     return customerName.includes(searchQ) || customerPhone.includes(searchQ);
                 });
             }
-
             if (active.length === 0) { 
                 tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:40px">Tidak ada laundry aktif' + (searchQ ? ' dengan kata kunci tersebut' : '') + '</td></tr>'; 
                 return; 
             }
-            
             const badgeMap = { 'Masuk':'badge-info', 'Dicuci':'badge-warning', 'Dikeringkan':'badge-warning', 'Disetrika':'badge-purple', 'Packing':'badge-primary', 'Siap Diambil':'badge-success', 'Sudah Diambil':'badge-danger' };
-            
             tbody.innerHTML = active.map(t => {
                 const status = t.status_laundry || 'Masuk';
                 const statusBayar = t.status_bayar || 'Belum Lunas';
                 const estimasiSelesai = t.estimasi_selesai;
                 const isOverdue = EstimasiHelper.isOverdue(estimasiSelesai);
                 const bisaBayar = status === 'Siap Diambil';
-                
                 return `
                     <tr>
                         <td><span class="badge badge-primary">${t.invoice}</span></td>
@@ -1743,15 +1681,12 @@ const App = {
                 `;
             }).join('');
         },
-        
         async bayar(invoice) {
             const t = State.transaksi.find(x => x.invoice === invoice);
             if (!t) return;
-            
             const total = t.total || 0;
             const customer = t.customer || 'Unknown';
             const hp = t.hp || '-';
-            
             const { value: formValues } = await Swal.fire({
                 title: '<i class="fas fa-money-bill-wave" style="color:var(--success)"></i> Pembayaran Transaksi',
                 html: `
@@ -1803,7 +1738,6 @@ const App = {
                     const bayarEl = document.getElementById('swal-bayar');
                     const kembalianDisplay = document.getElementById('swal-kembalian-display');
                     const kembalianValue = document.getElementById('swal-kembalian-value');
-                    
                     metodeEl.addEventListener('change', (e) => {
                         if (e.target.value !== 'Cash') {
                             bayarEl.value = total;
@@ -1815,7 +1749,6 @@ const App = {
                             kembalianDisplay.style.display = 'none';
                         }
                     });
-                    
                     bayarEl.addEventListener('input', (e) => {
                         const uangBayar = parseInt(e.target.value) || 0;
                         const kembalian = uangBayar - total;
@@ -1841,7 +1774,6 @@ const App = {
                 preConfirm: () => {
                     const metode = document.getElementById('swal-metode').value;
                     const bayar = parseInt(document.getElementById('swal-bayar').value) || 0;
-                    
                     if (metode === 'Cash' && bayar < total) {
                         Swal.showValidationMessage('Uang yang dibayar kurang dari total tagihan!');
                         return false;
@@ -1850,35 +1782,27 @@ const App = {
                         Swal.showValidationMessage('Masukkan jumlah uang yang dibayar!');
                         return false;
                     }
-                    
                     return { metode, bayar };
                 }
             });
-
             if (!formValues) {
                 this.render();
                 return; 
             }
-
             t.status_bayar = 'Lunas';
             t.metode = formValues.metode;
             t.uang_bayar = formValues.bayar;
             t.kembalian = formValues.metode === 'Cash' ? (formValues.bayar - total) : 0;
             t.status_laundry = 'Sudah Diambil';
             t.tanggal_lunas = new Date().toISOString();
-
             DB.set('transaksi', State.transaksi);
-            
             if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) {
                 await SheetsAPI.sync('save_transaksi', t);
             }
-            
             App.pos.printReceipt(t, 'lunas');
-            
             this.render();
             App.invoiceLunas.render();
             App.dashboard.load();
-            
             Swal.fire({ 
                 icon:'success', 
                 title:'Pembayaran Berhasil!', 
@@ -1893,11 +1817,9 @@ const App = {
                 timer: 3000
             });
         },
-        
         async update(invoice, status) {
             const t = State.transaksi.find(x => x.invoice === invoice);
             if (!t) return;
-
             t.status_laundry = status; 
             DB.set('transaksi', State.transaksi); 
             this.render(); 
@@ -2086,15 +2008,12 @@ const App = {
             const omzetTahun = State.transaksi.filter(t => { try { return new Date(t.tanggal) >= yearStart; } catch { return false; } }).reduce((s, t) => s + (t.total || 0), 0);
             const totalPengeluaran = State.pengeluaran.reduce((s, p) => s + (p.nominal || 0), 0);
             const laba = omzetTahun - totalPengeluaran;
-            
             document.getElementById('owner-kpis').innerHTML = [
                 { label:'Omzet Bulan Ini', value: App.ui.formatRupiah(omzetBulan), color:'var(--primary)', icon:'fa-calendar' },
                 { label:'Omzet Tahun Ini', value: App.ui.formatRupiah(omzetTahun), color:'var(--secondary)', icon:'fa-chart-line' },
                 { label:'Total Pengeluaran', value: App.ui.formatRupiah(totalPengeluaran), color:'var(--danger)', icon:'fa-arrow-down' },
                 { label:'Laba Bersih Tahun', value: App.ui.formatRupiah(laba), color:'var(--success)', icon:'fa-coins' }
             ].map(k => `<div class="card kpi-card"><div class="kpi-icon" style="background:${k.color}20;color:${k.color}"><i class="fas ${k.icon}"></i></div><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div></div>`).join('');
-            
-            // Top Customer
             const custMap = {};
             State.transaksi.forEach(t => { custMap[t.customer] = (custMap[t.customer] || 0) + (t.total || 0); });
             const topCust = Object.entries(custMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
@@ -2110,8 +2029,6 @@ const App = {
                     </div>
                 `;
             }).join('');
-            
-            // Top Layanan - dari DETAIL_TRANSAKSI (nama layanan, bukan ID)
             const layMap = {};
             State.detailTransaksi.forEach(d => {
                 const nama = d.nama;
@@ -2119,7 +2036,6 @@ const App = {
                     layMap[nama] = (layMap[nama] || 0) + (d.subtotal || 0);
                 }
             });
-            // Fallback: jika detail kosong, ambil dari transaksi items
             if (Object.keys(layMap).length === 0) {
                 State.transaksi.forEach(t => {
                     if (t.items && Array.isArray(t.items)) {
@@ -2145,8 +2061,6 @@ const App = {
                     </div>
                 `;
             }).join('');
-            
-            // Top Kategori - dari DETAIL_TRANSAKSI
             const katMap = {};
             State.detailTransaksi.forEach(d => {
                 const kat = d.kategori || DataHelper.guessKategori(d.nama);
@@ -2216,7 +2130,6 @@ const App = {
             if (data.primary_color) document.documentElement.style.setProperty('--primary', data.primary_color);
             App.ui.loadLogo();
             App.ui.applyPrintStyles();
-            
             if (data.gas_url && !data.gas_url.includes('XXX')) {
                 SheetsAPI.updateStatus('connected');
             } else {
