@@ -95,28 +95,32 @@
         .quick-pricelist-item .item-name { font-weight: 600; font-size: 0.85rem; }
         .quick-pricelist-item .item-price { color: var(--primary); font-weight: 700; font-size: 0.8rem; }
         .highlight-input { background: linear-gradient(135deg, rgba(99,102,241,0.05), rgba(20,184,166,0.05)) !important; border-color: var(--primary) !important; font-weight: 700; color: var(--primary) !important; }
-        
         .logo-upload-area { border: 2px dashed var(--border); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); }
         .logo-upload-area:hover { border-color: var(--primary); background: rgba(99,102,241,0.02); }
         .logo-preview { max-width: 200px; max-height: 200px; margin: 16px auto; display: block; border-radius: 12px; box-shadow: var(--shadow); }
         .logo-placeholder { width: 100px; height: 100px; margin: 0 auto 16px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; }
-        
         .quick-money-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
         .quick-money-btn { padding: 10px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; color: var(--text); }
         .quick-money-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
         .quick-money-btn:active { transform: scale(0.95); }
-        
         .kembalian-display { background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(20,184,166,0.1)); border: 2px solid var(--success); border-radius: 12px; padding: 12px; margin-top: 8px; text-align: center; }
         .kembalian-display.negative { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(220,38,38,0.1)); border-color: var(--danger); }
         .kembalian-label { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px; }
         .kembalian-value { font-size: 1.3rem; font-weight: 700; color: var(--success); }
         .kembalian-display.negative .kembalian-value { color: var(--danger); }
-        
         .sync-status { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         .sync-status.connected { background: rgba(16,185,129,0.1); color: var(--success); }
         .sync-status.disconnected { background: rgba(239,68,68,0.1); color: var(--danger); }
         .sync-status.syncing { background: rgba(245,158,11,0.1); color: var(--warning); }
-
+        .selesai-info { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1)); border: 1px solid var(--info); border-radius: 10px; padding: 10px 14px; margin-top: 10px; font-size: 0.85rem; color: var(--info); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .selesai-info.overdue { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(245,158,11,0.1)); border-color: var(--danger); color: var(--danger); }
+        .btn-bayar { background: linear-gradient(135deg, var(--success), #059669); color: white; padding: 8px 16px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-bayar:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+        .top-kategori-item { display: flex; align-items: center; padding: 12px; background: var(--bg); border-radius: 10px; margin-bottom: 8px; gap: 12px; }
+        .top-kategori-rank { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+        .top-kategori-rank.gold { background: #F1C40F; }
+        .top-kategori-rank.silver { background: #95A5A6; }
+        .top-kategori-rank.bronze { background: #E67E22; }
         #print-area { display: none; }
         @media print {
             body * { visibility: hidden; }
@@ -153,6 +157,7 @@
             <a class="menu-item active" onclick="App.router('dashboard')"><i class="fas fa-home"></i> Dashboard</a>
             <a class="menu-item" onclick="App.router('kasir')"><i class="fas fa-cash-register"></i> Kasir (POS)</a>
             <a class="menu-item" onclick="App.router('transaksi')"><i class="fas fa-receipt"></i> History Transaksi</a>
+            <a class="menu-item" onclick="App.router('invoiceLunas')"><i class="fas fa-file-invoice-dollar"></i> Invoice Lunas</a>
             <a class="menu-item" onclick="App.router('customer')"><i class="fas fa-users"></i> Customer</a>
             <a class="menu-item" onclick="App.router('pricelist')"><i class="fas fa-tags"></i> Pricelist</a>
             <a class="menu-item" onclick="App.router('status')"><i class="fas fa-tshirt"></i> Status Laundry</a>
@@ -172,7 +177,7 @@
             </div>
             <div class="nav-right">
                 <span class="sync-status disconnected" id="sync-status"><i class="fas fa-circle"></i> Offline</span>
-                <button class="btn btn-outline btn-sm" onclick="App.syncAll()" title="Sync data dari server"><i class="fas fa-sync-alt"></i> Sync</button>
+                <button class="btn btn-outline btn-sm" onclick="App.syncAll()"><i class="fas fa-sync-alt"></i> Sync</button>
                 <div class="clock-display" id="realtime-clock">--:--:--</div>
                 <button class="btn btn-outline btn-sm" onclick="App.ui.toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
             </div>
@@ -211,19 +216,22 @@
                                 <div>
                                     <label style="font-size:0.85rem;color:var(--text-muted)">💰 Harga Satuan</label>
                                     <input type="text" id="pos-harga-satuan" class="form-control highlight-input" readonly style="background:var(--bg);font-weight:700;color:var(--primary)">
-                                    <small style="color:var(--text-muted);font-size:0.75rem;margin-top:4px;display:block">💡 Auto dari pricelist sesuai waktu</small>
                                 </div>
                                 <div>
-                                    <label style="font-size:0.85rem;color:var(--text-muted)"> Total Harga</label>
+                                    <label style="font-size:0.85rem;color:var(--text-muted)">💵 Total Harga</label>
                                     <input type="text" id="pos-harga-total" class="form-control" readonly style="background:var(--bg);font-weight:700;color:var(--success);font-size:1.05rem">
                                 </div>
+                            </div>
+                            <div id="estimasi-selesai-info" class="selesai-info" style="display:none">
+                                <i class="fas fa-calendar-check"></i>
+                                <span id="estimasi-selesai-text">Estimasi selesai: -</span>
                             </div>
                             <button class="btn btn-primary" style="width:100%;margin-top:16px;justify-content:center" onclick="App.pos.addToCart()"><i class="fas fa-plus"></i> Tambah ke Keranjang</button>
                         </div>
 
                         <div class="card" style="margin-top:16px">
                             <h4 style="margin-bottom:16px;color:var(--purple)"><i class="fas fa-th-large"></i> Pricelist Cepat</h4>
-                            <input type="text" id="pos-search-pricelist" class="form-control" placeholder=" Cari layanan..." oninput="App.pos.filterPricelist(this.value)" style="margin-bottom:16px">
+                            <input type="text" id="pos-search-pricelist" class="form-control" placeholder="🔍 Cari layanan..." oninput="App.pos.filterPricelist(this.value)" style="margin-bottom:16px">
                             <div id="quick-pricelist-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;max-height:400px;overflow-y:auto"></div>
                         </div>
                     </div>
@@ -239,7 +247,6 @@
                             <div class="total-row"><span>Diskon</span><input type="number" id="pos-diskon" class="form-control" style="width:120px;padding:6px 10px" value="0" onchange="App.pos.calculateTotal()"></div>
                             <div class="total-row"><span>Biaya Tambahan</span><input type="number" id="pos-biaya-tambahan" class="form-control" style="width:120px;padding:6px 10px" value="0" onchange="App.pos.calculateTotal()"></div>
                             <div class="total-row grand"><span>Grand Total</span><span id="pos-grand-total">Rp 0</span></div>
-                            
                             <div id="cash-payment-section" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border); display:none;">
                                 <label style="font-size:0.85rem;color:var(--text-muted);font-weight:600">💵 Uang yang Dibayar</label>
                                 <input type="number" id="pos-uang-bayar" class="form-control" placeholder="Masukkan jumlah uang" style="font-weight:700;font-size:1.1rem;color:var(--success)" oninput="App.pos.calculateKembalian()">
@@ -256,7 +263,6 @@
                                     <div class="kembalian-value" id="kembalian-value">Rp 0</div>
                                 </div>
                             </div>
-                            
                             <div style="margin-top:16px;display:grid;gap:8px">
                                 <label style="font-size:0.85rem;color:var(--text-muted);font-weight:600">Status Pembayaran</label>
                                 <select id="pos-metode-bayar" class="form-control" onchange="App.pos.toggleCashSection()">
@@ -276,7 +282,15 @@
                 <div class="card">
                     <h4 style="margin-bottom:24px">Riwayat Transaksi (History)</h4>
                     <input type="text" class="form-control" placeholder="🔍 Cari invoice atau customer..." style="margin-bottom:16px" oninput="App.transaksi.search(this.value)">
-                    <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Tanggal</th><th>Customer</th><th>Item</th><th>Total</th><th>Metode</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="transaksi-tbody"></tbody></table></div>
+                    <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Tanggal</th><th>Customer</th><th>No. HP</th><th>Item</th><th>Total</th><th>Metode</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="transaksi-tbody"></tbody></table></div>
+                </div>
+            </div>
+
+            <div id="view-invoiceLunas" class="view-section">
+                <div class="card">
+                    <h4 style="margin-bottom:16px"><i class="fas fa-file-invoice-dollar" style="color:var(--success)"></i> Invoice Sudah Lunas</h4>
+                    <input type="text" id="lunas-search" class="form-control" placeholder="🔍 Cari nama pelanggan atau no HP..." style="margin-bottom:16px" oninput="App.invoiceLunas.render()">
+                    <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Tanggal Masuk</th><th>Est. Selesai</th><th>Customer</th><th>No. HP</th><th>Item</th><th>Total</th><th>Metode</th><th>Tanggal Bayar</th><th>Aksi</th></tr></thead><tbody id="lunas-tbody"></tbody></table></div>
                 </div>
             </div>
 
@@ -306,7 +320,7 @@
                 <div class="card">
                     <h4 style="margin-bottom:16px">Tracking Status Laundry</h4>
                     <input type="text" id="status-search" class="form-control" placeholder="🔍 Cari Nama Pelanggan atau No. HP..." style="margin-bottom:16px" oninput="App.status.render()">
-                    <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Customer</th><th>No. HP</th><th>Tanggal</th><th>Item</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="status-tbody"></tbody></table></div>
+                    <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Customer</th><th>No. HP</th><th>Tanggal Masuk</th><th>Estimasi Selesai</th><th>Item</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="status-tbody"></tbody></table></div>
                 </div>
             </div>
 
@@ -345,18 +359,19 @@
 
             <div id="view-owner" class="view-section">
                 <div class="card" style="margin-bottom:24px">
-                    <h4 style="margin-bottom:16px">📊 Dashboard Owner</h4>
+                    <h4 style="margin-bottom:16px"> Dashboard Owner</h4>
                     <div class="kpi-grid" id="owner-kpis"></div>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-                    <div class="card"><h4 style="margin-bottom:16px">🏆 Top Customer</h4><div id="top-customer-list"></div></div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
+                    <div class="card"><h4 style="margin-bottom:16px"> Top Customer</h4><div id="top-customer-list"></div></div>
                     <div class="card"><h4 style="margin-bottom:16px">⭐ Top Layanan</h4><div id="top-layanan-list"></div></div>
+                    <div class="card"><h4 style="margin-bottom:16px">📦 Top Kategori</h4><div id="top-kategori-list"></div></div>
                 </div>
             </div>
 
             <div id="view-setting" class="view-section">
                 <div class="card" style="max-width:900px">
-                    <h4 style="margin-bottom:24px">⚙️ Pengaturan</h4>
+                    <h4 style="margin-bottom:24px">️ Pengaturan</h4>
                     <form id="setting-form" onsubmit="App.setting.save(event)">
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
                             <div>
@@ -451,10 +466,11 @@
         <div id="print-alamat" style="font-size:10px">-</div>
         <div id="print-wa" style="font-size:10px">-</div>
     </div>
-    <div id="print-status-badge" class="print-lunas-badge" style="display:none;"></div>
+    <div id="print-status-badge" class="print-lunas-badge" style="display:none"></div>
     <div class="print-divider"></div>
     <div class="print-row"><span>No:</span><span id="print-invoice"></span></div>
-    <div class="print-row"><span>Tgl:</span><span id="print-tanggal"></span></div>
+    <div class="print-row"><span>Tgl Masuk:</span><span id="print-tanggal"></span></div>
+    <div class="print-row"><span>Est. Selesai:</span><span id="print-selesai"></span></div>
     <div class="print-row"><span>Customer:</span><span id="print-customer"></span></div>
     <div class="print-divider"></div>
     <div id="print-items"></div>
@@ -476,7 +492,7 @@
             <input type="hidden" id="pricelist-edit-id">
             <div class="input-group"><label>Kategori</label><select id="pricelist-kategori" class="form-control" required><option value="KILOAN">KILOAN</option><option value="BEDDING">BEDDING</option><option value="BONEKA">BONEKA</option><option value="KARPET & PERMADANI">KARPET & PERMADANI</option><option value="GORDEN">GORDEN</option><option value="TAS & KOPER">TAS & KOPER</option><option value="JAS">JAS</option><option value="LAINNYA">LAINNYA</option></select></div>
             <div class="input-group"><label>Nama Layanan</label><input type="text" id="pricelist-layanan" class="form-control" required></div>
-            <div class="input-group"><label>Estimasi Waktu</label><input type="text" id="pricelist-estimasi" class="form-control" required placeholder="Contoh: 6 Jam, 1 Hari, 1 Minggu, Normal"></div>
+            <div class="input-group"><label>Estimasi Waktu</label><input type="text" id="pricelist-estimasi" class="form-control" required placeholder="Contoh: 6 Jam, 1 Hari, 3 Hari, 1 Minggu, Normal"></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                 <div class="input-group"><label>Satuan</label><select id="pricelist-satuan" class="form-control"><option>Kg</option><option>Pcs</option><option>Unit</option><option>Pasang</option><option>Set</option><option>Meter</option></select></div>
                 <div class="input-group"><label>Harga (Rp)</label><input type="number" id="pricelist-harga" class="form-control" required min="0"></div>
@@ -512,7 +528,7 @@
         <h4 style="margin-bottom:16px">Catat Pengeluaran</h4>
         <form onsubmit="App.pengeluaran.save(event)">
             <input type="hidden" id="pengeluaran-edit-id">
-            <div class="input-group"><label>Kategori</label><select id="pengeluaran-kategori" class="form-control" required><option>Listrik</option><option>Air</option><option>Deterjen</option><option>Pewangi</option><option>Gaji</option><option>Maintenance</option><option>Lainnya</option></select></div>
+            <div class="input-group"><label>Kategori</label><select id="pengeluaran-kategori" class="form-control" required><option value="Listrik">Listrik</option><option value="Air">Air</option><option value="Deterjen">Deterjen</option><option value="Pewangi">Pewangi</option><option value="Gaji">Gaji</option><option value="Maintenance">Maintenance</option><option value="Lainnya">Lainnya</option></select></div>
             <div class="input-group"><label>Keterangan</label><input type="text" id="pengeluaran-keterangan" class="form-control" required></div>
             <div class="input-group"><label>Nominal (Rp)</label><input type="number" id="pengeluaran-nominal" class="form-control" required min="0"></div>
             <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:24px">
@@ -565,11 +581,245 @@ const State = {
     pricelist: [],
     customers: [],
     transaksi: [],
+    detailTransaksi: [],
     pengeluaran: [],
     voucher: [],
     cart: [],
     currentInvoice: 'INV-' + Date.now().toString().slice(-6),
     lastSync: null
+};
+
+// ============================================================
+// HELPER: Parse estimasi waktu dari string (dari Google Sheets)
+// Format: "2 Hari", "1 Hari", "6 Jam", "1 Minggu", "Normal"
+// ============================================================
+const EstimasiHelper = {
+    parse(estimasi) {
+        if (!estimasi) return 2 * 24 * 60 * 60 * 1000;
+        const e = String(estimasi).toLowerCase().trim();
+        const jamMatch = e.match(/(\d+)\s*jam/);
+        if (jamMatch) return parseInt(jamMatch[1]) * 60 * 60 * 1000;
+        const hariMatch = e.match(/(\d+)\s*hari/);
+        if (hariMatch) return parseInt(hariMatch[1]) * 24 * 60 * 60 * 1000;
+        const mingguMatch = e.match(/(\d+)\s*minggu/);
+        if (mingguMatch) return parseInt(mingguMatch[1]) * 7 * 24 * 60 * 60 * 1000;
+        if (e.includes('normal')) return 2 * 24 * 60 * 60 * 1000;
+        return 2 * 24 * 60 * 60 * 1000;
+    },
+    hitungTanggalSelesai(estimasi, dariTanggal = null) {
+        const mulai = dariTanggal ? new Date(dariTanggal) : new Date();
+        return new Date(mulai.getTime() + this.parse(estimasi));
+    },
+    formatTanggalSelesai(estimasi) {
+        const selesai = this.hitungTanggalSelesai(estimasi);
+        return selesai.toLocaleString('id-ID', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    },
+    formatTanggalPendek(tanggal) {
+        if (!tanggal) return '-';
+        const d = new Date(tanggal);
+        if (isNaN(d.getTime())) return '-';
+        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    },
+    isOverdue(tanggalSelesai) {
+        if (!tanggalSelesai) return false;
+        return new Date(tanggalSelesai) < new Date();
+    },
+    // Parse catatan dari Google Sheets untuk extract estimasi
+    parseCatatan(catatan) {
+        if (!catatan) return null;
+        const str = String(catatan);
+        // Format: "2026-07-19T10:36:19.681Z" atau "2 Hari" atau kombinasi
+        const hariMatch = str.match(/(\d+)\s*Hari/i);
+        if (hariMatch) return hariMatch[1] + ' Hari';
+        const jamMatch = str.match(/(\d+)\s*Jam/i);
+        if (jamMatch) return jamMatch[1] + ' Jam';
+        const mingguMatch = str.match(/(\d+)\s*Minggu/i);
+        if (mingguMatch) return mingguMatch[1] + ' Minggu';
+        return null;
+    }
+};
+
+// ============================================================
+// HELPER: Normalisasi data dari Google Sheets
+// ============================================================
+const DataHelper = {
+    get(obj, ...keys) {
+        if (!obj) return undefined;
+        for (const key of keys) {
+            if (obj[key] !== undefined && obj[key] !== null && obj[key] !== '') return obj[key];
+        }
+        return undefined;
+    },
+    
+    // Normalisasi TRANSAKSI dari Google Sheets
+    normalizeTransaksi(t) {
+        if (!t) return null;
+        
+        // Parse tanggal - support berbagai format
+        let tanggal = this.get(t, 'Tanggal', 'tanggal', 'TANGGAL', 'tgl', 'Tgl', 'created_at');
+        if (tanggal && typeof tanggal === 'string') {
+            // Jika format ISO dari Google Sheets
+            if (!isNaN(Date.parse(tanggal))) {
+                tanggal = new Date(tanggal).toISOString();
+            }
+        }
+        
+        // No HP - support berbagai nama field
+        let hp = this.get(t, 'No hp', 'no_hp', 'No HP', 'hp', 'HP', 'phone', 'Phone', 'no_telp', 'No Telp', 'nomor_hp', 'Nomor HP');
+        if (!hp || hp === '-' || hp === 'undefined' || hp === 'null') hp = '-';
+        
+        // Total - support "Total Rp", "Total", "total"
+        let total = parseFloat(this.get(t, 'Total Rp', 'total_rp', 'Total', 'total', 'TOTAL') || 0) || 0;
+        if (total === 0) {
+            total = parseFloat(this.get(t, 'Total', 'total') || 0) || 0;
+        }
+        
+        // Payment method - support "Payment", "Metode", "metode"
+        let metode = this.get(t, 'Payment', 'payment', 'Metode', 'metode', 'METODE', 'metode_bayar', 'Metode Bayar') || 'Cash';
+        if (metode === '0' || metode === 0) metode = 'Cash';
+        
+        // Status bayar - dari kolom terakhir di TRANSAKSI sheet
+        let statusBayar = this.get(t, 'Status Bayar', 'status_bayar', 'Status', 'status', 'Keterangan', 'keterangan');
+        if (!statusBayar) {
+            // Jika ada field "Uang Fisik" dan "Kembalian", berarti sudah bayar
+            const uangFisik = parseFloat(this.get(t, 'Uang Fisik', 'uang_fisik', 'Uang Bayar', 'uang_bayar') || 0) || 0;
+            if (uangFisik > 0 && total > 0) {
+                statusBayar = 'Lunas';
+            } else {
+                statusBayar = 'Belum Lunas';
+            }
+        }
+        // Normalisasi status
+        if (String(statusBayar).toLowerCase().includes('lunas') || String(statusBayar).toLowerCase() === 'cash') {
+            statusBayar = 'Lunas';
+        } else if (String(statusBayar).toLowerCase().includes('belum')) {
+            statusBayar = 'Belum Lunas';
+        }
+        
+        let tanggalLunas = this.get(t, 'Tanggal Lunas', 'tanggal_lunas', 'tgl_lunas');
+        if (tanggalLunas && typeof tanggalLunas === 'string' && !isNaN(Date.parse(tanggalLunas))) {
+            tanggalLunas = new Date(tanggalLunas).toISOString();
+        }
+        
+        let estimasiSelesai = this.get(t, 'Estimasi Selesai', 'estimasi_selesai', 'est_selesai', 'Estimasi', 'estimasi');
+        if (estimasiSelesai && typeof estimasiSelesai === 'string' && !isNaN(Date.parse(estimasiSelesai))) {
+            estimasiSelesai = new Date(estimasiSelesai).toISOString();
+        }
+        
+        let statusLaundry = this.get(t, 'Status Laundry', 'status_laundry', 'Status', 'status');
+        if (!statusLaundry) statusLaundry = 'Masuk';
+        
+        return {
+            invoice: this.get(t, 'Invoice', 'invoice', 'INVOICE', 'no_invoice') || 'N/A',
+            tanggal: tanggal || new Date().toISOString(),
+            customer: this.get(t, 'Customer', 'customer', 'CUSTOMER', 'nama', 'Nama', 'NAMA') || 'Unknown',
+            hp: hp,
+            alamat: this.get(t, 'Alamat', 'alamat', 'ALAMAT', 'address') || '-',
+            items: [], // Akan diisi dari DETAIL_TRANSAKSI
+            subtotal: parseFloat(this.get(t, 'Subtotal', 'subtotal') || 0) || total,
+            diskon: parseFloat(this.get(t, 'Diskon', 'diskon', 'DISKON') || 0) || 0,
+            biaya_tambahan: parseFloat(this.get(t, 'Biaya Tambahan', 'biaya_tambahan') || 0) || 0,
+            total: total,
+            uang_bayar: parseFloat(this.get(t, 'Uang Fisik', 'uang_fisik', 'Uang Bayar', 'uang_bayar', 'pembayaran') || 0) || (statusBayar === 'Lunas' ? total : 0),
+            kembalian: parseFloat(this.get(t, 'Kembalian', 'kembalian', 'KEMBALIAN') || 0) || 0,
+            metode: metode,
+            status_bayar: statusBayar,
+            status_laundry: statusLaundry,
+            estimasi_selesai: estimasiSelesai,
+            tanggal_lunas: tanggalLunas
+        };
+    },
+    
+    // Normalisasi DETAIL_TRANSAKSI dari Google Sheets
+    normalizeDetailTransaksi(d) {
+        if (!d) return null;
+        
+        const invoice = this.get(d, 'Invoice', 'invoice', 'INVOICE') || 'N/A';
+        const layanan = this.get(d, 'Layanan', 'layanan', 'LAYANAN', 'nama', 'Nama') || 'Unknown';
+        const qty = parseFloat(this.get(d, 'Qty', 'qty', 'QTY', 'Jumlah', 'jumlah', 'Berat', 'berat') || 1) || 1;
+        const harga = parseFloat(this.get(d, 'Harga', 'harga', 'HARGA', 'Price', 'price') || 0) || 0;
+        const subtotal = parseFloat(this.get(d, 'Subtotal', 'subtotal', 'SUBTOTAL', 'Total', 'total') || 0) || (qty * harga);
+        const catatan = this.get(d, 'Catatan', 'catatan', 'CATATAN', 'Keterangan', 'keterangan') || '';
+        
+        // Parse estimasi dari catatan
+        const estimasiDariCatatan = EstimasiHelper.parseCatatan(catatan);
+        
+        return {
+            invoice: invoice,
+            id_pricelist: this.get(d, 'ID Pricelist', 'id_pricelist', 'Id Pricelist') || '',
+            nama: layanan,
+            berat: qty,
+            waktu: estimasiDariCatatan || '-',
+            hargaSatuan: harga,
+            subtotal: subtotal,
+            estimasi_selesai: null, // Akan dihitung dari tanggal transaksi + estimasi
+            kategori: this.get(d, 'Kategori', 'kategori', 'KATEGORI') || this.guessKategori(layanan)
+        };
+    },
+    
+    // Tebak kategori dari nama layanan
+    guessKategori(namaLayanan) {
+        if (!namaLayanan) return 'LAINNYA';
+        const n = namaLayanan.toLowerCase();
+        if (n.includes('boneka')) return 'BONEKA';
+        if (n.includes('sprei') || n.includes('bedding') || n.includes('bed cover')) return 'BEDDING';
+        if (n.includes('karpet') || n.includes('permadani')) return 'KARPET & PERMADANI';
+        if (n.includes('gorden') || n.includes('tirai')) return 'GORDEN';
+        if (n.includes('tas') || n.includes('koper')) return 'TAS & KOPER';
+        if (n.includes('jas') || n.includes('blazer') || n.includes('coat')) return 'JAS';
+        if (n.includes('kiloan') || n.includes('cuci setrika')) return 'KILOAN';
+        return 'LAINNYA';
+    },
+    
+    normalizePricelist(p) {
+        if (!p) return null;
+        return {
+            id: p.id || p.Id || p.ID,
+            kategori: this.get(p, 'kategori', 'Kategori', 'KATEGORI', 'category', 'Category') || 'LAINNYA',
+            layanan: this.get(p, 'layanan', 'Layanan', 'LAYANAN', 'nama', 'Nama', 'nama_layanan') || 'Unknown',
+            estimasi: this.get(p, 'estimasi', 'Estimasi', 'ESTIMASI', 'waktu', 'Waktu') || '-',
+            satuan: this.get(p, 'satuan', 'Satuan', 'SATUAN', 'unit', 'Unit') || 'Kg',
+            harga: parseFloat(this.get(p, 'harga', 'Harga', 'HARGA', 'price', 'Price') || 0) || 0,
+            status: this.get(p, 'status', 'Status', 'STATUS') || 'Aktif'
+        };
+    },
+    
+    normalizeCustomer(c) {
+        if (!c) return null;
+        return {
+            id: c.id || c.Id || c.ID,
+            nama: this.get(c, 'nama', 'Nama', 'NAMA', 'customer', 'Customer') || 'Unknown',
+            hp: this.get(c, 'hp', 'HP', 'phone', 'Phone', 'no_hp', 'No HP', 'no_telp') || '-',
+            alamat: this.get(c, 'alamat', 'Alamat', 'ALAMAT', 'address') || '-',
+            poin: parseInt(this.get(c, 'poin', 'Poin', 'POIN') || 0) || 0
+        };
+    },
+    
+    normalizePengeluaran(p) {
+        if (!p) return null;
+        let tanggal = p.tanggal || p.Tanggal || p.TANGGAL || p.created_at;
+        if (tanggal && typeof tanggal === 'string' && !isNaN(Date.parse(tanggal))) {
+            tanggal = new Date(tanggal).toISOString();
+        }
+        return {
+            id: p.id || p.Id || p.ID,
+            tanggal: tanggal || new Date().toISOString(),
+            kategori: this.get(p, 'kategori', 'Kategori', 'KATEGORI') || 'Lainnya',
+            keterangan: this.get(p, 'keterangan', 'Keterangan', 'deskripsi') || '-',
+            nominal: parseFloat(this.get(p, 'nominal', 'Nominal', 'NOMINAL', 'jumlah', 'amount') || 0) || 0
+        };
+    },
+    
+    normalizeVoucher(v) {
+        if (!v) return null;
+        return {
+            id: v.id || v.Id || v.ID,
+            kode: this.get(v, 'kode', 'Kode', 'KODE') || '-',
+            tipe: this.get(v, 'tipe', 'Tipe', 'TIPE') || 'nominal',
+            nilai: parseFloat(this.get(v, 'nilai', 'Nilai', 'NILAI') || 0) || 0,
+            status: this.get(v, 'status', 'Status', 'STATUS') || 'Aktif'
+        };
+    }
 };
 
 const SheetsAPI = {
@@ -630,46 +880,73 @@ const App = {
         this.pengeluaran.render();
         this.voucher.render();
         this.status.render();
+        this.invoiceLunas.render();
         this.owner.load();
         this.setting.loadForm();
         if (window.innerWidth <= 768) document.getElementById('mobile-menu-btn').style.display = 'inline-flex';
-        
-        // Debug structure setelah load
-        setTimeout(() => {
-            this.debugData.checkStructure();
-        }, 1500);
-    },
-
-    debugData: {
-        checkStructure() {
-            console.log('=== DEBUG DATA STRUCTURE ===');
-            console.log('Total transaksi:', State.transaksi.length);
-            if (State.transaksi.length > 0) {
-                console.log('Struktur data pertama:', State.transaksi[0]);
-                console.log('Keys yang tersedia:', Object.keys(State.transaksi[0]));
-            }
-            console.log('=========================');
-        }
     },
 
     async syncAll() {
         Swal.fire({ title: 'Syncing data...', text: 'Menarik data terbaru dari server', timer: 1500, didOpen: () => Swal.showLoading(), allowOutsideClick: false });
         try {
-            const [pRes, cRes, tRes, peRes, vRes] = await Promise.all([
-                SheetsAPI.fetch('get_pricelist'), SheetsAPI.fetch('get_customer'), SheetsAPI.fetch('get_transaksi'), SheetsAPI.fetch('get_pengeluaran'), SheetsAPI.fetch('get_voucher')
+            // Fetch dari semua sheet termasuk DETAIL_TRANSAKSI
+            const [pRes, cRes, tRes, dtRes, peRes, vRes] = await Promise.all([
+                SheetsAPI.fetch('get_pricelist'), 
+                SheetsAPI.fetch('get_customer'), 
+                SheetsAPI.fetch('get_transaksi'), 
+                SheetsAPI.fetch('get_detail_transaksi'),
+                SheetsAPI.fetch('get_pengeluaran'), 
+                SheetsAPI.fetch('get_voucher')
             ]);
-            if (pRes.success) State.pricelist = pRes.data || [];
-            if (cRes.success) State.customers = cRes.data || [];
-            if (tRes.success) State.transaksi = tRes.data || [];
-            if (peRes.success) State.pengeluaran = peRes.data || [];
-            if (vRes.success) State.voucher = vRes.data || [];
             
-            ['pricelist', 'customers', 'transaksi', 'pengeluaran', 'voucher'].forEach(k => DB.set(k, State[k]));
+            if (pRes.success) State.pricelist = (pRes.data || []).map(p => DataHelper.normalizePricelist(p)).filter(Boolean);
+            if (cRes.success) State.customers = (cRes.data || []).map(c => DataHelper.normalizeCustomer(c)).filter(Boolean);
+            if (tRes.success) State.transaksi = (tRes.data || []).map(t => DataHelper.normalizeTransaksi(t)).filter(Boolean);
+            if (dtRes.success) State.detailTransaksi = (dtRes.data || []).map(d => DataHelper.normalizeDetailTransaksi(d)).filter(Boolean);
+            if (peRes.success) State.pengeluaran = (peRes.data || []).map(p => DataHelper.normalizePengeluaran(p)).filter(Boolean);
+            if (vRes.success) State.voucher = (vRes.data || []).map(v => DataHelper.normalizeVoucher(v)).filter(Boolean);
+            
+            // GABUNGKAN: Attach detail transaksi ke masing-masing transaksi
+            this.mergeDetailToTransaksi();
+            
+            ['pricelist', 'customers', 'transaksi', 'detailTransaksi', 'pengeluaran', 'voucher'].forEach(k => DB.set(k, State[k]));
             State.lastSync = new Date().toISOString();
-            Swal.fire({ icon: 'success', title: 'Sync Berhasil!', timer: 1500 });
+            Swal.fire({ icon: 'success', title: 'Sync Berhasil!', text: `Transaksi: ${State.transaksi.length}, Detail: ${State.detailTransaksi.length}`, timer: 2000 });
         } catch (error) {
             Swal.fire({ icon: 'error', title: 'Sync Gagal', text: error.message, timer: 2000 });
         }
+    },
+    
+    // Gabungkan detail transaksi ke transaksi utama
+    mergeDetailToTransaksi() {
+        State.transaksi.forEach(trx => {
+            const details = State.detailTransaksi.filter(d => d.invoice === trx.invoice);
+            trx.items = details;
+            
+            // Hitung estimasi_selesai dari detail (ambil yang paling lama)
+            if (details.length > 0 && trx.tanggal) {
+                const tanggalMulai = new Date(trx.tanggal);
+                let maxEstimasi = 0;
+                details.forEach(d => {
+                    const est = EstimasiHelper.parse(d.waktu);
+                    if (est > maxEstimasi) maxEstimasi = est;
+                });
+                if (!trx.estimasi_selesai && maxEstimasi > 0) {
+                    trx.estimasi_selesai = new Date(tanggalMulai.getTime() + maxEstimasi).toISOString();
+                }
+            }
+            
+            // Hitung total dari detail jika total 0
+            if (!trx.total || trx.total === 0) {
+                trx.total = details.reduce((sum, d) => sum + (d.subtotal || 0), 0);
+            }
+            
+            // Ambil No HP dari customer jika kosong
+            if (!trx.hp || trx.hp === '-') {
+                const cust = State.customers.find(c => c.nama === trx.customer);
+                if (cust && cust.hp) trx.hp = cust.hp;
+            }
+        });
     },
 
     router(viewName) {
@@ -678,7 +955,12 @@ const App = {
         const target = document.getElementById(`view-${viewName}`);
         if (target) {
             target.classList.add('active');
-            const titles = { dashboard:'Dashboard', kasir:'Kasir (POS)', transaksi:'History Transaksi', customer:'Customer', pricelist:'Pricelist', status:'Status Laundry', pengeluaran:'Pengeluaran', voucher:'Voucher', laporan:'Laporan', owner:'Dashboard Owner', setting:'Setting' };
+            const titles = { 
+                dashboard:'Dashboard', kasir:'Kasir (POS)', transaksi:'History Transaksi', 
+                invoiceLunas:'Invoice Lunas', customer:'Customer', pricelist:'Pricelist', 
+                status:'Status Laundry', pengeluaran:'Pengeluaran', voucher:'Voucher', 
+                laporan:'Laporan', owner:'Dashboard Owner', setting:'Setting' 
+            };
             document.getElementById('page-title').textContent = titles[viewName] || viewName;
             document.querySelectorAll('.menu-item').forEach(item => {
                 if (item.getAttribute('onclick')?.includes(`'${viewName}'`)) item.classList.add('active');
@@ -688,6 +970,7 @@ const App = {
         if (viewName === 'dashboard') this.dashboard.load();
         if (viewName === 'owner') this.owner.load();
         if (viewName === 'transaksi') this.transaksi.render();
+        if (viewName === 'invoiceLunas') this.invoiceLunas.render();
         if (viewName === 'status') this.status.render();
     },
 
@@ -738,7 +1021,9 @@ const App = {
         formatDate(d) { 
             if (!d) return 'Invalid Date';
             try {
-                return new Date(d).toLocaleString('id-ID', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+                const date = new Date(d);
+                if (isNaN(date.getTime())) return 'Invalid Date';
+                return date.toLocaleString('id-ID', {day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
             } catch(e) {
                 return 'Invalid Date';
             }
@@ -751,7 +1036,9 @@ const App = {
     dashboard: {
         load() {
             const today = new Date().toDateString();
-            const trxToday = State.transaksi.filter(t => new Date(t.tanggal || t.Tanggal).toDateString() === today);
+            const trxToday = State.transaksi.filter(t => {
+                try { return new Date(t.tanggal).toDateString() === today; } catch { return false; }
+            });
             
             const omzetLunas = trxToday.filter(t => t.status_bayar === 'Lunas').reduce((s, t) => s + (t.total || 0), 0);
             const omzetBelumLunas = trxToday.filter(t => t.status_bayar === 'Belum Lunas').reduce((s, t) => s + (t.total || 0), 0);
@@ -786,7 +1073,9 @@ const App = {
             for (let i = 6; i >= 0; i--) {
                 const d = new Date(); d.setDate(d.getDate() - i);
                 labels.push(d.toLocaleDateString('id-ID', {weekday:'short'}));
-                const dailyTrx = State.transaksi.filter(t => new Date(t.tanggal || t.Tanggal).toDateString() === d.toDateString());
+                const dailyTrx = State.transaksi.filter(t => {
+                    try { return new Date(t.tanggal).toDateString() === d.toDateString(); } catch { return false; }
+                });
                 dataLunas.push(dailyTrx.filter(t => t.status_bayar === 'Lunas').reduce((s, t) => s + (t.total || 0), 0));
                 dataBelumLunas.push(dailyTrx.filter(t => t.status_bayar === 'Belum Lunas').reduce((s, t) => s + (t.total || 0), 0));
             }
@@ -806,13 +1095,13 @@ const App = {
 
     pos: {
         initDropdowns() {
-            const katSet = [...new Set(State.pricelist.map(p => p.kategori || p.Kategori))];
+            const katSet = [...new Set(State.pricelist.map(p => p.kategori))];
             document.getElementById('pos-kategori').innerHTML = '<option value="">Pilih Kategori</option>' + katSet.map(k => `<option value="${k}">${k}</option>`).join('');
         },
         loadLayanan() {
             const kat = document.getElementById('pos-kategori').value;
-            const filtered = kat ? State.pricelist.filter(p => (p.kategori || p.Kategori) === kat) : State.pricelist;
-            const layananSet = [...new Set(filtered.map(p => p.layanan || p.Layanan))];
+            const filtered = kat ? State.pricelist.filter(p => p.kategori === kat) : State.pricelist;
+            const layananSet = [...new Set(filtered.map(p => p.layanan))];
             document.getElementById('pos-layanan').innerHTML = '<option value="">Pilih Layanan</option>' + layananSet.map(l => `<option value="${l}">${l}</option>`).join('');
             this.onLayananChange();
         },
@@ -824,12 +1113,13 @@ const App = {
                 document.getElementById('pos-harga-satuan').value = '';
                 document.getElementById('pos-satuan').value = '';
                 document.getElementById('pos-harga-total').value = '';
+                document.getElementById('estimasi-selesai-info').style.display = 'none';
                 return;
             }
-            const filtered = kat ? State.pricelist.filter(p => (p.kategori || p.Kategori) === kat && (p.layanan || p.Layanan) === layanan) : State.pricelist.filter(p => (p.layanan || p.Layanan) === layanan);
-            const estimasiList = [...new Set(filtered.map(p => p.estimasi || p.Estimasi))];
+            const filtered = kat ? State.pricelist.filter(p => p.kategori === kat && p.layanan === layanan) : State.pricelist.filter(p => p.layanan === layanan);
+            const estimasiList = [...new Set(filtered.map(p => p.estimasi))];
             document.getElementById('pos-waktu').innerHTML = '<option value="">Pilih Waktu</option>' + estimasiList.map(e => `<option value="${e}">${e}</option>`).join('');
-            if (filtered.length > 0) document.getElementById('pos-satuan').value = filtered[0].satuan || filtered[0].Satuan;
+            if (filtered.length > 0) document.getElementById('pos-satuan').value = filtered[0].satuan;
             this.onWaktuChange();
         },
         onWaktuChange() {
@@ -839,12 +1129,16 @@ const App = {
             if (!layanan || !waktu) {
                 document.getElementById('pos-harga-satuan').value = '';
                 document.getElementById('pos-harga-total').value = '';
+                document.getElementById('estimasi-selesai-info').style.display = 'none';
                 return;
             }
-            const item = State.pricelist.find(p => (p.layanan || p.Layanan) === layanan && (p.estimasi || p.Estimasi) === waktu && (!kat || (p.kategori || p.Kategori) === kat));
+            const item = State.pricelist.find(p => p.layanan === layanan && p.estimasi === waktu && (!kat || p.kategori === kat));
             if (item) {
-                document.getElementById('pos-harga-satuan').value = App.ui.formatRupiah(item.harga || item.Harga);
+                document.getElementById('pos-harga-satuan').value = App.ui.formatRupiah(item.harga);
                 this.calculateSubtotal();
+                const estimasiText = EstimasiHelper.formatTanggalSelesai(waktu);
+                document.getElementById('estimasi-selesai-text').textContent = `Estimasi selesai: ${estimasiText}`;
+                document.getElementById('estimasi-selesai-info').style.display = 'flex';
             }
         },
         calculateSubtotal() {
@@ -868,7 +1162,21 @@ const App = {
             const hargaText = document.getElementById('pos-harga-satuan').value;
             const harga = parseInt(hargaText.replace(/[^\d]/g, '')) || 0;
             
-            State.cart.push({ id: Date.now(), nama: layanan, berat, waktu, hargaSatuan: harga, subtotal: berat * harga });
+            const tanggalSelesai = EstimasiHelper.hitungTanggalSelesai(waktu).toISOString();
+            
+            // Cari kategori dari pricelist
+            const kat = document.getElementById('pos-kategori').value;
+            
+            State.cart.push({ 
+                id: Date.now(), 
+                nama: layanan, 
+                berat, 
+                waktu, 
+                hargaSatuan: harga, 
+                subtotal: berat * harga,
+                estimasi_selesai: tanggalSelesai,
+                kategori: kat || 'LAINNYA'
+            });
             this.renderCart();
             
             document.getElementById('pos-berat').value = '';
@@ -877,6 +1185,7 @@ const App = {
             document.getElementById('pos-harga-satuan').value = '';
             document.getElementById('pos-satuan').value = '';
             document.getElementById('pos-harga-total').value = '';
+            document.getElementById('estimasi-selesai-info').style.display = 'none';
             Swal.fire({ icon:'success', timer:700, showConfirmButton:false });
         },
         renderCart() {
@@ -884,18 +1193,21 @@ const App = {
             if (State.cart.length === 0) {
                 c.innerHTML = '<p style="text-align:center;color:var(--text-muted);margin-top:40px">Keranjang kosong</p>';
             } else {
-                c.innerHTML = State.cart.map((item, i) => `
+                c.innerHTML = State.cart.map((item, i) => {
+                    const tglSelesai = EstimasiHelper.formatTanggalPendek(item.estimasi_selesai);
+                    return `
                     <div class="cart-item">
                         <div style="flex:1">
                             <div style="font-weight:600">${item.nama}</div>
                             <div style="font-size:0.8rem;color:var(--text-muted)">${item.berat} × ${App.ui.formatRupiah(item.hargaSatuan)} × ${item.waktu}</div>
+                            <div style="font-size:0.75rem;color:var(--info);margin-top:4px"><i class="fas fa-calendar-check"></i> Selesai: ${tglSelesai}</div>
                         </div>
                         <div style="display:flex;align-items:center;gap:12px">
                             <span style="font-weight:600;color:var(--primary)">${App.ui.formatRupiah(item.subtotal)}</span>
                             <button class="btn btn-sm btn-danger" onclick="App.pos.removeCart(${i})"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
-                `).join('');
+                `}).join('');
             }
             this.calculateTotal();
         },
@@ -954,6 +1266,9 @@ const App = {
             const customerName = document.getElementById('pos-customer-name').value.trim();
             if (!customerName) return Swal.fire({ icon: 'warning', title: 'Nama Pelanggan Kosong', text: 'Wajib isi nama pelanggan terlebih dahulu!' });
             
+            const customerPhone = document.getElementById('pos-customer-phone').value.trim();
+            if (!customerPhone) return Swal.fire({ icon: 'warning', title: 'No. HP Kosong', text: 'Wajib isi nomor HP pelanggan!' });
+            
             const subtotal = State.cart.reduce((s, i) => s + i.subtotal, 0);
             const diskon = parseInt(document.getElementById('pos-diskon').value) || 0;
             const tambahan = parseInt(document.getElementById('pos-biaya-tambahan').value) || 0;
@@ -972,11 +1287,16 @@ const App = {
                 statusBayar = 'Lunas';
             }
             
+            const estimasiSelesaiList = State.cart.map(i => i.estimasi_selesai).filter(Boolean);
+            const tanggalSelesaiTerakhir = estimasiSelesaiList.length > 0 
+                ? new Date(Math.max(...estimasiSelesaiList.map(d => new Date(d).getTime()))).toISOString()
+                : new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
+            
             const trx = {
                 invoice: State.currentInvoice,
                 tanggal: new Date().toISOString(),
                 customer: customerName,
-                hp: document.getElementById('pos-customer-phone').value || '-',
+                hp: customerPhone,
                 alamat: document.getElementById('pos-customer-address').value || '-',
                 items: [...State.cart],
                 subtotal, diskon, biaya_tambahan: tambahan, total,
@@ -984,12 +1304,28 @@ const App = {
                 kembalian: kembalian,
                 metode: method,
                 status_bayar: statusBayar,
-                status_laundry: 'Masuk'
+                status_laundry: 'Masuk',
+                estimasi_selesai: tanggalSelesaiTerakhir,
+                tanggal_lunas: statusBayar === 'Lunas' ? new Date().toISOString() : null
             };
             
             State.transaksi.unshift(trx);
             DB.set('transaksi', State.transaksi);
-            if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) await SheetsAPI.sync('save_transaksi', trx);
+            if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) {
+                await SheetsAPI.sync('save_transaksi', trx);
+                // Sync detail transaksi juga
+                for (const item of State.cart) {
+                    await SheetsAPI.sync('save_detail_transaksi', {
+                        invoice: trx.invoice,
+                        layanan: item.nama,
+                        qty: item.berat,
+                        harga: item.hargaSatuan,
+                        subtotal: item.subtotal,
+                        catatan: item.waktu,
+                        kategori: item.kategori || 'LAINNYA'
+                    });
+                }
+            }
             
             this.printReceipt(trx, statusBayar === 'Lunas' ? 'lunas' : 'draft');
             
@@ -999,6 +1335,7 @@ const App = {
             document.getElementById('pos-diskon').value = 0;
             document.getElementById('pos-biaya-tambahan').value = 0;
             document.getElementById('kembalian-display').style.display = 'none';
+            document.getElementById('estimasi-selesai-info').style.display = 'none';
             State.currentInvoice = 'INV-' + Date.now().toString().slice(-6);
             document.getElementById('pos-invoice').textContent = State.currentInvoice;
             
@@ -1021,6 +1358,7 @@ const App = {
                 badge.textContent = '*** SUDAH LUNAS ***';
                 badge.style.color = 'black';
                 badge.style.borderColor = 'black';
+                badge.style.borderStyle = 'solid';
             } else {
                 badge.style.display = 'block';
                 badge.textContent = '*** DRAFT / BELUM LUNAS ***';
@@ -1031,11 +1369,13 @@ const App = {
 
             document.getElementById('print-invoice').textContent = trx.invoice;
             document.getElementById('print-tanggal').textContent = App.ui.formatDate(trx.tanggal);
-            document.getElementById('print-customer').textContent = trx.customer + (trx.hp !== '-' ? ` (${trx.hp})` : '');
+            document.getElementById('print-selesai').textContent = trx.estimasi_selesai ? EstimasiHelper.formatTanggalPendek(trx.estimasi_selesai) : '-';
+            document.getElementById('print-customer').textContent = trx.customer + (trx.hp && trx.hp !== '-' ? ` (${trx.hp})` : '');
             
+            // Tampilkan nama produk di struk
             document.getElementById('print-items').innerHTML = trx.items.map(i => `
                 <div class="print-row">
-                    <div>${i.nama}<br><small>${i.berat} × ${App.ui.formatRupiah(i.hargaSatuan)} × ${i.waktu}</small></div>
+                    <div>${i.nama} ${i.waktu ? '(' + i.waktu + ')' : ''}<br><small>${i.berat} × ${App.ui.formatRupiah(i.hargaSatuan)}</small></div>
                     <div>${App.ui.formatRupiah(i.subtotal)}</div>
                 </div>
             `).join('');
@@ -1048,17 +1388,17 @@ const App = {
             document.getElementById('print-kembali').textContent = App.ui.formatRupiah(trx.kembalian);
             document.getElementById('print-footer').textContent = State.settings.footer_struk;
             
-            setTimeout(() => window.print(), 400);
+            setTimeout(() => window.print(), 50);
         },
         renderQuickPricelist(filter = '') {
             const grid = document.getElementById('quick-pricelist-grid');
-            const filtered = filter ? State.pricelist.filter(p => (p.layanan || p.Layanan).toLowerCase().includes(filter.toLowerCase()) || (p.kategori || p.Kategori).toLowerCase().includes(filter.toLowerCase())) : State.pricelist;
+            const filtered = filter ? State.pricelist.filter(p => p.layanan.toLowerCase().includes(filter.toLowerCase()) || p.kategori.toLowerCase().includes(filter.toLowerCase())) : State.pricelist;
             if (filtered.length === 0) { grid.innerHTML = '<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:20px">Tidak ditemukan</p>'; return; }
             grid.innerHTML = filtered.map(p => `
                 <div class="quick-pricelist-item" onclick="App.pos.quickAdd(${p.id})">
-                    <div class="item-name">${p.layanan || p.Layanan}</div>
-                    <div class="item-price">${App.ui.formatRupiah(p.harga || p.Harga)}/${p.satuan || p.Satuan}</div>
-                    <div style="font-size:0.7rem;color:var(--text-muted)">${p.kategori || p.Kategori} • ${p.estimasi || p.Estimasi}</div>
+                    <div class="item-name">${p.layanan}</div>
+                    <div class="item-price">${App.ui.formatRupiah(p.harga)}/${p.satuan}</div>
+                    <div style="font-size:0.7rem;color:var(--text-muted)">${p.kategori} • ${p.estimasi}</div>
                 </div>
             `).join('');
         },
@@ -1066,11 +1406,11 @@ const App = {
         quickAdd(id) {
             const item = State.pricelist.find(p => p.id == id);
             if (!item) return;
-            document.getElementById('pos-kategori').value = item.kategori || item.Kategori;
+            document.getElementById('pos-kategori').value = item.kategori;
             this.loadLayanan();
-            document.getElementById('pos-layanan').value = item.layanan || item.Layanan;
+            document.getElementById('pos-layanan').value = item.layanan;
             this.onLayananChange();
-            document.getElementById('pos-waktu').value = item.estimasi || item.Estimasi;
+            document.getElementById('pos-waktu').value = item.estimasi;
             this.onWaktuChange();
             Swal.fire({ icon:'info', title:'Layanan dipilih', text:'Isi berat/jumlah', timer:1200, showConfirmButton:false });
         }
@@ -1081,62 +1421,101 @@ const App = {
             const items = data || State.transaksi;
             const tbody = document.getElementById('transaksi-tbody');
             if (items.length === 0) { 
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:40px">Belum ada transaksi</td></tr>'; 
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:40px">Belum ada transaksi</td></tr>'; 
                 return; 
             }
             
-            tbody.innerHTML = items.map(t => {
-                console.log('Transaksi item:', t);
-                
-                const invoice = t.invoice || t.Invoice || t.INVOICE || 'N/A';
-                const tanggal = t.tanggal || t.Tanggal || t.TANGGAL || t.created_at;
-                const customer = t.customer || t.Customer || t.NAMA || t.nama || t.nama_customer || 'Unknown';
-                const hp = t.hp || t.HP || t.phone || t.PHONE || t.no_hp || '-';
-                const itemsData = t.items || t.Items || t.detail || [];
-                const itemCount = Array.isArray(itemsData) ? itemsData.length : 1;
-                const total = t.total || t.Total || t.TOTAL || t.harga_total || 0;
-                const metode = t.metode || t.Metode || t.METODE || t.pembayaran || 'Cash';
-                const status = t.status_bayar || t.status_pembayaran || t.Status_Bayar || t.STATUS || 'Belum Lunas';
-                
-                return `
-                    <tr>
-                        <td><span class="badge badge-primary">${invoice}</span></td>
-                        <td>${App.ui.formatDate(tanggal)}</td>
-                        <td>
-                            <div style="font-weight:600">${customer}</div>
-                            <small style="color:var(--text-muted)">${hp}</small>
-                        </td>
-                        <td>${itemCount} item</td>
-                        <td style="font-weight:600;color:var(--primary)">${App.ui.formatRupiah(total)}</td>
-                        <td>${metode}</td>
-                        <td><span class="badge ${status === 'Lunas' ? 'badge-success' : 'badge-warning'}">${status}</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-info" onclick="App.transaksi.reprint('${invoice}')"><i class="fas fa-print"></i></button>
-                            <button class="btn btn-sm btn-danger" onclick="App.transaksi.hapus('${invoice}')"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            tbody.innerHTML = items.map(t => `
+                <tr>
+                    <td><span class="badge badge-primary">${t.invoice}</span></td>
+                    <td>${App.ui.formatDate(t.tanggal)}</td>
+                    <td>
+                        <div style="font-weight:600">${t.customer}</div>
+                    </td>
+                    <td>${t.hp || '-'}</td>
+                    <td>${t.items ? t.items.length : 0} item</td>
+                    <td style="font-weight:600;color:var(--primary)">${App.ui.formatRupiah(t.total)}</td>
+                    <td>${t.metode}</td>
+                    <td><span class="badge ${t.status_bayar === 'Lunas' ? 'badge-success' : 'badge-warning'}">${t.status_bayar}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="App.transaksi.reprint('${t.invoice}')"><i class="fas fa-print"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="App.transaksi.hapus('${t.invoice}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
         },
         search(q) {
             const filtered = State.transaksi.filter(t => {
-                const inv = (t.invoice || t.Invoice || '').toLowerCase();
-                const cust = (t.customer || t.Customer || t.NAMA || '').toLowerCase();
-                return inv.includes(q.toLowerCase()) || cust.includes(q.toLowerCase());
+                const inv = (t.invoice || '').toLowerCase();
+                const cust = (t.customer || '').toLowerCase();
+                const hp = (t.hp || '').toString();
+                return inv.includes(q.toLowerCase()) || cust.includes(q.toLowerCase()) || hp.includes(q);
             });
             this.render(filtered);
         },
         reprint(invoice) {
-            const trx = State.transaksi.find(t => (t.invoice || t.Invoice) === invoice);
+            const trx = State.transaksi.find(t => t.invoice === invoice);
             if (trx) App.pos.printReceipt(trx, trx.status_bayar === 'Lunas' ? 'lunas' : 'draft');
         },
         hapus(invoice) {
             App.ui.confirm('Hapus transaksi?', 'Data tidak dapat dikembalikan', () => {
-                State.transaksi = State.transaksi.filter(t => (t.invoice || t.Invoice) !== invoice);
+                State.transaksi = State.transaksi.filter(t => t.invoice !== invoice);
+                State.detailTransaksi = State.detailTransaksi.filter(d => d.invoice !== invoice);
                 DB.set('transaksi', State.transaksi);
+                DB.set('detailTransaksi', State.detailTransaksi);
                 this.render();
                 Swal.fire({ icon:'success', timer:1000 });
             });
+        }
+    },
+
+    invoiceLunas: {
+        render() {
+            const tbody = document.getElementById('lunas-tbody');
+            const searchQ = (document.getElementById('lunas-search')?.value || '').toLowerCase();
+            
+            let lunasData = State.transaksi.filter(t => t.status_bayar === 'Lunas');
+            
+            if (searchQ) {
+                lunasData = lunasData.filter(t => {
+                    const nama = (t.customer || '').toLowerCase();
+                    const hp = (t.hp || '').toString();
+                    const inv = (t.invoice || '').toLowerCase();
+                    return nama.includes(searchQ) || hp.includes(searchQ) || inv.includes(searchQ);
+                });
+            }
+            
+            lunasData.sort((a, b) => new Date(b.tanggal_lunas || b.tanggal) - new Date(a.tanggal_lunas || a.tanggal));
+            
+            if (lunasData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--text-muted);padding:40px">Tidak ada invoice lunas' + (searchQ ? ' dengan kata kunci tersebut' : '') + '</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = lunasData.map(t => `
+                <tr>
+                    <td><span class="badge badge-success">${t.invoice}</span></td>
+                    <td>${App.ui.formatDate(t.tanggal)}</td>
+                    <td>${t.estimasi_selesai ? EstimasiHelper.formatTanggalPendek(t.estimasi_selesai) : '-'}</td>
+                    <td style="font-weight:600">${t.customer}</td>
+                    <td>${t.hp || '-'}</td>
+                    <td>${t.items ? t.items.length : 0} item</td>
+                    <td style="font-weight:600;color:var(--success)">${App.ui.formatRupiah(t.total)}</td>
+                    <td>${t.metode}</td>
+                    <td>${t.tanggal_lunas ? App.ui.formatDate(t.tanggal_lunas) : '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="App.invoiceLunas.reprint('${t.invoice}')" title="Cetak Ulang"><i class="fas fa-print"></i> Cetak</button>
+                    </td>
+                </tr>
+            `).join('');
+        },
+        reprint(invoice) {
+            const trx = State.transaksi.find(t => t.invoice === invoice);
+            if (trx) {
+                App.pos.printReceipt(trx, 'lunas');
+            } else {
+                Swal.fire({ icon: 'error', title: 'Transaksi tidak ditemukan' });
+            }
         }
     },
 
@@ -1146,15 +1525,15 @@ const App = {
             const tbody = document.getElementById('customer-tbody');
             if (items.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:40px">Belum ada customer</td></tr>'; return; }
             tbody.innerHTML = items.map(c => {
-                const trx = State.transaksi.filter(t => (t.customer || t.Customer) === (c.nama || c.Nama));
-                const totalBelanja = trx.reduce((s, t) => s + (t.total || t.Total || 0), 0);
+                const trx = State.transaksi.filter(t => t.customer === c.nama);
+                const totalBelanja = trx.reduce((s, t) => s + (t.total || 0), 0);
                 return `<tr>
-                    <td style="font-weight:600">${c.nama || c.Nama}</td>
-                    <td>${c.hp || c.HP}</td>
-                    <td>${c.alamat || c.Alamat || '-'}</td>
+                    <td style="font-weight:600">${c.nama}</td>
+                    <td>${c.hp}</td>
+                    <td>${c.alamat || '-'}</td>
                     <td>${trx.length}x</td>
                     <td>${App.ui.formatRupiah(totalBelanja)}</td>
-                    <td><span class="badge badge-info">${c.poin || c.Poin || 0} Poin</span></td>
+                    <td><span class="badge badge-info">${c.poin || 0} Poin</span></td>
                     <td>
                         <button class="btn btn-sm btn-outline" onclick="App.customer.edit(${c.id})"><i class="fas fa-edit"></i></button>
                         <button class="btn btn-sm btn-danger" onclick="App.customer.hapus(${c.id})"><i class="fas fa-trash"></i></button>
@@ -1163,7 +1542,7 @@ const App = {
             }).join('');
         },
         search(q) {
-            const f = State.customers.filter(c => (c.nama || c.Nama).toLowerCase().includes(q.toLowerCase()) || (c.hp || c.HP).includes(q));
+            const f = State.customers.filter(c => c.nama.toLowerCase().includes(q.toLowerCase()) || c.hp.includes(q));
             this.render(f);
         },
         openModal() {
@@ -1177,9 +1556,9 @@ const App = {
             const c = State.customers.find(x => x.id === id);
             if (!c) return;
             document.getElementById('customer-edit-id').value = c.id;
-            document.getElementById('customer-nama').value = c.nama || c.Nama;
-            document.getElementById('customer-hp').value = c.hp || c.HP;
-            document.getElementById('customer-alamat').value = c.alamat || c.Alamat || '';
+            document.getElementById('customer-nama').value = c.nama;
+            document.getElementById('customer-hp').value = c.hp;
+            document.getElementById('customer-alamat').value = c.alamat || '';
             App.ui.openModal('modal-customer');
         },
         async save(e) {
@@ -1194,7 +1573,7 @@ const App = {
             if (id) {
                 const idx = State.customers.findIndex(c => c.id == id);
                 data.id = parseInt(id); 
-                data.poin = State.customers[idx].poin || State.customers[idx].Poin || 0;
+                data.poin = State.customers[idx].poin || 0;
                 State.customers[idx] = data;
             } else {
                 data.id = Date.now();
@@ -1223,12 +1602,12 @@ const App = {
             if (items.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:40px">Belum ada pricelist</td></tr>'; return; }
             tbody.innerHTML = items.map(p => `
                 <tr>
-                    <td><span class="badge badge-purple">${p.kategori || p.Kategori}</span></td>
-                    <td style="font-weight:500">${p.layanan || p.Layanan}</td>
-                    <td><span class="badge badge-info">${p.estimasi || p.Estimasi}</span></td>
-                    <td>${p.satuan || p.Satuan}</td>
-                    <td style="font-weight:600;color:var(--primary)">${App.ui.formatRupiah(p.harga || p.Harga)}</td>
-                    <td><span class="badge badge-success">${p.status || p.Status || 'Aktif'}</span></td>
+                    <td><span class="badge badge-purple">${p.kategori}</span></td>
+                    <td style="font-weight:500">${p.layanan}</td>
+                    <td><span class="badge badge-info">${p.estimasi}</span></td>
+                    <td>${p.satuan}</td>
+                    <td style="font-weight:600;color:var(--primary)">${App.ui.formatRupiah(p.harga)}</td>
+                    <td><span class="badge badge-success">${p.status || 'Aktif'}</span></td>
                     <td>
                         <button class="btn btn-sm btn-outline" onclick="App.pricelist.edit(${p.id})"><i class="fas fa-edit"></i></button>
                         <button class="btn btn-sm btn-danger" onclick="App.pricelist.hapus(${p.id})"><i class="fas fa-trash"></i></button>
@@ -1237,7 +1616,7 @@ const App = {
             `).join('');
         },
         search(q) {
-            const f = State.pricelist.filter(p => (p.layanan || p.Layanan).toLowerCase().includes(q.toLowerCase()) || (p.kategori || p.Kategori).toLowerCase().includes(q.toLowerCase()));
+            const f = State.pricelist.filter(p => p.layanan.toLowerCase().includes(q.toLowerCase()) || p.kategori.toLowerCase().includes(q.toLowerCase()));
             this.render(f);
         },
         openModal() {
@@ -1249,11 +1628,11 @@ const App = {
             const p = State.pricelist.find(x => x.id === id);
             if (!p) return;
             document.getElementById('pricelist-edit-id').value = p.id;
-            document.getElementById('pricelist-kategori').value = p.kategori || p.Kategori;
-            document.getElementById('pricelist-layanan').value = p.layanan || p.Layanan;
-            document.getElementById('pricelist-estimasi').value = p.estimasi || p.Estimasi;
-            document.getElementById('pricelist-satuan').value = p.satuan || p.Satuan;
-            document.getElementById('pricelist-harga').value = p.harga || p.Harga;
+            document.getElementById('pricelist-kategori').value = p.kategori;
+            document.getElementById('pricelist-layanan').value = p.layanan;
+            document.getElementById('pricelist-estimasi').value = p.estimasi;
+            document.getElementById('pricelist-satuan').value = p.satuan;
+            document.getElementById('pricelist-harga').value = p.harga;
             App.ui.openModal('modal-pricelist');
         },
         async save(e) {
@@ -1304,112 +1683,220 @@ const App = {
             
             if (searchQ) {
                 active = active.filter(t => {
-                    const customerName = (t.customer || t.Customer || t.NAMA || t.nama || '').toLowerCase();
-                    const customerPhone = (t.hp || t.HP || t.phone || t.PHONE || t.no_hp || '').toString();
+                    const customerName = (t.customer || '').toLowerCase();
+                    const customerPhone = (t.hp || '').toString();
                     return customerName.includes(searchQ) || customerPhone.includes(searchQ);
                 });
             }
 
             if (active.length === 0) { 
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:40px">Tidak ada laundry aktif' + (searchQ ? ' dengan kata kunci tersebut' : '') + '</td></tr>'; 
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:40px">Tidak ada laundry aktif' + (searchQ ? ' dengan kata kunci tersebut' : '') + '</td></tr>'; 
                 return; 
             }
             
-            const statusList = ['Masuk','Dicuci','Dikeringkan','Disetrika','Packing','Siap Diambil','Sudah Diambil'];
             const badgeMap = { 'Masuk':'badge-info', 'Dicuci':'badge-warning', 'Dikeringkan':'badge-warning', 'Disetrika':'badge-purple', 'Packing':'badge-primary', 'Siap Diambil':'badge-success', 'Sudah Diambil':'badge-danger' };
             
             tbody.innerHTML = active.map(t => {
-                console.log('Data transaksi:', t);
-                
-                const invoice = t.invoice || t.Invoice || t.INVOICE || 'N/A';
-                const customer = t.customer || t.Customer || t.NAMA || t.nama || t.nama_customer || 'Unknown';
-                const hp = t.hp || t.HP || t.phone || t.PHONE || t.no_hp || t.no_telp || '-';
-                const tanggal = t.tanggal || t.Tanggal || t.TANGGAL || t.created_at;
-                const items = t.items || t.Items || t.detail || [];
-                const itemCount = Array.isArray(items) ? items.length : 1;
-                const status = t.status_laundry || t.status || t.Status || t.STATUS_LAUNDRY || 'Masuk';
-                const statusBayar = t.status_bayar || t.status_pembayaran || t.Status_Bayar || 'Belum Lunas';
+                const status = t.status_laundry || 'Masuk';
+                const statusBayar = t.status_bayar || 'Belum Lunas';
+                const estimasiSelesai = t.estimasi_selesai;
+                const isOverdue = EstimasiHelper.isOverdue(estimasiSelesai);
+                const bisaBayar = status === 'Siap Diambil';
                 
                 return `
                     <tr>
-                        <td><span class="badge badge-primary">${invoice}</span></td>
-                        <td style="font-weight:600">${customer}</td>
-                        <td>${hp}</td>
-                        <td>${App.ui.formatDate(tanggal)}</td>
-                        <td>${itemCount} item</td>
+                        <td><span class="badge badge-primary">${t.invoice}</span></td>
+                        <td style="font-weight:600">${t.customer}</td>
+                        <td>${t.hp || '-'}</td>
+                        <td>${App.ui.formatDate(t.tanggal)}</td>
+                        <td>
+                            ${estimasiSelesai ? `
+                                <span class="${isOverdue ? 'selesai-info overdue' : 'selesai-info'}" style="margin:0;padding:6px 10px;font-size:0.75rem">
+                                    <i class="fas fa-calendar-check"></i>
+                                    ${EstimasiHelper.formatTanggalPendek(estimasiSelesai)}
+                                    ${isOverdue ? '<i class="fas fa-exclamation-triangle" style="margin-left:4px"></i>' : ''}
+                                </span>
+                            ` : '<span style="color:var(--text-muted);font-size:0.85rem">-</span>'}
+                        </td>
+                        <td>${t.items ? t.items.length : 0} item</td>
                         <td>
                             <span class="badge ${badgeMap[status] || 'badge-info'}">${status}</span>
                             ${statusBayar === 'Belum Lunas' ? '<br><small style="color:var(--danger)">Belum Lunas</small>' : '<br><small style="color:var(--success)">Lunas</small>'}
                         </td>
                         <td>
-                            <select class="form-control" style="padding:6px 10px;font-size:0.85rem;width:auto" onchange="App.status.update('${invoice}', this.value)">
-                                ${statusList.map(s => `<option value="${s}" ${s === status ? 'selected' : ''}>${s}</option>`).join('')}
-                            </select>
+                            ${bisaBayar ? `
+                                <button class="btn-bayar" onclick="App.status.bayar('${t.invoice}')">
+                                    <i class="fas fa-money-bill-wave"></i> Bayar
+                                </button>
+                            ` : `
+                                <select class="form-control" style="padding:6px 10px;font-size:0.85rem;width:auto" onchange="App.status.update('${t.invoice}', this.value)">
+                                    <option value="Masuk" ${status === 'Masuk' ? 'selected' : ''}>Masuk</option>
+                                    <option value="Dicuci" ${status === 'Dicuci' ? 'selected' : ''}>Dicuci</option>
+                                    <option value="Dikeringkan" ${status === 'Dikeringkan' ? 'selected' : ''}>Dikeringkan</option>
+                                    <option value="Disetrika" ${status === 'Disetrika' ? 'selected' : ''}>Disetrika</option>
+                                    <option value="Packing" ${status === 'Packing' ? 'selected' : ''}>Packing</option>
+                                    <option value="Siap Diambil" ${status === 'Siap Diambil' ? 'selected' : ''}>Siap Diambil</option>
+                                </select>
+                            `}
                         </td>
                     </tr>
                 `;
             }).join('');
         },
-        async update(invoice, status) {
-            const t = State.transaksi.find(x => (x.invoice || x.Invoice) === invoice);
+        
+        async bayar(invoice) {
+            const t = State.transaksi.find(x => x.invoice === invoice);
             if (!t) return;
-
-            if (status === 'Sudah Diambil' && t.status_bayar === 'Belum Lunas') {
-                const { value: formValues } = await Swal.fire({
-                    title: 'Proses Pembayaran & Pengambilan',
-                    html: `
-                        <div style="text-align:left">
-                            <p><strong>Customer:</strong> ${t.customer || t.Customer || 'Unknown'} (${t.hp || t.HP || '-'})</p>
-                            <p><strong>Total Tagihan:</strong> <span style="color:var(--primary);font-size:1.2rem;font-weight:bold">${App.ui.formatRupiah(t.total || t.Total || 0)}</span></p>
-                            <hr style="margin:12px 0">
-                            <label style="font-size:0.85rem;color:var(--text-muted)">Metode Pembayaran</label>
-                            <select id="swal-metode" class="form-control" style="margin-bottom:12px">
-                                <option value="Cash">💵 Cash</option>
-                                <option value="QRIS">📱 QRIS</option>
-                                <option value="Transfer">🏦 Transfer</option>
-                            </select>
-                            <label style="font-size:0.85rem;color:var(--text-muted)">Uang Diterima (Kosongkan jika QRIS/Transfer)</label>
-                            <input id="swal-bayar" type="number" class="form-control" placeholder="Masukkan jumlah uang">
+            
+            const total = t.total || 0;
+            const customer = t.customer || 'Unknown';
+            const hp = t.hp || '-';
+            
+            const { value: formValues } = await Swal.fire({
+                title: '<i class="fas fa-money-bill-wave" style="color:var(--success)"></i> Pembayaran Transaksi',
+                html: `
+                    <div style="text-align:left;background:var(--bg);padding:16px;border-radius:12px;margin-bottom:16px">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+                            <span style="color:var(--text-muted)">Invoice:</span>
+                            <strong>${t.invoice}</strong>
                         </div>
-                    `,
-                    focusConfirm: false,
-                    showCancelButton: true,
-                    confirmButtonText: 'Bayar & Cetak Struk Lunas',
-                    preConfirm: () => {
-                        return {
-                            metode: document.getElementById('swal-metode').value,
-                            bayar: document.getElementById('swal-bayar').value
+                        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+                            <span style="color:var(--text-muted)">Customer:</span>
+                            <strong>${customer}</strong>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+                            <span style="color:var(--text-muted)">No. HP:</span>
+                            <strong>${hp}</strong>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px dashed var(--border)">
+                            <span style="font-weight:600">Total Tagihan:</span>
+                            <strong style="color:var(--primary);font-size:1.2rem">${App.ui.formatRupiah(total)}</strong>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label style="font-size:0.85rem;color:var(--text-muted);font-weight:600">Metode Pembayaran</label>
+                        <select id="swal-metode" class="form-control">
+                            <option value="Cash">💵 Cash</option>
+                            <option value="QRIS"> QRIS</option>
+                            <option value="Transfer">🏦 Transfer</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label style="font-size:0.85rem;color:var(--text-muted);font-weight:600">💵 Uang yang Dibayar</label>
+                        <input id="swal-bayar" type="number" class="form-control" placeholder="Masukkan jumlah uang" style="font-weight:700;font-size:1.1rem">
+                        <div class="quick-money-grid" style="margin-top:8px">
+                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = (parseInt(document.getElementById('swal-bayar').value)||0) + 50000">50rb</button>
+                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = (parseInt(document.getElementById('swal-bayar').value)||0) + 100000">100rb</button>
+                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = (parseInt(document.getElementById('swal-bayar').value)||0) + 150000">150rb</button>
+                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = (parseInt(document.getElementById('swal-bayar').value)||0) + 200000">200rb</button>
+                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = (parseInt(document.getElementById('swal-bayar').value)||0) + 250000">250rb</button>
+                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = ${total}; document.getElementById('swal-bayar').dispatchEvent(new Event('input'))">Uang Pas</button>
+                        </div>
+                        <div id="swal-kembalian-display" class="kembalian-display" style="display:none;margin-top:12px">
+                            <div class="kembalian-label">Kembalian</div>
+                            <div class="kembalian-value" id="swal-kembalian-value">Rp 0</div>
+                        </div>
+                    </div>
+                `,
+                didOpen: () => {
+                    const metodeEl = document.getElementById('swal-metode');
+                    const bayarEl = document.getElementById('swal-bayar');
+                    const kembalianDisplay = document.getElementById('swal-kembalian-display');
+                    const kembalianValue = document.getElementById('swal-kembalian-value');
+                    
+                    metodeEl.addEventListener('change', (e) => {
+                        if (e.target.value !== 'Cash') {
+                            bayarEl.value = total;
+                            kembalianDisplay.style.display = 'block';
+                            kembalianValue.textContent = 'Rp 0';
+                            kembalianDisplay.classList.remove('negative');
+                        } else {
+                            bayarEl.value = '';
+                            kembalianDisplay.style.display = 'none';
                         }
+                    });
+                    
+                    bayarEl.addEventListener('input', (e) => {
+                        const uangBayar = parseInt(e.target.value) || 0;
+                        const kembalian = uangBayar - total;
+                        if (uangBayar > 0) {
+                            kembalianDisplay.style.display = 'block';
+                            if (kembalian >= 0) {
+                                kembalianDisplay.classList.remove('negative');
+                                kembalianValue.textContent = App.ui.formatRupiah(kembalian);
+                            } else {
+                                kembalianDisplay.classList.add('negative');
+                                kembalianValue.textContent = '- ' + App.ui.formatRupiah(Math.abs(kembalian));
+                            }
+                        } else {
+                            kembalianDisplay.style.display = 'none';
+                        }
+                    });
+                },
+                focusConfirm: false,
+                showCancelButton: true,
+                cancelButtonText: 'Batal',
+                confirmButtonText: '<i class="fas fa-check-circle"></i> Bayar & Cetak Struk',
+                confirmButtonColor: '#10B981',
+                preConfirm: () => {
+                    const metode = document.getElementById('swal-metode').value;
+                    const bayar = parseInt(document.getElementById('swal-bayar').value) || 0;
+                    
+                    if (metode === 'Cash' && bayar < total) {
+                        Swal.showValidationMessage('Uang yang dibayar kurang dari total tagihan!');
+                        return false;
                     }
-                });
-
-                if (!formValues) {
-                    this.render();
-                    return; 
+                    if (bayar <= 0) {
+                        Swal.showValidationMessage('Masukkan jumlah uang yang dibayar!');
+                        return false;
+                    }
+                    
+                    return { metode, bayar };
                 }
+            });
 
-                let uangBayar = parseInt(formValues.bayar) || 0;
-                if (formValues.metode === 'Cash' && uangBayar < (t.total || t.Total || 0)) {
-                    Swal.fire('Error', 'Uang yang dibayar kurang dari total tagihan!', 'error');
-                    this.render();
-                    return;
-                }
-
-                t.status_bayar = 'Lunas';
-                t.metode = formValues.metode;
-                t.uang_bayar = formValues.metode === 'Cash' ? uangBayar : (t.total || t.Total || 0);
-                t.kembalian = formValues.metode === 'Cash' ? (uangBayar - (t.total || t.Total || 0)) : 0;
-                t.status_laundry = 'Sudah Diambil';
-                t.tanggal_lunas = new Date().toISOString();
-
-                DB.set('transaksi', State.transaksi);
-                App.pos.printReceipt(t, 'lunas');
+            if (!formValues) {
                 this.render();
-                App.dashboard.load();
-                
-                Swal.fire('Berhasil!', 'Status diubah menjadi Sudah Diambil, Lunas, dan Struk telah dicetak.', 'success');
-                return;
+                return; 
             }
+
+            t.status_bayar = 'Lunas';
+            t.metode = formValues.metode;
+            t.uang_bayar = formValues.bayar;
+            t.kembalian = formValues.metode === 'Cash' ? (formValues.bayar - total) : 0;
+            t.status_laundry = 'Sudah Diambil';
+            t.tanggal_lunas = new Date().toISOString();
+
+            DB.set('transaksi', State.transaksi);
+            
+            if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) {
+                await SheetsAPI.sync('save_transaksi', t);
+            }
+            
+            App.pos.printReceipt(t, 'lunas');
+            
+            this.render();
+            App.invoiceLunas.render();
+            App.dashboard.load();
+            
+            Swal.fire({ 
+                icon:'success', 
+                title:'Pembayaran Berhasil!', 
+                html: `<div style="text-align:left;font-size:0.9rem">
+                    <p><strong>Invoice:</strong> ${t.invoice}</p>
+                    <p><strong>Customer:</strong> ${customer}</p>
+                    <p><strong>Total:</strong> ${App.ui.formatRupiah(total)}</p>
+                    <p><strong>Bayar:</strong> ${App.ui.formatRupiah(formValues.bayar)}</p>
+                    <p><strong>Kembalian:</strong> ${App.ui.formatRupiah(t.kembalian)}</p>
+                    <p style="color:var(--success);font-weight:600;margin-top:8px">✓ Status: LUNAS & SUDAH DIAMBIL</p>
+                </div>`,
+                timer: 3000
+            });
+        },
+        
+        async update(invoice, status) {
+            const t = State.transaksi.find(x => x.invoice === invoice);
+            if (!t) return;
 
             t.status_laundry = status; 
             DB.set('transaksi', State.transaksi); 
@@ -1427,10 +1914,10 @@ const App = {
             if (State.pengeluaran.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:40px">Belum ada pengeluaran</td></tr>'; return; }
             tbody.innerHTML = State.pengeluaran.map(p => `
                 <tr>
-                    <td>${App.ui.formatDate(p.tanggal || p.Tanggal)}</td>
-                    <td><span class="badge badge-warning">${p.kategori || p.Kategori}</span></td>
-                    <td>${p.keterangan || p.Keterangan}</td>
-                    <td style="font-weight:600;color:var(--danger)">${App.ui.formatRupiah(p.nominal || p.Nominal)}</td>
+                    <td>${App.ui.formatDate(p.tanggal)}</td>
+                    <td><span class="badge badge-warning">${p.kategori}</span></td>
+                    <td>${p.keterangan}</td>
+                    <td style="font-weight:600;color:var(--danger)">${App.ui.formatRupiah(p.nominal)}</td>
                     <td>
                         <button class="btn btn-sm btn-outline" onclick="App.pengeluaran.edit(${p.id})"><i class="fas fa-edit"></i></button>
                         <button class="btn btn-sm btn-danger" onclick="App.pengeluaran.hapus(${p.id})"><i class="fas fa-trash"></i></button>
@@ -1447,9 +1934,9 @@ const App = {
             const p = State.pengeluaran.find(x => x.id === id);
             if (!p) return;
             document.getElementById('pengeluaran-edit-id').value = p.id;
-            document.getElementById('pengeluaran-kategori').value = p.kategori || p.Kategori;
-            document.getElementById('pengeluaran-keterangan').value = p.keterangan || p.Keterangan;
-            document.getElementById('pengeluaran-nominal').value = p.nominal || p.Nominal;
+            document.getElementById('pengeluaran-kategori').value = p.kategori;
+            document.getElementById('pengeluaran-keterangan').value = p.keterangan;
+            document.getElementById('pengeluaran-nominal').value = p.nominal;
             App.ui.openModal('modal-pengeluaran');
         },
         async save(e) {
@@ -1463,7 +1950,7 @@ const App = {
             if (id) {
                 const idx = State.pengeluaran.findIndex(p => p.id == id);
                 data.id = parseInt(id); 
-                data.tanggal = State.pengeluaran[idx].tanggal || State.pengeluaran[idx].Tanggal;
+                data.tanggal = State.pengeluaran[idx].tanggal;
                 State.pengeluaran[idx] = data;
             } else {
                 data.id = Date.now(); 
@@ -1492,10 +1979,10 @@ const App = {
             if (State.voucher.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:40px">Belum ada voucher</td></tr>'; return; }
             tbody.innerHTML = State.voucher.map(v => `
                 <tr>
-                    <td><span class="badge badge-primary">${v.kode || v.Kode}</span></td>
-                    <td>${(v.tipe || v.Tipe) === 'persen' ? 'Persen' : 'Nominal'}</td>
-                    <td style="font-weight:600">${(v.tipe || v.Tipe) === 'persen' ? (v.nilai || v.Nilai) + '%' : App.ui.formatRupiah(v.nilai || v.Nilai)}</td>
-                    <td><span class="badge badge-success">${v.status || v.Status || 'Aktif'}</span></td>
+                    <td><span class="badge badge-primary">${v.kode}</span></td>
+                    <td>${v.tipe === 'persen' ? 'Persen' : 'Nominal'}</td>
+                    <td style="font-weight:600">${v.tipe === 'persen' ? v.nilai + '%' : App.ui.formatRupiah(v.nilai)}</td>
+                    <td><span class="badge badge-success">${v.status || 'Aktif'}</span></td>
                     <td>
                         <button class="btn btn-sm btn-outline" onclick="App.voucher.edit(${v.id})"><i class="fas fa-edit"></i></button>
                         <button class="btn btn-sm btn-danger" onclick="App.voucher.hapus(${v.id})"><i class="fas fa-trash"></i></button>
@@ -1512,9 +1999,9 @@ const App = {
             const v = State.voucher.find(x => x.id === id);
             if (!v) return;
             document.getElementById('voucher-edit-id').value = v.id;
-            document.getElementById('voucher-kode').value = v.kode || v.Kode;
-            document.getElementById('voucher-tipe').value = v.tipe || v.Tipe;
-            document.getElementById('voucher-nilai').value = v.nilai || v.Nilai;
+            document.getElementById('voucher-kode').value = v.kode;
+            document.getElementById('voucher-tipe').value = v.tipe;
+            document.getElementById('voucher-nilai').value = v.nilai;
             App.ui.openModal('modal-voucher');
         },
         async save(e) {
@@ -1556,9 +2043,9 @@ const App = {
             const sampai = document.getElementById('laporan-sampai').value;
             if (!dari || !sampai) return Swal.fire({ icon:'warning', title:'Pilih rentang tanggal' });
             const d1 = new Date(dari), d2 = new Date(sampai); d2.setHours(23,59,59);
-            const filtered = State.transaksi.filter(t => { const d = new Date(t.tanggal || t.Tanggal); return d >= d1 && d <= d2; });
-            const omzet = filtered.reduce((s, t) => s + (t.total || t.Total || 0), 0);
-            const pengeluaran = State.pengeluaran.filter(p => { const d = new Date(p.tanggal || p.Tanggal); return d >= d1 && d <= d2; }).reduce((s, p) => s + (p.nominal || p.Nominal || 0), 0);
+            const filtered = State.transaksi.filter(t => { try { const d = new Date(t.tanggal); return d >= d1 && d <= d2; } catch { return false; } });
+            const omzet = filtered.reduce((s, t) => s + (t.total || 0), 0);
+            const pengeluaran = State.pengeluaran.filter(p => { try { const d = new Date(p.tanggal); return d >= d1 && d <= d2; } catch { return false; } }).reduce((s, p) => s + (p.nominal || 0), 0);
             const laba = omzet - pengeluaran;
             document.getElementById('laporan-content').innerHTML = `
                 <div class="kpi-grid">
@@ -1569,8 +2056,8 @@ const App = {
                 </div>
                 <div class="card" style="margin-top:24px">
                     <h4 style="margin-bottom:16px">Detail Transaksi</h4>
-                    <table class="data-table"><thead><tr><th>Invoice</th><th>Tanggal</th><th>Customer</th><th>Total</th></tr></thead><tbody>
-                        ${filtered.map(t => `<tr><td>${t.invoice || t.Invoice}</td><td>${App.ui.formatDate(t.tanggal || t.Tanggal)}</td><td>${t.customer || t.Customer}</td><td>${App.ui.formatRupiah(t.total || t.Total)}</td></tr>`).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:20px">Tidak ada data</td></tr>'}
+                    <table class="data-table"><thead><tr><th>Invoice</th><th>Tanggal</th><th>Customer</th><th>No. HP</th><th>Total</th></tr></thead><tbody>
+                        ${filtered.map(t => `<tr><td>${t.invoice}</td><td>${App.ui.formatDate(t.tanggal)}</td><td>${t.customer}</td><td>${t.hp || '-'}</td><td>${App.ui.formatRupiah(t.total)}</td></tr>`).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px">Tidak ada data</td></tr>'}
                     </tbody></table>
                 </div>
             `;
@@ -1580,9 +2067,9 @@ const App = {
             const sampai = document.getElementById('laporan-sampai').value;
             if (!dari || !sampai) return Swal.fire({ icon:'warning', title:'Pilih rentang tanggal dulu' });
             const d1 = new Date(dari), d2 = new Date(sampai); d2.setHours(23,59,59);
-            const filtered = State.transaksi.filter(t => { const d = new Date(t.tanggal || t.Tanggal); return d >= d1 && d <= d2; });
-            let csv = 'Invoice,Tanggal,Customer,Total,Metode,Status\n';
-            filtered.forEach(t => { csv += `${t.invoice || t.Invoice},${App.ui.formatDate(t.tanggal || t.Tanggal)},${t.customer || t.Customer},${t.total || t.Total},${t.metode || t.Metode},${t.status_bayar || t['Status Bayar']}\n`; });
+            const filtered = State.transaksi.filter(t => { try { const d = new Date(t.tanggal); return d >= d1 && d <= d2; } catch { return false; } });
+            let csv = 'Invoice,Tanggal,Customer,No HP,Total,Metode,Status\n';
+            filtered.forEach(t => { csv += `${t.invoice},${App.ui.formatDate(t.tanggal)},${t.customer},${t.hp || '-'},${t.total},${t.metode},${t.status_bayar}\n`; });
             const blob = new Blob([csv], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a'); a.href = url; a.download = `laporan-${dari}-${sampai}.csv`; a.click();
@@ -1595,9 +2082,9 @@ const App = {
             const now = new Date();
             const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
             const yearStart = new Date(now.getFullYear(), 0, 1);
-            const omzetBulan = State.transaksi.filter(t => new Date(t.tanggal || t.Tanggal) >= monthStart).reduce((s, t) => s + (t.total || t.Total || 0), 0);
-            const omzetTahun = State.transaksi.filter(t => new Date(t.tanggal || t.Tanggal) >= yearStart).reduce((s, t) => s + (t.total || t.Total || 0), 0);
-            const totalPengeluaran = State.pengeluaran.reduce((s, p) => s + (p.nominal || p.Nominal || 0), 0);
+            const omzetBulan = State.transaksi.filter(t => { try { return new Date(t.tanggal) >= monthStart; } catch { return false; } }).reduce((s, t) => s + (t.total || 0), 0);
+            const omzetTahun = State.transaksi.filter(t => { try { return new Date(t.tanggal) >= yearStart; } catch { return false; } }).reduce((s, t) => s + (t.total || 0), 0);
+            const totalPengeluaran = State.pengeluaran.reduce((s, p) => s + (p.nominal || 0), 0);
             const laba = omzetTahun - totalPengeluaran;
             
             document.getElementById('owner-kpis').innerHTML = [
@@ -1607,25 +2094,79 @@ const App = {
                 { label:'Laba Bersih Tahun', value: App.ui.formatRupiah(laba), color:'var(--success)', icon:'fa-coins' }
             ].map(k => `<div class="card kpi-card"><div class="kpi-icon" style="background:${k.color}20;color:${k.color}"><i class="fas ${k.icon}"></i></div><div class="kpi-label">${k.label}</div><div class="kpi-value">${k.value}</div></div>`).join('');
             
+            // Top Customer
             const custMap = {};
-            State.transaksi.forEach(t => { custMap[t.customer || t.Customer] = (custMap[t.customer || t.Customer] || 0) + (t.total || t.Total || 0); });
+            State.transaksi.forEach(t => { custMap[t.customer] = (custMap[t.customer] || 0) + (t.total || 0); });
             const topCust = Object.entries(custMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
-            document.getElementById('top-customer-list').innerHTML = topCust.length === 0 ? '<p style="color:var(--text-muted)">Belum ada data</p>' : topCust.map(([n, v], i) => `
-                <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:10px;margin-bottom:8px">
-                    <div><span style="font-weight:700;color:var(--primary)">#${i+1}</span> ${n}</div>
-                    <div style="font-weight:600">${App.ui.formatRupiah(v)}</div>
-                </div>
-            `).join('');
+            document.getElementById('top-customer-list').innerHTML = topCust.length === 0 ? '<p style="color:var(--text-muted)">Belum ada data</p>' : topCust.map(([n, v], i) => {
+                const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                return `
+                    <div class="top-kategori-item">
+                        <div class="top-kategori-rank ${rankClass}">#${i+1}</div>
+                        <div style="flex:1">
+                            <div style="font-weight:600">${n}</div>
+                        </div>
+                        <div style="font-weight:700;color:var(--primary)">${App.ui.formatRupiah(v)}</div>
+                    </div>
+                `;
+            }).join('');
             
+            // Top Layanan - dari DETAIL_TRANSAKSI (nama layanan, bukan ID)
             const layMap = {};
-            State.transaksi.forEach(t => (t.items || []).forEach(i => { layMap[i.nama] = (layMap[i.nama] || 0) + i.subtotal; }));
+            State.detailTransaksi.forEach(d => {
+                const nama = d.nama;
+                if (nama && nama !== 'Unknown') {
+                    layMap[nama] = (layMap[nama] || 0) + (d.subtotal || 0);
+                }
+            });
+            // Fallback: jika detail kosong, ambil dari transaksi items
+            if (Object.keys(layMap).length === 0) {
+                State.transaksi.forEach(t => {
+                    if (t.items && Array.isArray(t.items)) {
+                        t.items.forEach(item => {
+                            const nama = item.nama;
+                            if (nama && nama !== 'Unknown') {
+                                layMap[nama] = (layMap[nama] || 0) + (item.subtotal || 0);
+                            }
+                        });
+                    }
+                });
+            }
             const topLay = Object.entries(layMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
-            document.getElementById('top-layanan-list').innerHTML = topLay.length === 0 ? '<p style="color:var(--text-muted)">Belum ada data</p>' : topLay.map(([n, v], i) => `
-                <div style="display:flex;justify-content:space-between;padding:10px;background:var(--bg);border-radius:10px;margin-bottom:8px">
-                    <div><span style="font-weight:700;color:var(--secondary)">#${i+1}</span> ${n}</div>
-                    <div style="font-weight:600">${App.ui.formatRupiah(v)}</div>
-                </div>
-            `).join('');
+            document.getElementById('top-layanan-list').innerHTML = topLay.length === 0 ? '<p style="color:var(--text-muted)">Belum ada data</p>' : topLay.map(([n, v], i) => {
+                const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                return `
+                    <div class="top-kategori-item">
+                        <div class="top-kategori-rank ${rankClass}">#${i+1}</div>
+                        <div style="flex:1">
+                            <div style="font-weight:600">${n}</div>
+                        </div>
+                        <div style="font-weight:700;color:var(--secondary)">${App.ui.formatRupiah(v)}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Top Kategori - dari DETAIL_TRANSAKSI
+            const katMap = {};
+            State.detailTransaksi.forEach(d => {
+                const kat = d.kategori || DataHelper.guessKategori(d.nama);
+                if (kat) {
+                    katMap[kat] = (katMap[kat] || 0) + (d.subtotal || 0);
+                }
+            });
+            const topKat = Object.entries(katMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            document.getElementById('top-kategori-list').innerHTML = topKat.length === 0 ? '<p style="color:var(--text-muted)">Belum ada data</p>' : topKat.map(([n, v], i) => {
+                const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                return `
+                    <div class="top-kategori-item">
+                        <div class="top-kategori-rank ${rankClass}">#${i+1}</div>
+                        <div style="flex:1">
+                            <div style="font-weight:600">${n}</div>
+                        </div>
+                        <div style="font-weight:700;color:var(--purple)">${App.ui.formatRupiah(v)}</div>
+                    </div>
+                `;
+            }).join('');
         }
     },
 
