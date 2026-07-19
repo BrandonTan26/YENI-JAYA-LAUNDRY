@@ -117,13 +117,6 @@
         .sync-status.disconnected { background: rgba(239,68,68,0.1); color: var(--danger); }
         .sync-status.syncing { background: rgba(245,158,11,0.1); color: var(--warning); }
 
-        .selesai-info { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1)); border: 1px solid var(--info); border-radius: 10px; padding: 10px 14px; margin-top: 10px; font-size: 0.85rem; color: var(--info); font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .selesai-info.overdue { background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(245,158,11,0.1)); border-color: var(--danger); color: var(--danger); }
-        
-        .btn-bayar { background: linear-gradient(135deg, var(--success), #059669); color: white; padding: 8px 16px; border-radius: 10px; border: none; font-weight: 600; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-        .btn-bayar:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
-        .btn-bayar:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
         #print-area { display: none; }
         @media print {
             body * { visibility: hidden; }
@@ -160,7 +153,6 @@
             <a class="menu-item active" onclick="App.router('dashboard')"><i class="fas fa-home"></i> Dashboard</a>
             <a class="menu-item" onclick="App.router('kasir')"><i class="fas fa-cash-register"></i> Kasir (POS)</a>
             <a class="menu-item" onclick="App.router('transaksi')"><i class="fas fa-receipt"></i> History Transaksi</a>
-            <a class="menu-item" onclick="App.router('invoiceLunas')"><i class="fas fa-file-invoice-dollar"></i> Invoice Lunas</a>
             <a class="menu-item" onclick="App.router('customer')"><i class="fas fa-users"></i> Customer</a>
             <a class="menu-item" onclick="App.router('pricelist')"><i class="fas fa-tags"></i> Pricelist</a>
             <a class="menu-item" onclick="App.router('status')"><i class="fas fa-tshirt"></i> Status Laundry</a>
@@ -226,16 +218,12 @@
                                     <input type="text" id="pos-harga-total" class="form-control" readonly style="background:var(--bg);font-weight:700;color:var(--success);font-size:1.05rem">
                                 </div>
                             </div>
-                            <div id="estimasi-selesai-info" class="selesai-info" style="display:none">
-                                <i class="fas fa-calendar-check"></i>
-                                <span id="estimasi-selesai-text">Estimasi selesai: -</span>
-                            </div>
                             <button class="btn btn-primary" style="width:100%;margin-top:16px;justify-content:center" onclick="App.pos.addToCart()"><i class="fas fa-plus"></i> Tambah ke Keranjang</button>
                         </div>
 
                         <div class="card" style="margin-top:16px">
                             <h4 style="margin-bottom:16px;color:var(--purple)"><i class="fas fa-th-large"></i> Pricelist Cepat</h4>
-                            <input type="text" id="pos-search-pricelist" class="form-control" placeholder="🔍 Cari layanan..." oninput="App.pos.filterPricelist(this.value)" style="margin-bottom:16px">
+                            <input type="text" id="pos-search-pricelist" class="form-control" placeholder=" Cari layanan..." oninput="App.pos.filterPricelist(this.value)" style="margin-bottom:16px">
                             <div id="quick-pricelist-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;max-height:400px;overflow-y:auto"></div>
                         </div>
                     </div>
@@ -292,15 +280,6 @@
                 </div>
             </div>
 
-            <!-- MENU BARU: INVOICE LUNAS -->
-            <div id="view-invoiceLunas" class="view-section">
-                <div class="card">
-                    <h4 style="margin-bottom:16px"><i class="fas fa-file-invoice-dollar" style="color:var(--success)"></i> Invoice Sudah Lunas</h4>
-                    <input type="text" id="lunas-search" class="form-control" placeholder=" Cari nama pelanggan atau no HP..." style="margin-bottom:16px" oninput="App.invoiceLunas.render()">
-                    <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Tanggal Masuk</th><th>Tanggal Selesai</th><th>Customer</th><th>No. HP</th><th>Total</th><th>Metode</th><th>Tanggal Bayar</th><th>Aksi</th></tr></thead><tbody id="lunas-tbody"></tbody></table></div>
-                </div>
-            </div>
-
             <div id="view-customer" class="view-section">
                 <div class="card">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
@@ -327,7 +306,7 @@
                 <div class="card">
                     <h4 style="margin-bottom:16px">Tracking Status Laundry</h4>
                     <input type="text" id="status-search" class="form-control" placeholder="🔍 Cari Nama Pelanggan atau No. HP..." style="margin-bottom:16px" oninput="App.status.render()">
-                    <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Customer</th><th>No. HP</th><th>Tanggal Masuk</th><th>Estimasi Selesai</th><th>Item</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="status-tbody"></tbody></table></div>
+                    <div style="overflow-x:auto"><table class="data-table"><thead><tr><th>Invoice</th><th>Customer</th><th>No. HP</th><th>Tanggal</th><th>Item</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="status-tbody"></tbody></table></div>
                 </div>
             </div>
 
@@ -370,7 +349,7 @@
                     <div class="kpi-grid" id="owner-kpis"></div>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-                    <div class="card"><h4 style="margin-bottom:16px"> Top Customer</h4><div id="top-customer-list"></div></div>
+                    <div class="card"><h4 style="margin-bottom:16px">🏆 Top Customer</h4><div id="top-customer-list"></div></div>
                     <div class="card"><h4 style="margin-bottom:16px">⭐ Top Layanan</h4><div id="top-layanan-list"></div></div>
                 </div>
             </div>
@@ -475,8 +454,7 @@
     <div id="print-status-badge" class="print-lunas-badge" style="display:none;"></div>
     <div class="print-divider"></div>
     <div class="print-row"><span>No:</span><span id="print-invoice"></span></div>
-    <div class="print-row"><span>Tgl Masuk:</span><span id="print-tanggal"></span></div>
-    <div class="print-row"><span>Est. Selesai:</span><span id="print-selesai"></span></div>
+    <div class="print-row"><span>Tgl:</span><span id="print-tanggal"></span></div>
     <div class="print-row"><span>Customer:</span><span id="print-customer"></span></div>
     <div class="print-divider"></div>
     <div id="print-items"></div>
@@ -498,7 +476,7 @@
             <input type="hidden" id="pricelist-edit-id">
             <div class="input-group"><label>Kategori</label><select id="pricelist-kategori" class="form-control" required><option value="KILOAN">KILOAN</option><option value="BEDDING">BEDDING</option><option value="BONEKA">BONEKA</option><option value="KARPET & PERMADANI">KARPET & PERMADANI</option><option value="GORDEN">GORDEN</option><option value="TAS & KOPER">TAS & KOPER</option><option value="JAS">JAS</option><option value="LAINNYA">LAINNYA</option></select></div>
             <div class="input-group"><label>Nama Layanan</label><input type="text" id="pricelist-layanan" class="form-control" required></div>
-            <div class="input-group"><label>Estimasi Waktu</label><input type="text" id="pricelist-estimasi" class="form-control" required placeholder="Contoh: 6 Jam, 1 Hari, 3 Hari, 1 Minggu, Normal"></div>
+            <div class="input-group"><label>Estimasi Waktu</label><input type="text" id="pricelist-estimasi" class="form-control" required placeholder="Contoh: 6 Jam, 1 Hari, 1 Minggu, Normal"></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
                 <div class="input-group"><label>Satuan</label><select id="pricelist-satuan" class="form-control"><option>Kg</option><option>Pcs</option><option>Unit</option><option>Pasang</option><option>Set</option><option>Meter</option></select></div>
                 <div class="input-group"><label>Harga (Rp)</label><input type="number" id="pricelist-harga" class="form-control" required min="0"></div>
@@ -635,57 +613,6 @@ const SheetsAPI = {
     }
 };
 
-// Helper: Parsing estimasi waktu ke milidetik
-const EstimasiHelper = {
-    parse(estimasi) {
-        if (!estimasi) return 2 * 24 * 60 * 60 * 1000; // default 2 hari
-        const e = String(estimasi).toLowerCase().trim();
-        
-        // Pattern: "6 Jam", "1 Hari", "3 Hari", "1 Minggu", "Normal"
-        const jamMatch = e.match(/(\d+)\s*jam/);
-        if (jamMatch) return parseInt(jamMatch[1]) * 60 * 60 * 1000;
-        
-        const hariMatch = e.match(/(\d+)\s*hari/);
-        if (hariMatch) return parseInt(hariMatch[1]) * 24 * 60 * 60 * 1000;
-        
-        const mingguMatch = e.match(/(\d+)\s*minggu/);
-        if (mingguMatch) return parseInt(mingguMatch[1]) * 7 * 24 * 60 * 60 * 1000;
-        
-        if (e.includes('normal')) return 2 * 24 * 60 * 60 * 1000;
-        
-        return 2 * 24 * 60 * 60 * 1000;
-    },
-    
-    hitungTanggalSelesai(estimasi, dariTanggal = null) {
-        const mulai = dariTanggal ? new Date(dariTanggal) : new Date();
-        const selesai = new Date(mulai.getTime() + this.parse(estimasi));
-        return selesai;
-    },
-    
-    formatTanggalSelesai(estimasi) {
-        const selesai = this.hitungTanggalSelesai(estimasi);
-        return selesai.toLocaleString('id-ID', { 
-            weekday: 'short', 
-            day: '2-digit', 
-            month: 'short', 
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    },
-    
-    formatTanggalPendek(tanggal) {
-        if (!tanggal) return '-';
-        const d = new Date(tanggal);
-        return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    },
-    
-    isOverdue(tanggalSelesai) {
-        if (!tanggalSelesai) return false;
-        return new Date(tanggalSelesai) < new Date();
-    }
-};
-
 const App = {
     async init() {
         this.ui.startClock();
@@ -703,10 +630,26 @@ const App = {
         this.pengeluaran.render();
         this.voucher.render();
         this.status.render();
-        this.invoiceLunas.render();
         this.owner.load();
         this.setting.loadForm();
         if (window.innerWidth <= 768) document.getElementById('mobile-menu-btn').style.display = 'inline-flex';
+        
+        // Debug structure setelah load
+        setTimeout(() => {
+            this.debugData.checkStructure();
+        }, 1500);
+    },
+
+    debugData: {
+        checkStructure() {
+            console.log('=== DEBUG DATA STRUCTURE ===');
+            console.log('Total transaksi:', State.transaksi.length);
+            if (State.transaksi.length > 0) {
+                console.log('Struktur data pertama:', State.transaksi[0]);
+                console.log('Keys yang tersedia:', Object.keys(State.transaksi[0]));
+            }
+            console.log('=========================');
+        }
     },
 
     async syncAll() {
@@ -735,12 +678,7 @@ const App = {
         const target = document.getElementById(`view-${viewName}`);
         if (target) {
             target.classList.add('active');
-            const titles = { 
-                dashboard:'Dashboard', kasir:'Kasir (POS)', transaksi:'History Transaksi', 
-                invoiceLunas:'Invoice Lunas', customer:'Customer', pricelist:'Pricelist', 
-                status:'Status Laundry', pengeluaran:'Pengeluaran', voucher:'Voucher', 
-                laporan:'Laporan', owner:'Dashboard Owner', setting:'Setting' 
-            };
+            const titles = { dashboard:'Dashboard', kasir:'Kasir (POS)', transaksi:'History Transaksi', customer:'Customer', pricelist:'Pricelist', status:'Status Laundry', pengeluaran:'Pengeluaran', voucher:'Voucher', laporan:'Laporan', owner:'Dashboard Owner', setting:'Setting' };
             document.getElementById('page-title').textContent = titles[viewName] || viewName;
             document.querySelectorAll('.menu-item').forEach(item => {
                 if (item.getAttribute('onclick')?.includes(`'${viewName}'`)) item.classList.add('active');
@@ -750,7 +688,6 @@ const App = {
         if (viewName === 'dashboard') this.dashboard.load();
         if (viewName === 'owner') this.owner.load();
         if (viewName === 'transaksi') this.transaksi.render();
-        if (viewName === 'invoiceLunas') this.invoiceLunas.render();
         if (viewName === 'status') this.status.render();
     },
 
@@ -887,7 +824,6 @@ const App = {
                 document.getElementById('pos-harga-satuan').value = '';
                 document.getElementById('pos-satuan').value = '';
                 document.getElementById('pos-harga-total').value = '';
-                document.getElementById('estimasi-selesai-info').style.display = 'none';
                 return;
             }
             const filtered = kat ? State.pricelist.filter(p => (p.kategori || p.Kategori) === kat && (p.layanan || p.Layanan) === layanan) : State.pricelist.filter(p => (p.layanan || p.Layanan) === layanan);
@@ -903,18 +839,12 @@ const App = {
             if (!layanan || !waktu) {
                 document.getElementById('pos-harga-satuan').value = '';
                 document.getElementById('pos-harga-total').value = '';
-                document.getElementById('estimasi-selesai-info').style.display = 'none';
                 return;
             }
             const item = State.pricelist.find(p => (p.layanan || p.Layanan) === layanan && (p.estimasi || p.Estimasi) === waktu && (!kat || (p.kategori || p.Kategori) === kat));
             if (item) {
                 document.getElementById('pos-harga-satuan').value = App.ui.formatRupiah(item.harga || item.Harga);
                 this.calculateSubtotal();
-                
-                // Tampilkan estimasi selesai
-                const estimasiText = EstimasiHelper.formatTanggalSelesai(waktu);
-                document.getElementById('estimasi-selesai-text').textContent = `Estimasi selesai: ${estimasiText}`;
-                document.getElementById('estimasi-selesai-info').style.display = 'flex';
             }
         },
         calculateSubtotal() {
@@ -938,18 +868,7 @@ const App = {
             const hargaText = document.getElementById('pos-harga-satuan').value;
             const harga = parseInt(hargaText.replace(/[^\d]/g, '')) || 0;
             
-            // Hitung tanggal selesai
-            const tanggalSelesai = EstimasiHelper.hitungTanggalSelesai(waktu).toISOString();
-            
-            State.cart.push({ 
-                id: Date.now(), 
-                nama: layanan, 
-                berat, 
-                waktu, 
-                hargaSatuan: harga, 
-                subtotal: berat * harga,
-                estimasi_selesai: tanggalSelesai
-            });
+            State.cart.push({ id: Date.now(), nama: layanan, berat, waktu, hargaSatuan: harga, subtotal: berat * harga });
             this.renderCart();
             
             document.getElementById('pos-berat').value = '';
@@ -958,7 +877,6 @@ const App = {
             document.getElementById('pos-harga-satuan').value = '';
             document.getElementById('pos-satuan').value = '';
             document.getElementById('pos-harga-total').value = '';
-            document.getElementById('estimasi-selesai-info').style.display = 'none';
             Swal.fire({ icon:'success', timer:700, showConfirmButton:false });
         },
         renderCart() {
@@ -966,21 +884,18 @@ const App = {
             if (State.cart.length === 0) {
                 c.innerHTML = '<p style="text-align:center;color:var(--text-muted);margin-top:40px">Keranjang kosong</p>';
             } else {
-                c.innerHTML = State.cart.map((item, i) => {
-                    const tglSelesai = EstimasiHelper.formatTanggalPendek(item.estimasi_selesai);
-                    return `
+                c.innerHTML = State.cart.map((item, i) => `
                     <div class="cart-item">
                         <div style="flex:1">
                             <div style="font-weight:600">${item.nama}</div>
                             <div style="font-size:0.8rem;color:var(--text-muted)">${item.berat} × ${App.ui.formatRupiah(item.hargaSatuan)} × ${item.waktu}</div>
-                            <div style="font-size:0.75rem;color:var(--info);margin-top:4px"><i class="fas fa-calendar-check"></i> Selesai: ${tglSelesai}</div>
                         </div>
                         <div style="display:flex;align-items:center;gap:12px">
                             <span style="font-weight:600;color:var(--primary)">${App.ui.formatRupiah(item.subtotal)}</span>
                             <button class="btn btn-sm btn-danger" onclick="App.pos.removeCart(${i})"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
-                `}).join('');
+                `).join('');
             }
             this.calculateTotal();
         },
@@ -1057,12 +972,6 @@ const App = {
                 statusBayar = 'Lunas';
             }
             
-            // Hitung estimasi selesai paling akhir dari semua item
-            const estimasiSelesaiList = State.cart.map(i => i.estimasi_selesai).filter(Boolean);
-            const tanggalSelesaiTerakhir = estimasiSelesaiList.length > 0 
-                ? new Date(Math.max(...estimasiSelesaiList.map(d => new Date(d).getTime()))).toISOString()
-                : new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString();
-            
             const trx = {
                 invoice: State.currentInvoice,
                 tanggal: new Date().toISOString(),
@@ -1075,9 +984,7 @@ const App = {
                 kembalian: kembalian,
                 metode: method,
                 status_bayar: statusBayar,
-                status_laundry: 'Masuk',
-                estimasi_selesai: tanggalSelesaiTerakhir,
-                tanggal_lunas: statusBayar === 'Lunas' ? new Date().toISOString() : null
+                status_laundry: 'Masuk'
             };
             
             State.transaksi.unshift(trx);
@@ -1092,7 +999,6 @@ const App = {
             document.getElementById('pos-diskon').value = 0;
             document.getElementById('pos-biaya-tambahan').value = 0;
             document.getElementById('kembalian-display').style.display = 'none';
-            document.getElementById('estimasi-selesai-info').style.display = 'none';
             State.currentInvoice = 'INV-' + Date.now().toString().slice(-6);
             document.getElementById('pos-invoice').textContent = State.currentInvoice;
             
@@ -1115,7 +1021,6 @@ const App = {
                 badge.textContent = '*** SUDAH LUNAS ***';
                 badge.style.color = 'black';
                 badge.style.borderColor = 'black';
-                badge.style.borderStyle = 'solid';
             } else {
                 badge.style.display = 'block';
                 badge.textContent = '*** DRAFT / BELUM LUNAS ***';
@@ -1126,7 +1031,6 @@ const App = {
 
             document.getElementById('print-invoice').textContent = trx.invoice;
             document.getElementById('print-tanggal').textContent = App.ui.formatDate(trx.tanggal);
-            document.getElementById('print-selesai').textContent = trx.estimasi_selesai ? EstimasiHelper.formatTanggalPendek(trx.estimasi_selesai) : '-';
             document.getElementById('print-customer').textContent = trx.customer + (trx.hp !== '-' ? ` (${trx.hp})` : '');
             
             document.getElementById('print-items').innerHTML = trx.items.map(i => `
@@ -1144,8 +1048,7 @@ const App = {
             document.getElementById('print-kembali').textContent = App.ui.formatRupiah(trx.kembalian);
             document.getElementById('print-footer').textContent = State.settings.footer_struk;
             
-            // OPTIMASI SPEED PRINT: delay sangat minimal
-            setTimeout(() => window.print(), 50);
+            setTimeout(() => window.print(), 400);
         },
         renderQuickPricelist(filter = '') {
             const grid = document.getElementById('quick-pricelist-grid');
@@ -1183,15 +1086,17 @@ const App = {
             }
             
             tbody.innerHTML = items.map(t => {
-                const invoice = t.invoice || t.Invoice || 'N/A';
-                const tanggal = t.tanggal || t.Tanggal;
-                const customer = t.customer || t.Customer || 'Unknown';
-                const hp = t.hp || t.HP || '-';
-                const itemsData = t.items || t.Items || [];
+                console.log('Transaksi item:', t);
+                
+                const invoice = t.invoice || t.Invoice || t.INVOICE || 'N/A';
+                const tanggal = t.tanggal || t.Tanggal || t.TANGGAL || t.created_at;
+                const customer = t.customer || t.Customer || t.NAMA || t.nama || t.nama_customer || 'Unknown';
+                const hp = t.hp || t.HP || t.phone || t.PHONE || t.no_hp || '-';
+                const itemsData = t.items || t.Items || t.detail || [];
                 const itemCount = Array.isArray(itemsData) ? itemsData.length : 1;
-                const total = t.total || t.Total || 0;
-                const metode = t.metode || t.Metode || 'Cash';
-                const status = t.status_bayar || 'Belum Lunas';
+                const total = t.total || t.Total || t.TOTAL || t.harga_total || 0;
+                const metode = t.metode || t.Metode || t.METODE || t.pembayaran || 'Cash';
+                const status = t.status_bayar || t.status_pembayaran || t.Status_Bayar || t.STATUS || 'Belum Lunas';
                 
                 return `
                     <tr>
@@ -1215,8 +1120,8 @@ const App = {
         },
         search(q) {
             const filtered = State.transaksi.filter(t => {
-                const inv = (t.invoice || '').toLowerCase();
-                const cust = (t.customer || '').toLowerCase();
+                const inv = (t.invoice || t.Invoice || '').toLowerCase();
+                const cust = (t.customer || t.Customer || t.NAMA || '').toLowerCase();
                 return inv.includes(q.toLowerCase()) || cust.includes(q.toLowerCase());
             });
             this.render(filtered);
@@ -1232,70 +1137,6 @@ const App = {
                 this.render();
                 Swal.fire({ icon:'success', timer:1000 });
             });
-        }
-    },
-
-    // MENU BARU: INVOICE LUNAS
-    invoiceLunas: {
-        render() {
-            const tbody = document.getElementById('lunas-tbody');
-            const searchQ = (document.getElementById('lunas-search')?.value || '').toLowerCase();
-            
-            // Filter hanya yang Lunas
-            let lunasData = State.transaksi.filter(t => t.status_bayar === 'Lunas');
-            
-            // Filter pencarian
-            if (searchQ) {
-                lunasData = lunasData.filter(t => {
-                    const nama = (t.customer || '').toLowerCase();
-                    const hp = (t.hp || '').toString();
-                    const inv = (t.invoice || '').toLowerCase();
-                    return nama.includes(searchQ) || hp.includes(searchQ) || inv.includes(searchQ);
-                });
-            }
-            
-            // Sort by tanggal bayar terbaru
-            lunasData.sort((a, b) => new Date(b.tanggal_lunas || b.tanggal) - new Date(a.tanggal_lunas || a.tanggal));
-            
-            if (lunasData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:40px">Tidak ada invoice lunas' + (searchQ ? ' dengan kata kunci tersebut' : '') + '</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = lunasData.map(t => {
-                const invoice = t.invoice || 'N/A';
-                const customer = t.customer || 'Unknown';
-                const hp = t.hp || '-';
-                const total = t.total || 0;
-                const metode = t.metode || 'Cash';
-                const tglMasuk = App.ui.formatDate(t.tanggal);
-                const tglSelesai = t.estimasi_selesai ? EstimasiHelper.formatTanggalPendek(t.estimasi_selesai) : '-';
-                const tglBayar = t.tanggal_lunas ? App.ui.formatDate(t.tanggal_lunas) : '-';
-                
-                return `
-                    <tr>
-                        <td><span class="badge badge-success">${invoice}</span></td>
-                        <td>${tglMasuk}</td>
-                        <td>${tglSelesai}</td>
-                        <td style="font-weight:600">${customer}</td>
-                        <td>${hp}</td>
-                        <td style="font-weight:600;color:var(--success)">${App.ui.formatRupiah(total)}</td>
-                        <td>${metode}</td>
-                        <td>${tglBayar}</td>
-                        <td>
-                            <button class="btn btn-sm btn-info" onclick="App.invoiceLunas.reprint('${invoice}')" title="Cetak Ulang"><i class="fas fa-print"></i> Cetak</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        },
-        reprint(invoice) {
-            const trx = State.transaksi.find(t => (t.invoice || t.Invoice) === invoice);
-            if (trx) {
-                App.pos.printReceipt(trx, 'lunas');
-            } else {
-                Swal.fire({ icon: 'error', title: 'Transaksi tidak ditemukan' });
-            }
         }
     },
 
@@ -1463,33 +1304,31 @@ const App = {
             
             if (searchQ) {
                 active = active.filter(t => {
-                    const customerName = (t.customer || '').toLowerCase();
-                    const customerPhone = (t.hp || '').toString();
+                    const customerName = (t.customer || t.Customer || t.NAMA || t.nama || '').toLowerCase();
+                    const customerPhone = (t.hp || t.HP || t.phone || t.PHONE || t.no_hp || '').toString();
                     return customerName.includes(searchQ) || customerPhone.includes(searchQ);
                 });
             }
 
             if (active.length === 0) { 
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:40px">Tidak ada laundry aktif' + (searchQ ? ' dengan kata kunci tersebut' : '') + '</td></tr>'; 
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:40px">Tidak ada laundry aktif' + (searchQ ? ' dengan kata kunci tersebut' : '') + '</td></tr>'; 
                 return; 
             }
             
+            const statusList = ['Masuk','Dicuci','Dikeringkan','Disetrika','Packing','Siap Diambil','Sudah Diambil'];
             const badgeMap = { 'Masuk':'badge-info', 'Dicuci':'badge-warning', 'Dikeringkan':'badge-warning', 'Disetrika':'badge-purple', 'Packing':'badge-primary', 'Siap Diambil':'badge-success', 'Sudah Diambil':'badge-danger' };
             
             tbody.innerHTML = active.map(t => {
-                const invoice = t.invoice || 'N/A';
-                const customer = t.customer || 'Unknown';
-                const hp = t.hp || '-';
-                const tanggal = t.tanggal;
-                const items = t.items || [];
-                const itemCount = Array.isArray(items) ? items.length : 1;
-                const status = t.status_laundry || 'Masuk';
-                const statusBayar = t.status_bayar || 'Belum Lunas';
-                const estimasiSelesai = t.estimasi_selesai;
-                const isOverdue = EstimasiHelper.isOverdue(estimasiSelesai);
+                console.log('Data transaksi:', t);
                 
-                // Tombol Bayar hanya aktif jika status = "Siap Diambil"
-                const bisaBayar = status === 'Siap Diambil';
+                const invoice = t.invoice || t.Invoice || t.INVOICE || 'N/A';
+                const customer = t.customer || t.Customer || t.NAMA || t.nama || t.nama_customer || 'Unknown';
+                const hp = t.hp || t.HP || t.phone || t.PHONE || t.no_hp || t.no_telp || '-';
+                const tanggal = t.tanggal || t.Tanggal || t.TANGGAL || t.created_at;
+                const items = t.items || t.Items || t.detail || [];
+                const itemCount = Array.isArray(items) ? items.length : 1;
+                const status = t.status_laundry || t.status || t.Status || t.STATUS_LAUNDRY || 'Masuk';
+                const statusBayar = t.status_bayar || t.status_pembayaran || t.Status_Bayar || 'Belum Lunas';
                 
                 return `
                     <tr>
@@ -1497,199 +1336,80 @@ const App = {
                         <td style="font-weight:600">${customer}</td>
                         <td>${hp}</td>
                         <td>${App.ui.formatDate(tanggal)}</td>
-                        <td>
-                            <span class="${isOverdue ? 'selesai-info overdue' : 'selesai-info'}" style="margin:0;padding:6px 10px;font-size:0.75rem">
-                                <i class="fas fa-calendar-check"></i>
-                                ${estimasiSelesai ? EstimasiHelper.formatTanggalPendek(estimasiSelesai) : '-'}
-                                ${isOverdue ? '<i class="fas fa-exclamation-triangle" style="margin-left:4px"></i>' : ''}
-                            </span>
-                        </td>
                         <td>${itemCount} item</td>
                         <td>
                             <span class="badge ${badgeMap[status] || 'badge-info'}">${status}</span>
                             ${statusBayar === 'Belum Lunas' ? '<br><small style="color:var(--danger)">Belum Lunas</small>' : '<br><small style="color:var(--success)">Lunas</small>'}
                         </td>
                         <td>
-                            ${bisaBayar ? `
-                                <button class="btn-bayar" onclick="App.status.bayar('${invoice}')">
-                                    <i class="fas fa-money-bill-wave"></i> Bayar
-                                </button>
-                            ` : `
-                                <select class="form-control" style="padding:6px 10px;font-size:0.85rem;width:auto" onchange="App.status.update('${invoice}', this.value)">
-                                    <option value="Masuk" ${status === 'Masuk' ? 'selected' : ''}>Masuk</option>
-                                    <option value="Dicuci" ${status === 'Dicuci' ? 'selected' : ''}>Dicuci</option>
-                                    <option value="Dikeringkan" ${status === 'Dikeringkan' ? 'selected' : ''}>Dikeringkan</option>
-                                    <option value="Disetrika" ${status === 'Disetrika' ? 'selected' : ''}>Disetrika</option>
-                                    <option value="Packing" ${status === 'Packing' ? 'selected' : ''}>Packing</option>
-                                    <option value="Siap Diambil" ${status === 'Siap Diambil' ? 'selected' : ''}>Siap Diambil</option>
-                                </select>
-                            `}
+                            <select class="form-control" style="padding:6px 10px;font-size:0.85rem;width:auto" onchange="App.status.update('${invoice}', this.value)">
+                                ${statusList.map(s => `<option value="${s}" ${s === status ? 'selected' : ''}>${s}</option>`).join('')}
+                            </select>
                         </td>
                     </tr>
                 `;
             }).join('');
         },
-        
-        // FUNGSI BARU: Proses Bayar dari Status Laundry
-        async bayar(invoice) {
-            const t = State.transaksi.find(x => (x.invoice || x.Invoice) === invoice);
-            if (!t) return;
-            
-            const total = t.total || 0;
-            const customer = t.customer || 'Unknown';
-            const hp = t.hp || '-';
-            
-            const { value: formValues } = await Swal.fire({
-                title: '<i class="fas fa-money-bill-wave" style="color:var(--success)"></i> Pembayaran Transaksi',
-                html: `
-                    <div style="text-align:left;background:var(--bg);padding:16px;border-radius:12px;margin-bottom:16px">
-                        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-                            <span style="color:var(--text-muted)">Invoice:</span>
-                            <strong>${t.invoice}</strong>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-                            <span style="color:var(--text-muted)">Customer:</span>
-                            <strong>${customer}</strong>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
-                            <span style="color:var(--text-muted)">No. HP:</span>
-                            <strong>${hp}</strong>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:1px dashed var(--border)">
-                            <span style="font-weight:600">Total Tagihan:</span>
-                            <strong style="color:var(--primary);font-size:1.2rem">${App.ui.formatRupiah(total)}</strong>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label style="font-size:0.85rem;color:var(--text-muted);font-weight:600">Metode Pembayaran</label>
-                        <select id="swal-metode" class="form-control">
-                            <option value="Cash">💵 Cash</option>
-                            <option value="QRIS">📱 QRIS</option>
-                            <option value="Transfer">🏦 Transfer</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label style="font-size:0.85rem;color:var(--text-muted);font-weight:600">💵 Uang yang Dibayar</label>
-                        <input id="swal-bayar" type="number" class="form-control" placeholder="Masukkan jumlah uang" style="font-weight:700;font-size:1.1rem">
-                        <div class="quick-money-grid" style="margin-top:8px">
-                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = (parseInt(document.getElementById('swal-bayar').value)||0) + 50000">50rb</button>
-                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = (parseInt(document.getElementById('swal-bayar').value)||0) + 100000">100rb</button>
-                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = (parseInt(document.getElementById('swal-bayar').value)||0) + 150000">150rb</button>
-                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = (parseInt(document.getElementById('swal-bayar').value)||0) + 200000">200rb</button>
-                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = (parseInt(document.getElementById('swal-bayar').value)||0) + 250000">250rb</button>
-                            <button type="button" class="quick-money-btn" onclick="document.getElementById('swal-bayar').value = ${total}; document.getElementById('swal-bayar').dispatchEvent(new Event('input'))">Uang Pas</button>
-                        </div>
-                        <div id="swal-kembalian-display" class="kembalian-display" style="display:none;margin-top:12px">
-                            <div class="kembalian-label">Kembalian</div>
-                            <div class="kembalian-value" id="swal-kembalian-value">Rp 0</div>
-                        </div>
-                    </div>
-                `,
-                didOpen: () => {
-                    // Auto set uang pas untuk QRIS/Transfer
-                    const metodeEl = document.getElementById('swal-metode');
-                    const bayarEl = document.getElementById('swal-bayar');
-                    const kembalianDisplay = document.getElementById('swal-kembalian-display');
-                    const kembalianValue = document.getElementById('swal-kembalian-value');
-                    
-                    metodeEl.addEventListener('change', (e) => {
-                        if (e.target.value !== 'Cash') {
-                            bayarEl.value = total;
-                            kembalianDisplay.style.display = 'block';
-                            kembalianValue.textContent = 'Rp 0';
-                            kembalianDisplay.classList.remove('negative');
-                        } else {
-                            bayarEl.value = '';
-                            kembalianDisplay.style.display = 'none';
-                        }
-                    });
-                    
-                    bayarEl.addEventListener('input', (e) => {
-                        const uangBayar = parseInt(e.target.value) || 0;
-                        const kembalian = uangBayar - total;
-                        if (uangBayar > 0) {
-                            kembalianDisplay.style.display = 'block';
-                            if (kembalian >= 0) {
-                                kembalianDisplay.classList.remove('negative');
-                                kembalianValue.textContent = App.ui.formatRupiah(kembalian);
-                            } else {
-                                kembalianDisplay.classList.add('negative');
-                                kembalianValue.textContent = '- ' + App.ui.formatRupiah(Math.abs(kembalian));
-                            }
-                        } else {
-                            kembalianDisplay.style.display = 'none';
-                        }
-                    });
-                },
-                focusConfirm: false,
-                showCancelButton: true,
-                cancelButtonText: 'Batal',
-                confirmButtonText: '<i class="fas fa-check-circle"></i> Bayar & Cetak Struk',
-                confirmButtonColor: '#10B981',
-                preConfirm: () => {
-                    const metode = document.getElementById('swal-metode').value;
-                    const bayar = parseInt(document.getElementById('swal-bayar').value) || 0;
-                    
-                    if (metode === 'Cash' && bayar < total) {
-                        Swal.showValidationMessage('Uang yang dibayar kurang dari total tagihan!');
-                        return false;
-                    }
-                    if (bayar <= 0) {
-                        Swal.showValidationMessage('Masukkan jumlah uang yang dibayar!');
-                        return false;
-                    }
-                    
-                    return { metode, bayar };
-                }
-            });
-
-            if (!formValues) {
-                this.render();
-                return; 
-            }
-
-            // Update data transaksi
-            t.status_bayar = 'Lunas';
-            t.metode = formValues.metode;
-            t.uang_bayar = formValues.bayar;
-            t.kembalian = formValues.metode === 'Cash' ? (formValues.bayar - total) : 0;
-            t.status_laundry = 'Sudah Diambil';
-            t.tanggal_lunas = new Date().toISOString();
-
-            // Simpan ke localStorage
-            DB.set('transaksi', State.transaksi);
-            
-            // Sync ke Google Sheets
-            if (State.settings.gas_url && !State.settings.gas_url.includes('XXX')) {
-                await SheetsAPI.sync('save_transaksi', t);
-            }
-            
-            // Cetak struk lunas (OPTIMASI SPEED: langsung print tanpa delay lama)
-            App.pos.printReceipt(t, 'lunas');
-            
-            // Refresh semua tampilan
-            this.render();
-            App.invoiceLunas.render();
-            App.dashboard.load();
-            
-            Swal.fire({ 
-                icon:'success', 
-                title:'Pembayaran Berhasil!', 
-                html: `<div style="text-align:left;font-size:0.9rem">
-                    <p><strong>Invoice:</strong> ${t.invoice}</p>
-                    <p><strong>Customer:</strong> ${customer}</p>
-                    <p><strong>Total:</strong> ${App.ui.formatRupiah(total)}</p>
-                    <p><strong>Bayar:</strong> ${App.ui.formatRupiah(formValues.bayar)}</p>
-                    <p><strong>Kembalian:</strong> ${App.ui.formatRupiah(t.kembalian)}</p>
-                    <p style="color:var(--success);font-weight:600;margin-top:8px">✓ Status: LUNAS & SUDAH DIAMBIL</p>
-                </div>`,
-                timer: 3000
-            });
-        },
-        
         async update(invoice, status) {
             const t = State.transaksi.find(x => (x.invoice || x.Invoice) === invoice);
             if (!t) return;
+
+            if (status === 'Sudah Diambil' && t.status_bayar === 'Belum Lunas') {
+                const { value: formValues } = await Swal.fire({
+                    title: 'Proses Pembayaran & Pengambilan',
+                    html: `
+                        <div style="text-align:left">
+                            <p><strong>Customer:</strong> ${t.customer || t.Customer || 'Unknown'} (${t.hp || t.HP || '-'})</p>
+                            <p><strong>Total Tagihan:</strong> <span style="color:var(--primary);font-size:1.2rem;font-weight:bold">${App.ui.formatRupiah(t.total || t.Total || 0)}</span></p>
+                            <hr style="margin:12px 0">
+                            <label style="font-size:0.85rem;color:var(--text-muted)">Metode Pembayaran</label>
+                            <select id="swal-metode" class="form-control" style="margin-bottom:12px">
+                                <option value="Cash">💵 Cash</option>
+                                <option value="QRIS">📱 QRIS</option>
+                                <option value="Transfer">🏦 Transfer</option>
+                            </select>
+                            <label style="font-size:0.85rem;color:var(--text-muted)">Uang Diterima (Kosongkan jika QRIS/Transfer)</label>
+                            <input id="swal-bayar" type="number" class="form-control" placeholder="Masukkan jumlah uang">
+                        </div>
+                    `,
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Bayar & Cetak Struk Lunas',
+                    preConfirm: () => {
+                        return {
+                            metode: document.getElementById('swal-metode').value,
+                            bayar: document.getElementById('swal-bayar').value
+                        }
+                    }
+                });
+
+                if (!formValues) {
+                    this.render();
+                    return; 
+                }
+
+                let uangBayar = parseInt(formValues.bayar) || 0;
+                if (formValues.metode === 'Cash' && uangBayar < (t.total || t.Total || 0)) {
+                    Swal.fire('Error', 'Uang yang dibayar kurang dari total tagihan!', 'error');
+                    this.render();
+                    return;
+                }
+
+                t.status_bayar = 'Lunas';
+                t.metode = formValues.metode;
+                t.uang_bayar = formValues.metode === 'Cash' ? uangBayar : (t.total || t.Total || 0);
+                t.kembalian = formValues.metode === 'Cash' ? (uangBayar - (t.total || t.Total || 0)) : 0;
+                t.status_laundry = 'Sudah Diambil';
+                t.tanggal_lunas = new Date().toISOString();
+
+                DB.set('transaksi', State.transaksi);
+                App.pos.printReceipt(t, 'lunas');
+                this.render();
+                App.dashboard.load();
+                
+                Swal.fire('Berhasil!', 'Status diubah menjadi Sudah Diambil, Lunas, dan Struk telah dicetak.', 'success');
+                return;
+            }
 
             t.status_laundry = status; 
             DB.set('transaksi', State.transaksi); 
