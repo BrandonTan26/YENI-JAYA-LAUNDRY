@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>YENI JAYA LAUNDRY - Kasir Pro (Instant)</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&family=Roboto&family=Open+Sans&family=Poppins&family=Montserrat&display=swap" rel="stylesheet">
+<title>YENI JAYA LAUNDRY - Kasir Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#f1f5f9;--sidebar:#0f172a;--sidebar-2:#1e293b;--card:#ffffff;
@@ -13,8 +13,8 @@
     --border:#e2e8f0;--shadow:0 4px 20px rgba(15,23,42,.06);--radius:16px;
   }
   *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui,sans-serif}
-  body{background:var(--bg);color:var(--text);height:100vh;overflow:hidden;transition:background .3s,color .3s}
-  body.dark{--bg:#0f172a;--sidebar:#020617;--sidebar-2:#0f172a;--card:#1e293b;--text:#f1f5f9;--muted:#94a3b8;--border:#334155;--shadow:0 4px 20px rgba(0,0,0,.3)}
+  body{background:var(--bg);color:var(--text);height:100vh;overflow:hidden}
+  body.dark{--bg:#0f172a;--sidebar:#020617;--sidebar-2:#0f172a;--card:#1e293b;--text:#f1f5f9;--muted:#94a3b8;--border:#334155}
   body.dark .topbar{background:#1e293b;border-color:#334155}
   body.dark .clock{color:#f1f5f9}
   body.dark .chip{background:#0f172a;border-color:#334155;color:#f1f5f9}
@@ -47,6 +47,8 @@
   body.dark .status-pill-sm.nonaktif{background:#7f1d1d;color:#fca5a5}
   body.dark .badge.lunas{background:#064e3b;color:#6ee7b7}
   body.dark .badge.hutang{background:#7f1d1d;color:#fca5a5}
+  body.dark .status-update-btn{background:#0f172a;color:#f1f5f9;border-color:#334155}
+  body.dark .status-update-btn:hover{background:#1e293b}
 
   .app{display:grid;grid-template-columns:260px 1fr;height:100vh}
   .sidebar{background:linear-gradient(180deg,#0f172a 0%,#1e293b 100%);color:#fff;display:flex;flex-direction:column;padding:20px 16px;overflow-y:auto}
@@ -163,9 +165,12 @@
   .hist-table th{background:#f8fafc;padding:12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border)}
   .hist-table td{padding:12px;font-size:13px;border-bottom:1px solid var(--border)}
   .hist-table tr:hover{background:#f8fafc}
-  .badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700}
+  .badge{display:inline-block;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s}
   .badge.lunas{background:#d1fae5;color:#065f46}
   .badge.hutang{background:#fee2e2;color:#991b1b}
+  .badge:hover{transform:scale(1.05)}
+  .status-update-btn{padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:10px;font-weight:600;transition:all .2s}
+  .status-update-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
   .act-btn{padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:11px;font-weight:600;margin-right:4px;transition:all .2s}
   .act-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
 
@@ -237,11 +242,11 @@
       <button class="nav-item" data-page="history"><span class="icon">📋</span>History Transaksi<span class="badge-count" id="histCount">0</span></button>
       <button class="nav-item" data-page="localdata"><span class="icon">💾</span>Data Lokal<span class="badge-count" id="localCount">0</span></button>
       <button class="nav-item" data-page="pricelist"><span class="icon">🏷️</span>Pricelist</button>
-      <button class="nav-item" data-page="settings"><span class="icon">⚙️</span>Pengaturan</button>
+      <button class="nav-item" data-page="settings"><span class="icon">️</span>Pengaturan</button>
     </nav>
     <div class="section-title">Laporan</div>
     <nav class="nav">
-      <button class="nav-item" onclick="downloadPDF()"><span class="icon">📄</span>Download PDF</button>
+      <button class="nav-item" onclick="downloadPDF()"><span class="icon"></span>Download PDF</button>
     </nav>
     <div class="conn-box">
       <div class="lbl">Status Sistem</div>
@@ -261,7 +266,7 @@
       </div>
       <div class="top-actions">
         <div class="status-pill offline" id="connPill"><span class="dot"></span><span id="connText">Offline</span></div>
-        <button class="chip" onclick="refreshApp()" title="Refresh">🔄</button>
+        <button class="chip" onclick="refreshApp()" title="Refresh"></button>
         <button class="chip" onclick="syncSheets()">🔄 Sync</button>
         <div class="clock" id="clock">--:--</div>
         <div class="toggle-switch" id="themeToggle" onclick="toggleTheme()" title="Dark/Light Mode"></div>
@@ -273,7 +278,7 @@
         <div class="kasir-grid">
           <div>
             <div class="card" style="margin-bottom:20px">
-              <div class="card-title"><span class="icon">👤</span>Data Pelanggan<span class="req">*</span></div>
+              <div class="card-title"><span class="icon"></span>Data Pelanggan<span class="req">*</span></div>
               <div class="form-row">
                 <div class="form-group"><label>Nama Pelanggan <span class="req">(Wajib)</span></label><input type="text" id="cNama" placeholder="Contoh: Budi" /></div>
                 <div class="form-group"><label>No. HP <span class="req">(Wajib)</span></label><input type="tel" id="cHp" placeholder="08xxx" /></div>
@@ -300,7 +305,7 @@
               <div class="form-row full" id="estRow" style="display:none">
                 <div class="form-group"><label>Estimasi Selesai <span class="auto-badge">Auto</span></label><input type="text" id="fEstimasi" readonly style="background:#ecfdf5;color:#065f46;font-weight:600" /></div>
               </div>
-              <button class="btn-add" id="btnAdd" onclick="tambahKeranjang()" disabled>➕ Tambah ke Keranjang</button>
+              <button class="btn-add" id="btnAdd" onclick="tambahKeranjang()" disabled> Tambah ke Keranjang</button>
             </div>
           </div>
 
@@ -379,7 +384,7 @@
       <div class="page" id="page-pricelist">
         <div class="card">
           <div class="price-head">
-            <h2 style="font-size:18px;font-weight:800">🏷️ Manajemen Pricelist</h2>
+            <h2 style="font-size:18px;font-weight:800">️ Manajemen Pricelist</h2>
             <button class="btn-tambah" onclick="openPriceModal()">➕ Tambah</button>
           </div>
           <input type="text" id="priceSearch" placeholder="🔍 Cari layanan..." oninput="renderPricelist()" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;outline:none;margin-bottom:16px;background:#fff" />
@@ -403,7 +408,7 @@
             <div class="form-group"><label>Logo Toko</label>
               <div class="logo-upload" onclick="document.getElementById('logoInput').click()">
                 <img id="logoPreview" style="display:none" />
-                <div class="hint" id="logoHint">📷 Klik untuk upload logo</div>
+                <div class="hint" id="logoHint"> Klik untuk upload logo</div>
               </div>
               <input type="file" id="logoInput" accept="image/*" style="display:none" onchange="uploadLogo(event)" />
             </div>
@@ -482,6 +487,17 @@ Barang yang sudah dicuci tidak dapat ditukar kembali.</textarea></div>
   </div>
 </div>
 
+<div class="modal-bg" id="modalStatus">
+  <div class="modal">
+    <h3>🔄 Ubah Status Pembayaran</h3>
+    <div id="statusContent"></div>
+    <div class="modal-actions">
+      <button class="chip" onclick="closeModal('modalStatus')">Batal</button>
+      <button class="chip primary" onclick="confirmStatusChange()">✅ Konfirmasi Lunas</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -539,6 +555,7 @@ let settings = JSON.parse(localStorage.getItem('yj_settings')||'null') || {
   size:'80', font:1, bold:0, fontFamily:"'Courier New',monospace", logo:'', logoSize: 100
 };
 let history = JSON.parse(localStorage.getItem('yj_history')||'[]');
+let selectedTransactionId = null;
 
 function init(){
   renderKategori();
@@ -690,8 +707,8 @@ function renderCart(){
       <div class="cart-item-head">
         <div>
           <div class="cart-item-name">${it.name}</div>
-          <div class="cart-item-meta"><span>📦 ${it.kategori}</span><span>⏱ ${it.dur}</span></div>
-          <div class="cart-item-est">🕐 Selesai: ${it.estimasi}</div>
+          <div class="cart-item-meta"><span>📦 ${it.kategori}</span><span> ${it.dur}</span></div>
+          <div class="cart-item-est"> Selesai: ${it.estimasi}</div>
         </div>
         <div class="cart-item-price">${rp(it.subtotal)}</div>
       </div>
@@ -771,7 +788,7 @@ function resetForm(){
 
 function printStruk(data){
   const size = settings.size==='58'?'58mm':'80mm';
-  const logoSize = settings.logoSize || 100; // UKURAN LOGO DINAMIS
+  const logoSize = settings.logoSize || 100;
   const logoHtml = settings.logo ? `<img src="${settings.logo}" style="max-width:${logoSize}px;max-height:${logoSize}px;display:block;margin:0 auto 8px">` : '';
   const fs = settings.font===0?'10px':settings.font===1?'11px':'13px';
   const fw = settings.bold?'bold':'normal';
@@ -852,7 +869,11 @@ function renderHistory(){
       <td>${h.nama}<br><small style="color:var(--muted)">${h.hp}</small></td>
       <td>${h.items.map(it=>it.name).slice(0,2).join(', ')}${h.items.length>2?'...':''}</td>
       <td><strong>${rp(h.total)}</strong></td>
-      <td><span class="badge ${h.status==='Lunas'?'lunas':'hutang'}">${h.status}</span></td>
+      <td>
+        <span class="badge ${h.status==='Lunas'?'lunas':'hutang'}" onclick="${h.status==='Belum Lunas'?`openStatusModal('${h.id}')`:'void(0)'}" style="${h.status==='Belum Lunas'?'cursor:pointer;box-shadow:0 0 0 2px rgba(245,158,11,0.3)':''}" title="${h.status==='Belum Lunas'?'Klik untuk ubah jadi Lunas':''}">
+          ${h.status}
+        </span>
+      </td>
       <td>
         <button class="act-btn" onclick="showDetail('${h.id}')">👁️</button>
         <button class="act-btn" onclick="reprint('${h.id}')">🖨️</button>
@@ -870,6 +891,54 @@ function renderStats(){
   document.getElementById('statIncome').textContent = rp(income);
   document.getElementById('statHutangVal').textContent = rp(hutang);
   document.getElementById('statToday').textContent = todayTx.length;
+}
+
+function openStatusModal(id){
+  const h = history.find(x => x.id === id);
+  if(!h || h.status==='Lunas') return;
+  
+  selectedTransactionId = id;
+  document.getElementById('statusContent').innerHTML = `
+    <div style="background:#f8fafc;padding:16px;border-radius:10px;margin-bottom:12px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Transaksi</div>
+      <div style="font-weight:800;font-size:16px">${h.id}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px">${h.nama} - ${h.hp}</div>
+    </div>
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;margin-bottom:12px">
+      <div style="font-size:12px;color:#92400e;margin-bottom:4px">Status Saat Ini</div>
+      <div style="font-size:18px;font-weight:800;color:#f59e0b">⏳ Belum Lunas</div>
+      <div style="font-size:13px;color:#92400e;margin-top:4px">Total: <strong>${rp(h.total)}</strong></div>
+    </div>
+    <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:12px">
+      <div style="font-size:12px;color:#065f46;margin-bottom:4px">Akan Diubah Menjadi</div>
+      <div style="font-size:18px;font-weight:800;color:#10b981">✅ Lunas</div>
+      <div style="font-size:13px;color:#065f46;margin-top:4px">Pendapatan akan masuk ke laporan</div>
+    </div>
+  `;
+  document.getElementById('modalStatus').classList.add('show');
+}
+
+function confirmStatusChange(){
+  if(!selectedTransactionId) return;
+  
+  const idx = history.findIndex(h => h.id === selectedTransactionId);
+  if(idx === -1) return;
+  
+  history[idx].status = 'Lunas';
+  history[idx].bayar = history[idx].bayar || 'Tunai';
+  history[idx].terima = history[idx].terima || history[idx].total;
+  history[idx].kembali = history[idx].terima - history[idx].total;
+  
+  localStorage.setItem('yj_history', JSON.stringify(history));
+  
+  closeModal('modalStatus');
+  renderHistory();
+  renderStats();
+  updateHistCount();
+  renderLocalData();
+  
+  toast('✅ Status berhasil diubah menjadi Lunas!', 'success');
+  selectedTransactionId = null;
 }
 
 function showDetail(id){
@@ -892,8 +961,8 @@ function showDetail(id){
       ${h.diskon?`<div style="display:flex;justify-content:space-between;font-size:13px"><span>Diskon</span><span>-${rp(h.diskon)}</span></div>`:''}
       ${h.tambahan?`<div style="display:flex;justify-content:space-between;font-size:13px"><span>Tambahan</span><span>+${rp(h.tambahan)}</span></div>`:''}
       <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:var(--primary);margin-top:6px"><span>TOTAL</span><span>${rp(h.total)}</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:4px"><span>Bayar (${h.bayar})</span><span>${rp(h.terima)}</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:12px"><span>Kembalian</span><span>${rp(h.kembali)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-top:4px"><span>Bayar (${h.bayar})</span><span>${rp(h.terima||0)}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px"><span>Kembalian</span><span>${rp(h.kembali||0)}</span></div>
     </div>`;
   document.getElementById('btnReprint').onclick = ()=>{ reprint(id); closeModal('modalDetail'); };
   document.getElementById('modalDetail').classList.add('show');
@@ -925,7 +994,7 @@ function renderLocalData(){
       <td><strong>${rp(h.total)}</strong></td>
       <td><span class="badge ${h.status==='Lunas'?'lunas':'hutang'}">${h.status}</span></td>
       <td>
-        <button class="act-btn" style="color:var(--danger);border-color:var(--danger)" onclick="deleteLocalItem('${h.id}')">🗑️ Hapus</button>
+        <button class="act-btn" style="color:var(--danger);border-color:var(--danger)" onclick="deleteLocalItem('${h.id}')">️ Hapus</button>
       </td>
     </tr>
   `).join('');
@@ -1105,7 +1174,7 @@ async function checkConn(){
 }
 
 async function syncSheets(){
-  toast('🔄 Sinkronisasi...','info');
+  toast(' Sinkronisasi...','info');
   await checkConn();
   toast('✓ Sync selesai','success');
 }
@@ -1174,7 +1243,7 @@ tr:nth-child(even){background:#f8fafc}
 .print-btn:hover{background:#4f46e5}
 @media print{.print-btn{display:none}}
 </style></head><body>
-<button class="print-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
+<button class="print-btn" onclick="window.print()">️ Print / Save PDF</button>
 <div class="header">
   ${logoHtml}
   <div class="header-info">
