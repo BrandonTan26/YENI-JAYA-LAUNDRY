@@ -11,10 +11,11 @@
     --primary:#6366f1;--primary-dark:#4f46e5;--success:#10b981;--success-dark:#059669;
     --warning:#f59e0b;--danger:#ef4444;--text:#0f172a;--muted:#64748b;
     --border:#e2e8f0;--shadow:0 4px 20px rgba(15,23,42,.06);--radius:16px;
+    --cart-width:420px;--font-scale:1;
   }
   *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui,sans-serif}
-  body{background:var(--bg);color:var(--text);height:100vh;overflow:hidden}
-  body.dark{--bg:#0f172a;--sidebar:#020617;--sidebar-2:#0f172a;--card:#1e293b;--text:#f1f5f9;--muted:#94a3b8;--border:#334155}
+  body{background:var(--bg);color:var(--text);height:100vh;overflow:hidden;transition:background .3s,color .3s}
+  body.dark{--bg:#0f172a;--sidebar:#020617;--sidebar-2:#0f172a;--card:#1e293b;--text:#f1f5f9;--muted:#94a3b8;--border:#334155;--shadow:0 4px 20px rgba(0,0,0,.3)}
   body.dark .topbar{background:#1e293b;border-color:#334155}
   body.dark .clock{color:#f1f5f9}
   body.dark .chip{background:#0f172a;border-color:#334155;color:#f1f5f9}
@@ -47,8 +48,9 @@
   body.dark .status-pill-sm.nonaktif{background:#7f1d1d;color:#fca5a5}
   body.dark .badge.lunas{background:#064e3b;color:#6ee7b7}
   body.dark .badge.hutang{background:#7f1d1d;color:#fca5a5}
-  body.dark .status-update-btn{background:#0f172a;color:#f1f5f9;border-color:#334155}
-  body.dark .status-update-btn:hover{background:#1e293b}
+  body.dark .layout-option{background:#0f172a;border-color:#334155;color:#f1f5f9}
+  body.dark .layout-option:hover{background:#1e293b}
+  body.dark .layout-option.active{background:var(--primary);border-color:var(--primary);color:#fff}
 
   .app{display:grid;grid-template-columns:260px 1fr;height:100vh}
   .sidebar{background:linear-gradient(180deg,#0f172a 0%,#1e293b 100%);color:#fff;display:flex;flex-direction:column;padding:20px 16px;overflow-y:auto}
@@ -78,7 +80,7 @@
   .topbar{background:#fff;padding:14px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:16px;transition:background .3s}
   .topbar h1{font-size:18px;font-weight:800}
   .topbar .sub{font-size:12px;color:var(--muted);margin-top:2px}
-  .top-actions{display:flex;gap:10px;align-items:center}
+  .top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .status-pill{display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;font-size:12px;font-weight:600}
   .status-pill.online{background:#ecfdf5;color:#065f46}
   .status-pill.offline{background:#fee2e2;color:#991b1b}
@@ -100,8 +102,38 @@
   .page.active{display:block}
   @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-  .kasir-grid{display:grid;grid-template-columns:1fr 420px;gap:20px;align-items:start}
-  @media(max-width:1200px){.kasir-grid{grid-template-columns:1fr}}
+  .kasir-grid{display:grid;grid-template-columns:1fr var(--cart-width);gap:20px;align-items:start}
+  .content{font-size:calc(14px * var(--font-scale))}
+  
+  body.layout-tablet{--cart-width:340px;--font-scale:0.95}
+  body.layout-tablet .cart-card{position:static !important}
+  body.layout-tablet .cart-items{max-height:280px}
+  
+  body.layout-hp{--cart-width:1fr;--font-scale:0.92}
+  body.layout-hp .kasir-grid{grid-template-columns:1fr !important}
+  body.layout-hp .cart-card{position:static !important}
+  body.layout-hp .cart-items{max-height:250px}
+  body.layout-hp .form-row.triple{grid-template-columns:1fr 1fr}
+  body.layout-hp .content{padding:12px}
+  body.layout-hp .card{padding:16px}
+  body.layout-hp .topbar{padding:10px 14px}
+  body.layout-hp .topbar h1{font-size:15px}
+  body.layout-hp .clock{font-size:11px}
+  body.layout-hp .chip{padding:6px 10px;font-size:11px}
+  body.layout-hp .stat-value{font-size:18px}
+  body.layout-hp .grand-total .val{font-size:18px}
+  body.layout-hp .btn-save{padding:14px;font-size:13px}
+  body.layout-hp .hist-stats{grid-template-columns:repeat(2,1fr);gap:8px}
+  body.layout-hp .stat-card{padding:12px}
+  body.layout-hp .stat-label{font-size:10px}
+  body.layout-hp .hist-head input{width:100%}
+  body.layout-hp .settings-grid{grid-template-columns:1fr}
+
+  @media(max-width:1200px){
+    body:not(.layout-pc):not(.layout-tablet):not(.layout-hp) .kasir-grid{grid-template-columns:1fr}
+    body:not(.layout-pc):not(.layout-tablet):not(.layout-hp) .cart-card{position:static !important}
+  }
+
   .card{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border:1px solid var(--border);transition:background .3s,border-color .3s}
   .card-title{font-size:16px;font-weight:800;margin-bottom:18px;display:flex;align-items:center;gap:10px}
   .card-title .req{color:var(--danger);font-size:14px}
@@ -169,8 +201,6 @@
   .badge.lunas{background:#d1fae5;color:#065f46}
   .badge.hutang{background:#fee2e2;color:#991b1b}
   .badge:hover{transform:scale(1.05)}
-  .status-update-btn{padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:10px;font-weight:600;transition:all .2s}
-  .status-update-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
   .act-btn{padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:11px;font-weight:600;margin-right:4px;transition:all .2s}
   .act-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
 
@@ -203,6 +233,14 @@
   .range-row{display:flex;align-items:center;gap:12px}
   .range-row input[type=range]{flex:1}
   .range-val{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--primary);min-width:40px;text-align:right}
+
+  .layout-options{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+  .layout-option{padding:14px;border:2px solid var(--border);border-radius:12px;cursor:pointer;text-align:center;transition:all .2s;background:#fff}
+  .layout-option:hover{border-color:var(--primary);transform:translateY(-2px)}
+  .layout-option.active{border-color:var(--primary);background:#eef2ff;box-shadow:0 4px 12px rgba(99,102,241,.15)}
+  .layout-option .layout-icon{font-size:28px;margin-bottom:6px}
+  .layout-option .layout-name{font-weight:700;font-size:13px;margin-bottom:2px}
+  .layout-option .layout-desc{font-size:10px;color:var(--muted)}
 
   .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
   .modal-bg.show{display:flex;animation:fadeIn .2s}
@@ -241,12 +279,12 @@
       <button class="nav-item active" data-page="kasir"><span class="icon">💳</span>Kasir (POS)</button>
       <button class="nav-item" data-page="history"><span class="icon">📋</span>History Transaksi<span class="badge-count" id="histCount">0</span></button>
       <button class="nav-item" data-page="localdata"><span class="icon">💾</span>Data Lokal<span class="badge-count" id="localCount">0</span></button>
-      <button class="nav-item" data-page="pricelist"><span class="icon">🏷️</span>Pricelist</button>
-      <button class="nav-item" data-page="settings"><span class="icon">️</span>Pengaturan</button>
+      <button class="nav-item" data-page="pricelist"><span class="icon">️</span>Pricelist</button>
+      <button class="nav-item" data-page="settings"><span class="icon">⚙️</span>Pengaturan</button>
     </nav>
     <div class="section-title">Laporan</div>
     <nav class="nav">
-      <button class="nav-item" onclick="downloadPDF()"><span class="icon"></span>Download PDF</button>
+      <button class="nav-item" onclick="downloadPDF()"><span class="icon">📄</span>Download PDF</button>
     </nav>
     <div class="conn-box">
       <div class="lbl">Status Sistem</div>
@@ -268,6 +306,11 @@
         <div class="status-pill offline" id="connPill"><span class="dot"></span><span id="connText">Offline</span></div>
         <button class="chip" onclick="refreshApp()" title="Refresh"></button>
         <button class="chip" onclick="syncSheets()">🔄 Sync</button>
+        <select id="quickLayout" onchange="setLayout(this.value)" style="padding:8px 12px;border:1px solid var(--border);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;background:#fff">
+          <option value="pc">🖥️ PC</option>
+          <option value="tablet">📱 Tablet</option>
+          <option value="hp">📲 HP</option>
+        </select>
         <div class="clock" id="clock">--:--</div>
         <div class="toggle-switch" id="themeToggle" onclick="toggleTheme()" title="Dark/Light Mode"></div>
       </div>
@@ -278,7 +321,7 @@
         <div class="kasir-grid">
           <div>
             <div class="card" style="margin-bottom:20px">
-              <div class="card-title"><span class="icon"></span>Data Pelanggan<span class="req">*</span></div>
+              <div class="card-title"><span class="icon">👤</span>Data Pelanggan<span class="req">*</span></div>
               <div class="form-row">
                 <div class="form-group"><label>Nama Pelanggan <span class="req">(Wajib)</span></label><input type="text" id="cNama" placeholder="Contoh: Budi" /></div>
                 <div class="form-group"><label>No. HP <span class="req">(Wajib)</span></label><input type="tel" id="cHp" placeholder="08xxx" /></div>
@@ -305,13 +348,13 @@
               <div class="form-row full" id="estRow" style="display:none">
                 <div class="form-group"><label>Estimasi Selesai <span class="auto-badge">Auto</span></label><input type="text" id="fEstimasi" readonly style="background:#ecfdf5;color:#065f46;font-weight:600" /></div>
               </div>
-              <button class="btn-add" id="btnAdd" onclick="tambahKeranjang()" disabled> Tambah ke Keranjang</button>
+              <button class="btn-add" id="btnAdd" onclick="tambahKeranjang()" disabled>➕ Tambah ke Keranjang</button>
             </div>
           </div>
 
           <div class="card cart-card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-              <div class="card-title" style="margin:0"><span class="icon">🛒</span>Keranjang</div>
+              <div class="card-title" style="margin:0"><span class="icon"></span>Keranjang</div>
               <div class="inv-badge" id="invBadge">INV-0000</div>
             </div>
             <div class="cart-items" id="cartItems"><div class="empty-cart"><div class="icon">🛍️</div>Belum ada layanan</div></div>
@@ -348,7 +391,7 @@
           <input type="text" id="histSearch" placeholder="🔍 Cari nama, HP, atau ID..." oninput="renderHistory()" />
           <div style="display:flex;gap:8px">
             <button class="chip" onclick="syncSheets()">🔄 Sync</button>
-            <button class="chip primary" onclick="downloadPDF()">📄 Download PDF</button>
+            <button class="chip primary" onclick="downloadPDF()"> Download PDF</button>
           </div>
         </div>
         <div style="overflow-x:auto">
@@ -384,7 +427,7 @@
       <div class="page" id="page-pricelist">
         <div class="card">
           <div class="price-head">
-            <h2 style="font-size:18px;font-weight:800">️ Manajemen Pricelist</h2>
+            <h2 style="font-size:18px;font-weight:800">🏷️ Manajemen Pricelist</h2>
             <button class="btn-tambah" onclick="openPriceModal()">➕ Tambah</button>
           </div>
           <input type="text" id="priceSearch" placeholder="🔍 Cari layanan..." oninput="renderPricelist()" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;outline:none;margin-bottom:16px;background:#fff" />
@@ -408,13 +451,36 @@
             <div class="form-group"><label>Logo Toko</label>
               <div class="logo-upload" onclick="document.getElementById('logoInput').click()">
                 <img id="logoPreview" style="display:none" />
-                <div class="hint" id="logoHint"> Klik untuk upload logo</div>
+                <div class="hint" id="logoHint">📷 Klik untuk upload logo</div>
               </div>
               <input type="file" id="logoInput" accept="image/*" style="display:none" onchange="uploadLogo(event)" />
             </div>
           </div>
           <div class="card">
-            <h3 style="font-size:16px;font-weight:800;margin-bottom:16px">🧾 Pengaturan Struk</h3>
+            <h3 style="font-size:16px;font-weight:800;margin-bottom:16px">🎨 Pengaturan Layout</h3>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Pilih mode tampilan sesuai device yang kamu pakai:</div>
+            <div class="layout-options">
+              <div class="layout-option" data-layout="pc" onclick="setLayout('pc')">
+                <div class="layout-icon">🖥️</div>
+                <div class="layout-name">PC / Laptop</div>
+                <div class="layout-desc">2 Kolom, Cart 420px</div>
+              </div>
+              <div class="layout-option" data-layout="tablet" onclick="setLayout('tablet')">
+                <div class="layout-icon">📱</div>
+                <div class="layout-name">Tablet</div>
+                <div class="layout-desc">2 Kolom, Cart 340px</div>
+              </div>
+              <div class="layout-option" data-layout="hp" onclick="setLayout('hp')">
+                <div class="layout-icon">📲</div>
+                <div class="layout-name">HP / Mobile</div>
+                <div class="layout-desc">1 Kolom, Stack</div>
+              </div>
+            </div>
+            <div style="background:#eef2ff;border-radius:10px;padding:12px;font-size:12px;color:var(--primary);margin-bottom:16px">
+              💡 <strong>Tips:</strong> Bisa juga ganti cepat via dropdown di topbar (pojok kanan atas)
+            </div>
+            
+            <h3 style="font-size:16px;font-weight:800;margin:20px 0 16px">🧾 Pengaturan Struk</h3>
             <div class="form-group"><label>Footer Struk</label><textarea id="setFooter" style="min-height:80px">Terima kasih atas kepercayaan Anda!
 Barang yang sudah dicuci tidak dapat ditukar kembali.</textarea></div>
             <div class="form-group"><label>Ukuran Kertas</label><select id="setSize"><option value="58">58 mm (Kecil)</option><option value="80" selected>80 mm (Standar)</option></select></div>
@@ -552,10 +618,42 @@ let settings = JSON.parse(localStorage.getItem('yj_settings')||'null') || {
   url:'https://script.google.com/macros/s/AKfycbwl1JLQn9iGKWI7LdBD_dBFs7Kj5E39ywp7tuFkp85SfHulFzf7EXVqQDPWvCDRmx0t/exec', 
   name:'YENI JAYA LAUNDRY', alamat:'KP. CIDOKOM TAMBAK SEREAH, ALPAMART CIKOREK KEC. KIBIN, KAB. SERANG BANTEN - INDONESIA', hp:'087770434213',
   footer:'Terima kasih telah menggunakan\nYENI JAYA LAUNDRY',
-  size:'80', font:1, bold:0, fontFamily:"'Courier New',monospace", logo:'', logoSize: 100
+  size:'80', font:1, bold:0, fontFamily:"'Courier New',monospace", logo:'', logoSize: 100,
+  layout: 'auto'
 };
 let history = JSON.parse(localStorage.getItem('yj_history')||'[]');
 let selectedTransactionId = null;
+
+function detectDeviceLayout(){
+  const w = window.innerWidth;
+  if(w <= 768) return 'hp';
+  if(w <= 1200) return 'tablet';
+  return 'pc';
+}
+
+function setLayout(mode){
+  document.body.classList.remove('layout-pc','layout-tablet','layout-hp');
+  if(mode !== 'auto') document.body.classList.add('layout-'+mode);
+  document.querySelectorAll('.layout-option').forEach(el=>{
+    el.classList.toggle('active', el.dataset.layout === mode);
+  });
+  document.getElementById('quickLayout').value = mode;
+  settings.layout = mode;
+  localStorage.setItem('yj_settings', JSON.stringify(settings));
+  toast('🎨 Layout diubah ke: '+mode.toUpperCase(),'info');
+}
+
+function applyLayout(){
+  const mode = settings.layout || 'auto';
+  if(mode === 'auto') setLayout(detectDeviceLayout());
+  else setLayout(mode);
+}
+
+let resizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(()=>{ if(settings.layout === 'auto') applyLayout(); },300);
+});
 
 function init(){
   renderKategori();
@@ -565,6 +663,7 @@ function init(){
   loadTheme();
   checkConn();
   updateHistCount();
+  applyLayout();
   document.getElementById('cNama').addEventListener('input', validateForm);
   document.getElementById('cHp').addEventListener('input', validateForm);
 }
@@ -580,7 +679,7 @@ document.querySelectorAll('.nav-item[data-page]').forEach(btn=>{
       history:['History Transaksi','Daftar semua transaksi'],
       localdata:['Data Lokal','Kelola data transaksi di browser'],
       pricelist:['Pricelist','Manajemen harga layanan'],
-      settings:['Pengaturan','Konfigurasi toko & struk']
+      settings:['Pengaturan','Konfigurasi toko & layout']
     };
     document.getElementById('pageTitle').textContent=titles[btn.dataset.page][0];
     document.getElementById('pageSub').textContent=titles[btn.dataset.page][1];
@@ -707,8 +806,8 @@ function renderCart(){
       <div class="cart-item-head">
         <div>
           <div class="cart-item-name">${it.name}</div>
-          <div class="cart-item-meta"><span>📦 ${it.kategori}</span><span> ${it.dur}</span></div>
-          <div class="cart-item-est"> Selesai: ${it.estimasi}</div>
+          <div class="cart-item-meta"><span>📦 ${it.kategori}</span><span>⏱ ${it.dur}</span></div>
+          <div class="cart-item-est">🕐 Selesai: ${it.estimasi}</div>
         </div>
         <div class="cart-item-price">${rp(it.subtotal)}</div>
       </div>
@@ -912,18 +1011,24 @@ function openStatusModal(id){
     <div style="background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:12px">
       <div style="font-size:12px;color:#065f46;margin-bottom:4px">Akan Diubah Menjadi</div>
       <div style="font-size:18px;font-weight:800;color:#10b981">✅ Lunas</div>
-      <div style="font-size:13px;color:#065f46;margin-top:4px">Pendapatan akan masuk ke laporan</div>
+      <div style="font-size:13px;color:#065f46;margin-top:4px">Pendapatan akan masuk ke laporan & Google Sheets</div>
     </div>
   `;
   document.getElementById('modalStatus').classList.add('show');
 }
 
+// ==========================================
+// UPDATE STATUS + SYNC KE GOOGLE SHEETS
+// ==========================================
 function confirmStatusChange(){
   if(!selectedTransactionId) return;
   
   const idx = history.findIndex(h => h.id === selectedTransactionId);
   if(idx === -1) return;
   
+  const transaction = history[idx];
+  
+  // Update di localStorage
   history[idx].status = 'Lunas';
   history[idx].bayar = history[idx].bayar || 'Tunai';
   history[idx].terima = history[idx].terima || history[idx].total;
@@ -931,13 +1036,32 @@ function confirmStatusChange(){
   
   localStorage.setItem('yj_history', JSON.stringify(history));
   
+  // KIRIM UPDATE KE GOOGLE SHEETS
+  if(settings.url){
+    fetch(settings.url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({
+        action: 'update',
+        id: transaction.id,
+        status: 'Lunas',
+        total: transaction.total
+      })
+    }).then(()=>{
+      console.log('Status synced to Google Sheets');
+    }).catch(err=>{
+      console.error('Failed to sync status:', err);
+    });
+  }
+  
   closeModal('modalStatus');
   renderHistory();
   renderStats();
   updateHistCount();
   renderLocalData();
   
-  toast('✅ Status berhasil diubah menjadi Lunas!', 'success');
+  toast('✅ Status berhasil diubah menjadi Lunas & disinkronkan ke Sheets!', 'success');
   selectedTransactionId = null;
 }
 
@@ -994,7 +1118,7 @@ function renderLocalData(){
       <td><strong>${rp(h.total)}</strong></td>
       <td><span class="badge ${h.status==='Lunas'?'lunas':'hutang'}">${h.status}</span></td>
       <td>
-        <button class="act-btn" style="color:var(--danger);border-color:var(--danger)" onclick="deleteLocalItem('${h.id}')">️ Hapus</button>
+        <button class="act-btn" style="color:var(--danger);border-color:var(--danger)" onclick="deleteLocalItem('${h.id}')">🗑️ Hapus</button>
       </td>
     </tr>
   `).join('');
@@ -1129,7 +1253,8 @@ function saveSettings(){
     font: +document.getElementById('setFont').value,
     bold: +document.getElementById('setBold').value,
     logoSize: +document.getElementById('setLogoSize').value || 100,
-    logo: settings.logo||''
+    logo: settings.logo||'',
+    layout: settings.layout || 'auto'
   };
   localStorage.setItem('yj_settings', JSON.stringify(settings));
   checkConn();
@@ -1174,7 +1299,7 @@ async function checkConn(){
 }
 
 async function syncSheets(){
-  toast(' Sinkronisasi...','info');
+  toast('🔄 Sinkronisasi...','info');
   await checkConn();
   toast('✓ Sync selesai','success');
 }
@@ -1243,7 +1368,7 @@ tr:nth-child(even){background:#f8fafc}
 .print-btn:hover{background:#4f46e5}
 @media print{.print-btn{display:none}}
 </style></head><body>
-<button class="print-btn" onclick="window.print()">️ Print / Save PDF</button>
+<button class="print-btn" onclick="window.print()">🖨️ Print / Save PDF</button>
 <div class="header">
   ${logoHtml}
   <div class="header-info">
