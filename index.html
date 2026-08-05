@@ -690,9 +690,21 @@ document.querySelectorAll('.nav-item[data-page]').forEach(btn=>{
   });
 });
 
+let invoiceCounter = parseInt(localStorage.getItem('yj_invoice_counter')||'1000');
+
 function generateInvoice(){
-  const num = String(history.length + 1).padStart(4,'0');
-  document.getElementById('invBadge').textContent = 'INV-'+num;
+  invoiceCounter++;
+  localStorage.setItem('yj_invoice_counter', invoiceCounter);
+  
+  const now = new Date();
+  const dateStr = now.toISOString().slice(2,10).replace(/-/g,''); // YYMMDD
+  const num = String(invoiceCounter).padStart(4,'0');
+  
+  // Format: INV-260805-1001 (unik!)
+  const uniqueId = `INV-${dateStr}-${num}`;
+  
+  document.getElementById('invBadge').textContent = uniqueId;
+  console.log('🆔 Generated Invoice ID:', uniqueId);
 }
 
 function renderKategori(){
