@@ -279,7 +279,7 @@
       <button class="nav-item active" data-page="kasir"><span class="icon">💳</span>Kasir (POS)</button>
       <button class="nav-item" data-page="history"><span class="icon">📋</span>History Transaksi<span class="badge-count" id="histCount">0</span></button>
       <button class="nav-item" data-page="localdata"><span class="icon">💾</span>Data Lokal<span class="badge-count" id="localCount">0</span></button>
-      <button class="nav-item" data-page="pricelist"><span class="icon">️</span>Pricelist</button>
+      <button class="nav-item" data-page="pricelist"><span class="icon">🏷️</span>Pricelist</button>
       <button class="nav-item" data-page="settings"><span class="icon">⚙️</span>Pengaturan</button>
     </nav>
     <div class="section-title">Laporan</div>
@@ -304,7 +304,7 @@
       </div>
       <div class="top-actions">
         <div class="status-pill offline" id="connPill"><span class="dot"></span><span id="connText">Offline</span></div>
-        <button class="chip" onclick="refreshApp()" title="Refresh"></button>
+        <button class="chip" onclick="refreshApp()" title="Refresh">🔄</button>
         <button class="chip" onclick="syncSheets()">🔄 Sync</button>
         <select id="quickLayout" onchange="setLayout(this.value)" style="padding:8px 12px;border:1px solid var(--border);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;background:#fff">
           <option value="pc">🖥️ PC</option>
@@ -354,7 +354,7 @@
 
           <div class="card cart-card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-              <div class="card-title" style="margin:0"><span class="icon"></span>Keranjang</div>
+              <div class="card-title" style="margin:0"><span class="icon">🛒</span>Keranjang</div>
               <div class="inv-badge" id="invBadge">INV-0000</div>
             </div>
             <div class="cart-items" id="cartItems"><div class="empty-cart"><div class="icon">🛍️</div>Belum ada layanan</div></div>
@@ -391,7 +391,7 @@
           <input type="text" id="histSearch" placeholder="🔍 Cari nama, HP, atau ID..." oninput="renderHistory()" />
           <div style="display:flex;gap:8px">
             <button class="chip" onclick="syncSheets()">🔄 Sync</button>
-            <button class="chip primary" onclick="downloadPDF()"> Download PDF</button>
+            <button class="chip primary" onclick="downloadPDF()">📄 Download PDF</button>
           </div>
         </div>
         <div style="overflow-x:auto">
@@ -969,7 +969,7 @@ function renderHistory(){
       <td>${h.items.map(it=>it.name).slice(0,2).join(', ')}${h.items.length>2?'...':''}</td>
       <td><strong>${rp(h.total)}</strong></td>
       <td>
-        <span class="badge ${h.status==='Lunas'?'lunas':'hutang'}" onclick="${h.status==='Belum Lunas'?`openStatusModal('${h.id}')`:'void(0)'}" style="${h.status==='Belum Lunas'?'cursor:pointer;box-shadow:0 0 0 2px rgba(245,158,11,0.3)':''}" title="${h.status==='Belum Lunas'?'Klik untuk ubah jadi Lunas':''}">
+        <span class="badge ${h.status==='Lunas'?'lunas':'hutang'}" onclick="console.log('🔍 Klik badge:', '${h.id}', '${h.status}'); ${h.status==='Belum Lunas'?`openStatusModal('${h.id}')`:'void(0)'}" style="${h.status==='Belum Lunas'?'cursor:pointer;box-shadow:0 0 0 2px rgba(245,158,11,0.3)':''}" title="${h.status==='Belum Lunas'?'Klik untuk ubah jadi Lunas':''}">
           ${h.status}
         </span>
       </td>
@@ -993,8 +993,18 @@ function renderStats(){
 }
 
 function openStatusModal(id){
+  console.log('🔍 openStatusModal dipanggil untuk ID:', id);
   const h = history.find(x => x.id === id);
-  if(!h || h.status==='Lunas') return;
+  if(!h) {
+    console.error('❌ Transaksi tidak ditemukan:', id);
+    toast('Transaksi tidak ditemukan', 'error');
+    return;
+  }
+  if(h.status === 'Lunas') {
+    console.log('⚠️ Transaksi sudah Lunas');
+    toast('Transaksi ini sudah Lunas', 'info');
+    return;
+  }
   
   selectedTransactionId = id;
   document.getElementById('statusContent').innerHTML = `
@@ -1015,18 +1025,31 @@ function openStatusModal(id){
     </div>
   `;
   document.getElementById('modalStatus').classList.add('show');
+  console.log('✅ Modal ditampilkan');
 }
 
 // ==========================================
 // UPDATE STATUS + SYNC KE GOOGLE SHEETS
 // ==========================================
 function confirmStatusChange(){
-  if(!selectedTransactionId) return;
+  if(!selectedTransactionId) {
+    toast('⚠️ Tidak ada transaksi yang dipilih', 'error');
+    return;
+  }
   
   const idx = history.findIndex(h => h.id === selectedTransactionId);
-  if(idx === -1) return;
+  if(idx === -1) {
+    toast('⚠️ Transaksi tidak ditemukan', 'error');
+    return;
+  }
   
   const transaction = history[idx];
+  
+  // TAMBAHAN: Konfirmasi Native Browser agar TIDAK BISA berubah otomatis tanpa izin
+  if(!confirm(`Yakin ingin mengubah status transaksi ${transaction.id} menjadi LUNAS?\n\nTotal: ${rp(transaction.total)}`)) {
+    console.log('❌ Perubahan status dibatalkan oleh user');
+    return;
+  }
   
   // Update di localStorage
   history[idx].status = 'Lunas';
@@ -1038,6 +1061,7 @@ function confirmStatusChange(){
   
   // KIRIM UPDATE KE GOOGLE SHEETS
   if(settings.url){
+    console.log('📡 Mengirim update ke Google Sheets...');
     fetch(settings.url, {
       method: 'POST',
       mode: 'no-cors',
@@ -1049,9 +1073,9 @@ function confirmStatusChange(){
         total: transaction.total
       })
     }).then(()=>{
-      console.log('Status synced to Google Sheets');
+      console.log('✅ Status synced to Google Sheets');
     }).catch(err=>{
-      console.error('Failed to sync status:', err);
+      console.error('❌ Failed to sync status:', err);
     });
   }
   
@@ -1061,7 +1085,7 @@ function confirmStatusChange(){
   updateHistCount();
   renderLocalData();
   
-  toast('✅ Status berhasil diubah menjadi Lunas & disinkronkan ke Sheets!', 'success');
+  toast('✅ Status berhasil diubah menjadi Lunas!', 'success');
   selectedTransactionId = null;
 }
 
@@ -1116,7 +1140,11 @@ function renderLocalData(){
       <td><strong>${h.id}</strong></td>
       <td>${h.nama}<br><small style="color:var(--muted)">${h.hp}</small></td>
       <td><strong>${rp(h.total)}</strong></td>
-      <td><span class="badge ${h.status==='Lunas'?'lunas':'hutang'}">${h.status}</span></td>
+      <td>
+        <span class="badge ${h.status==='Lunas'?'lunas':'hutang'}" onclick="console.log('🔍 Klik badge Local:', '${h.id}', '${h.status}'); ${h.status==='Belum Lunas'?`openStatusModal('${h.id}')`:'void(0)'}" style="${h.status==='Belum Lunas'?'cursor:pointer;box-shadow:0 0 0 2px rgba(245,158,11,0.3)':''}" title="${h.status==='Belum Lunas'?'Klik untuk ubah jadi Lunas':''}">
+          ${h.status}
+        </span>
+      </td>
       <td>
         <button class="act-btn" style="color:var(--danger);border-color:var(--danger)" onclick="deleteLocalItem('${h.id}')">🗑️ Hapus</button>
       </td>
